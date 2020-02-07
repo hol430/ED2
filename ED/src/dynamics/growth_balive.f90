@@ -352,7 +352,8 @@ module growth_balive
                end do cohortloop
                !---------------------------------------------------------------------------!
 
-               call growth_strategy(csite,ipa,cpoly%green_leaf_factor)
+               call growth_strategy(csite,ipa,cpoly%green_leaf_factor,cpoly%ntext_soil(:,isi), &
+                    csite%soil_water(:,ipa),csite%soil_fracliq(:,ipa))
 
                !----- Update litter. ------------------------------------------------------!
                call litter(csite,ipa)
@@ -2218,7 +2219,7 @@ module growth_balive
       return
    end subroutine litter
 
-   subroutine growth_strategy(csite,ipa,green_leaf_factor)
+   subroutine growth_strategy(csite,ipa,green_leaf_factor,ntext_soil,soil_water,soil_fracliq)
      use ed_state_vars, only: sitetype, patchtype
      use allometry, only: size2bl,dbh2sf
      use pft_coms, only: c2n_leaf, c2p_leaf, repro_min_h,   &
@@ -2226,8 +2227,13 @@ module growth_balive
           root_realloc_wet_thresh, root2leaf_min, root2leaf_max, &
           root_realloc_inc, c2n_recruit, c2p_recruit
      use plant_hydro, only: rwc2tw
+     use soil_coms, only: soil
+     use grid_coms, only: nzg
      implicit none
 
+     integer, intent(in), dimension(nzg) :: ntext_soil
+     real, dimension(nzg), intent(in) :: soil_water
+     real, dimension(nzg), intent(in) :: soil_fracliq
      type(sitetype) :: csite
      type(patchtype), pointer :: cpatch
      integer, intent(in) :: ipa
@@ -2242,6 +2248,10 @@ module growth_balive
      integer :: adjusted
      real :: actual_leaf_and_root, target_leaf_and_root, actual_to_target
      real, intent(in), dimension(:,:) :: green_leaf_factor
+     integer :: nsoil
+     real :: wgpfrac
+     integer :: k
+     real :: soilwp
 
      cpatch => csite%patch(ipa)
 
@@ -2297,13 +2307,20 @@ module growth_balive
            endif
         endif
 
-
         if(limitation_flag == 1)then
            adjusted = 0
            if(cpatch%dmax_leaf_psi(ico) < leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft))then
-              cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
-                   cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
-              adjusted = 1
+              k = cpatch%krdepth(ico)
+              nsoil = ntext_soil(k)
+              wgpfrac = max(soil(nsoil)%soilcp,min(1.0,                                &
+                   soil_water(k) * soil_fracliq(k)           &
+                   / soil(nsoil)%slmsts))
+              soilwp = soil(nsoil)%slpots / wgpfrac ** soil(nsoil)%slbs ! m
+              if(soilwp > leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft))then
+                 cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
+                      cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
+                 adjusted = 1
+              endif
            elseif(cpatch%dmax_leaf_psi(ico) > leaf_psi_tlp(ipft) * root_realloc_wet_thresh(ipft))then
               cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
                    cpatch%root2leaf(ico) * exp(-root_realloc_inc(ipft))))
