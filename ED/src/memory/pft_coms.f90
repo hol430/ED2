@@ -501,6 +501,10 @@ module pft_coms
    real, dimension(n_pft) :: N_resorption_factor
    real, dimension(n_pft) :: P_resorption_factor
 
+   real, dimension(n_pft) :: root_realloc_dry_thresh
+   real, dimension(n_pft) :: root_realloc_wet_thresh
+   real, dimension(n_pft) :: root_realloc_inc
+
    !=======================================================================================!
    !=======================================================================================!
 

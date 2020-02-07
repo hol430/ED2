@@ -147,7 +147,7 @@ module plant_hydro
                               + (1. - cpatch%fs_open(ico)) * cpatch%psi_closed(ico)      &
                               ) * cpatch%lai(ico) / cpatch%nplant(ico)     ! kg / s
 
-
+!if(ico==78)print*,'1a',cpatch%pft(ico),ico,cpatch%leaf_psi(ico),cpatch%leaf_rwc(ico),transp
                 ! Please notice that the current leaf_water_int has included the
                 ! transpirational lost of this time step but not the sapflow. So
                 ! leaf psi can be very low.
@@ -158,6 +158,7 @@ module plant_hydro
                 ! START of the timestep.
                 call rwc2psi(cpatch%leaf_rwc(ico),cpatch%wood_rwc(ico),cpatch%pft(ico)     &
                             ,cpatch%leaf_psi(ico),cpatch%wood_psi(ico))
+!if(ico == 78)print*,'1b',ico,cpatch%leaf_psi(ico),cpatch%leaf_rwc(ico),transp
 
                 c_leaf = leaf_water_cap(cpatch%pft(ico)) * C2B * cpatch%bleaf(ico)
                 if (c_leaf > 0.) then
@@ -172,12 +173,14 @@ module plant_hydro
 !                    call psi2rwc(cpatch%leaf_psi(ico),cpatch%wood_psi(ico),cpatch%pft(ico) &
 !                                 cpatch%leaf_rwc(ico),cpatch%wood_rwc(ico))
                 endif
+!if(ico == 78)print*,'1c',ico,cpatch%leaf_psi(ico),cpatch%leaf_rwc(ico),transp
                 
                 !--------------------------------------------------------------------------
                 ! Handling Potential Errors and Help Debugging
                 !--------------------------------------------------------------------------
-                error_flag = (isnan(cpatch%leaf_psi(ico)) )           & ! NaN values
-                         .or.(cpatch%leaf_psi(ico) > 0.)                ! psi is positive
+                error_flag = isnan(cpatch%leaf_psi(ico))
+!                error_flag = (isnan(cpatch%leaf_psi(ico)) )           & ! NaN values
+!                         .or.(cpatch%leaf_psi(ico) > 0.)                ! psi is positive
   
                 ! I copy the error printing from rk4_misc.f90
                 if((debug_flag .and. (dco == 0 .or. ico == dco)) .or. error_flag) then
@@ -859,6 +862,8 @@ module plant_hydro
       ! same for wood
       wood_psi  =   (wood_rwc - 1.) * wood_water_sat(ipft) / wood_water_cap(ipft)
 
+!if(leaf_psi > 0.)print*,'leaf_psi',1,leaf_rwc,leaf_psi;stop
+
       return
    end subroutine rwc2psi
 
@@ -929,7 +934,7 @@ module plant_hydro
       ! leaf
       tot_water_sat = leaf_water_sat(ipft) * C2B * bleaf
       if (tot_water_sat > 0.) then
-          leaf_rwc          =   leaf_water_int / tot_water_sat
+          leaf_rwc          =   min(1.,leaf_water_int / tot_water_sat)
       else
           leaf_rwc          =   0.
       endif
@@ -937,7 +942,7 @@ module plant_hydro
       ! wood
       tot_water_sat = wood_water_sat(ipft) * C2B * (broot + bdead * sap_frac)
       if (tot_water_sat > 0.) then
-          wood_rwc          =   wood_water_int / tot_water_sat
+          wood_rwc          =   min(1.,wood_water_int / tot_water_sat)
       else
           wood_rwc          =   0.
       endif
@@ -1005,7 +1010,9 @@ module plant_hydro
       call tw2rwc(leaf_water_int,wood_water_int,bleaf,bdead,broot,sap_frac,ipft,    &
                   leaf_rwc,wood_rwc)
       ! second convert to psi
+!if(leaf_rwc > 1.)print*,2,leaf_water_int,bleaf,leaf_rwc;stop
       call rwc2psi(leaf_rwc,wood_rwc,ipft,leaf_psi,wood_psi)
+
 
       return
 

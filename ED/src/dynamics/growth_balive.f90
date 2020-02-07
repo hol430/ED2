@@ -352,6 +352,8 @@ module growth_balive
                end do cohortloop
                !---------------------------------------------------------------------------!
 
+               call growth_strategy(csite,ipa,cpoly%green_leaf_factor)
+
                !----- Update litter. ------------------------------------------------------!
                call litter(csite,ipa)
                !---------------------------------------------------------------------------!
@@ -2215,6 +2217,119 @@ module growth_balive
       end do
       return
    end subroutine litter
+
+   subroutine growth_strategy(csite,ipa,green_leaf_factor)
+     use ed_state_vars, only: sitetype, patchtype
+     use allometry, only: size2bl,dbh2sf
+     use pft_coms, only: c2n_leaf, c2p_leaf, repro_min_h,   &
+          c2n_stem, c2p_wood, r_fract, leaf_psi_tlp, root_realloc_dry_thresh, &
+          root_realloc_wet_thresh, root2leaf_min, root2leaf_max, &
+          root_realloc_inc, c2n_recruit, c2p_recruit
+     use plant_hydro, only: rwc2tw
+     implicit none
+
+     type(sitetype) :: csite
+     type(patchtype), pointer :: cpatch
+     integer, intent(in) :: ipa
+     integer :: ico, ipft
+     integer :: limitation_flag
+     real :: bl_max, br_max, target_balive
+     real :: Climit, Nlimit, Plimit
+     real :: wood_C, wood_N, wood_P
+     real :: wood_N_ratio, wood_P_ratio
+     real :: avg_psi_leaf
+     integer :: dayn, iday
+     integer :: adjusted
+     real :: actual_leaf_and_root, target_leaf_and_root, actual_to_target
+     real, intent(in), dimension(:,:) :: green_leaf_factor
+
+     cpatch => csite%patch(ipa)
+
+     do ico = 1, cpatch%ncohorts
+        ipft = cpatch%pft(ico)
+
+        limitation_flag = 0
+        bl_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) *   &
+             green_leaf_factor(ipft,ipa) * cpatch%elongf(ico)
+        br_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * cpatch%root2leaf(ico) *  &
+             (1.+cpatch%elongf(ico))/2.
+        target_balive = bl_max + br_max
+
+        Climit = (cpatch%bleaf(ico) + cpatch%broot(ico) +   &
+             cpatch%bstorage(ico)) / target_balive
+        Nlimit = (cpatch%bleaf(ico) + cpatch%broot(ico) +   &
+             c2n_leaf(ipft) * cpatch%nstorage(ico)) / target_balive
+        Plimit = (cpatch%bleaf(ico) + cpatch%broot(ico) +   &
+             c2p_leaf(ipft) * cpatch%pstorage(ico)) / target_balive
+        
+        if(Climit < 1. .or. Nlimit < 1. .or. Plimit < 1.)then
+           limitation_flag = 1
+           if( (Climit > Nlimit .or. Climit > Plimit) .and. Nlimit <= Plimit)then
+              limitation_flag = 2
+           elseif( (Climit > Nlimit .or. Climit > Plimit) .and. Nlimit > Plimit)then
+              limitation_flag = 3
+           endif
+        else
+           wood_C = cpatch%bleaf(ico) + cpatch%broot(ico) +   &
+                cpatch%bstorage(ico) - target_balive
+           if(cpatch%hite(ico) < repro_min_h(ipft))then
+              wood_N_ratio = c2n_stem(ipft)
+              wood_P_ratio = c2p_wood(ipft)
+           else
+              wood_N_ratio = 1. / ((1.-r_fract(ipft))/c2n_stem(ipft) +   &
+                   r_fract(ipft) / c2n_recruit(ipft))
+              wood_P_ratio = 1. / ((1.-r_fract(ipft))/c2p_wood(ipft) +   &
+                   r_fract(ipft) / c2p_recruit(ipft))
+           endif
+           wood_N = ((cpatch%bleaf(ico) + cpatch%broot(ico)) / c2n_leaf(ipft) + &
+                cpatch%nstorage(ico) - target_balive / c2n_leaf(ipft)) *  &
+                wood_N_ratio
+           wood_P = ((cpatch%bleaf(ico) + cpatch%broot(ico)) / c2p_leaf(ipft) + &
+                cpatch%pstorage(ico) - target_balive / c2p_leaf(ipft)) *  &
+                wood_P_ratio
+
+           if(wood_C <= wood_N .and. wood_C <= wood_P)then
+              limitation_flag = 1
+           elseif(wood_N <= wood_P)then
+              limitation_flag = 2
+           else
+              limitation_flag = 3
+           endif
+        endif
+
+
+        if(limitation_flag == 1)then
+           adjusted = 0
+           if(cpatch%dmax_leaf_psi(ico) < leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft))then
+              cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
+                   cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
+              adjusted = 1
+           elseif(cpatch%dmax_leaf_psi(ico) > leaf_psi_tlp(ipft) * root_realloc_wet_thresh(ipft))then
+              cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
+                   cpatch%root2leaf(ico) * exp(-root_realloc_inc(ipft))))
+              adjusted = 1
+           endif
+           if(adjusted == 1)then
+              actual_leaf_and_root = cpatch%bleaf(ico) + cpatch%broot(ico)
+              bl_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * green_leaf_factor(ipft,ipa) * &
+                   cpatch%elongf(ico)
+              br_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * cpatch%root2leaf(ico) * &
+                   (cpatch%elongf(ico) + 1.) / 2.
+              target_leaf_and_root = bl_max + br_max
+              actual_to_target = actual_leaf_and_root / target_leaf_and_root
+              cpatch%bleaf(ico) = bl_max * actual_to_target
+              cpatch%broot(ico) = br_max * actual_to_target
+              call rwc2tw(cpatch%leaf_rwc(ico),cpatch%wood_rwc(ico),cpatch%bleaf(ico), &
+                   cpatch%bdead(ico),cpatch%broot(ico),dbh2sf(cpatch%dbh(ico),ipft),  &
+                   ipft,cpatch%leaf_water_int(ico),cpatch%wood_water_int(ico))
+           endif
+        endif
+
+     enddo
+
+     return
+   end subroutine growth_strategy
+
    !=======================================================================================!
    !=======================================================================================!
 end module growth_balive

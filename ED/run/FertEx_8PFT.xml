@@ -45,8 +45,11 @@
     <rho>0.520000</rho>
     <SLA>20.500000</SLA>
     <horiz_branch>0.5</horiz_branch>
-    <root2leaf_min>1.000000</root2leaf_min>
-    <root2leaf_max>1.000000</root2leaf_max>
+    <root2leaf_min>0.200000</root2leaf_min>
+    <root2leaf_max>1.800000</root2leaf_max>
+    <root_realloc_dry_thresh>0.5</root_realloc_dry_thresh>
+    <root_realloc_wet_thresh>0.5</root_realloc_wet_thresh>
+    <root_realloc_inc>0.05</root_realloc_inc>
     <C_resorption_fraction>0.25</C_resorption_fraction>
     <N_resorption_fraction>0.48</N_resorption_fraction>
     <P_resorption_fraction>0.48</P_resorption_fraction>
@@ -183,8 +186,11 @@
     <rho>0.740000</rho>
     <SLA>18.700000</SLA>
     <horiz_branch>0.5</horiz_branch>
-    <root2leaf_min>1.000000</root2leaf_min>
-    <root2leaf_max>1.000000</root2leaf_max>
+    <root2leaf_min>0.200000</root2leaf_min>
+    <root2leaf_max>1.800000</root2leaf_max>
+    <root_realloc_dry_thresh>0.5</root_realloc_dry_thresh>
+    <root_realloc_wet_thresh>0.5</root_realloc_wet_thresh>
+    <root_realloc_inc>0.05</root_realloc_inc>
     <C_resorption_fraction>0.25</C_resorption_fraction>
     <N_resorption_fraction>0.48</N_resorption_fraction>
     <P_resorption_fraction>0.48</P_resorption_fraction>
@@ -321,8 +327,11 @@
     <rho>0.840000</rho>
     <SLA>15.700000</SLA>
     <horiz_branch>0.5</horiz_branch>
-    <root2leaf_min>1.000000</root2leaf_min>
-    <root2leaf_max>1.000000</root2leaf_max>
+    <root2leaf_min>0.200000</root2leaf_min>
+    <root2leaf_max>1.800000</root2leaf_max>
+    <root_realloc_dry_thresh>0.5</root_realloc_dry_thresh>
+    <root_realloc_wet_thresh>0.5</root_realloc_wet_thresh>
+    <root_realloc_inc>0.05</root_realloc_inc>
     <C_resorption_fraction>0.25</C_resorption_fraction>
     <N_resorption_fraction>0.48</N_resorption_fraction>
     <P_resorption_fraction>0.48</P_resorption_fraction>
@@ -459,8 +468,11 @@
     <rho>0.250000</rho>
     <SLA>20.800000</SLA>
     <horiz_branch>0.5</horiz_branch>
-    <root2leaf_min>1.000000</root2leaf_min>
-    <root2leaf_max>1.000000</root2leaf_max>
+    <root2leaf_min>0.200000</root2leaf_min>
+    <root2leaf_max>1.800000</root2leaf_max>
+    <root_realloc_dry_thresh>0.5</root_realloc_dry_thresh>
+    <root_realloc_wet_thresh>0.5</root_realloc_wet_thresh>
+    <root_realloc_inc>0.05</root_realloc_inc>
     <C_resorption_fraction>0.25</C_resorption_fraction>
     <N_resorption_fraction>0.48</N_resorption_fraction>
     <P_resorption_fraction>0.48</P_resorption_fraction>
@@ -597,8 +609,11 @@
     <rho>0.520000</rho>
     <SLA>20.500000</SLA>
     <horiz_branch>0.5</horiz_branch>
-    <root2leaf_min>1.000000</root2leaf_min>
-    <root2leaf_max>1.000000</root2leaf_max>
+    <root2leaf_min>0.200000</root2leaf_min>
+    <root2leaf_max>1.800000</root2leaf_max>
+    <root_realloc_dry_thresh>0.5</root_realloc_dry_thresh>
+    <root_realloc_wet_thresh>0.5</root_realloc_wet_thresh>
+    <root_realloc_inc>0.05</root_realloc_inc>
     <C_resorption_fraction>0.25</C_resorption_fraction>
     <N_resorption_fraction>0.48</N_resorption_fraction>
     <P_resorption_fraction>0.48</P_resorption_fraction>
@@ -735,8 +750,11 @@
     <rho>0.740000</rho>
     <SLA>18.700000</SLA>
     <horiz_branch>0.5</horiz_branch>
-    <root2leaf_min>1.000000</root2leaf_min>
-    <root2leaf_max>1.000000</root2leaf_max>
+    <root2leaf_min>0.200000</root2leaf_min>
+    <root2leaf_max>1.800000</root2leaf_max>
+    <root_realloc_dry_thresh>0.5</root_realloc_dry_thresh>
+    <root_realloc_wet_thresh>0.5</root_realloc_wet_thresh>
+    <root_realloc_inc>0.05</root_realloc_inc>
     <C_resorption_fraction>0.25</C_resorption_fraction>
     <N_resorption_fraction>0.48</N_resorption_fraction>
     <P_resorption_fraction>0.48</P_resorption_fraction>
@@ -873,8 +891,11 @@
     <rho>0.840000</rho>
     <SLA>15.700000</SLA>
     <horiz_branch>0.5</horiz_branch>
-    <root2leaf_min>1.000000</root2leaf_min>
-    <root2leaf_max>1.000000</root2leaf_max>
+    <root2leaf_min>0.200000</root2leaf_min>
+    <root2leaf_max>1.800000</root2leaf_max>
+    <root_realloc_dry_thresh>0.5</root_realloc_dry_thresh>
+    <root_realloc_wet_thresh>0.5</root_realloc_wet_thresh>
+    <root_realloc_inc>0.05</root_realloc_inc>
     <C_resorption_fraction>0.25</C_resorption_fraction>
     <N_resorption_fraction>0.48</N_resorption_fraction>
     <P_resorption_fraction>0.48</P_resorption_fraction>
@@ -1011,8 +1032,11 @@
     <rho>0.250000</rho>
     <SLA>20.800000</SLA>
     <horiz_branch>0.5</horiz_branch>
-    <root2leaf_min>1.000000</root2leaf_min>
-    <root2leaf_max>1.000000</root2leaf_max>
+    <root2leaf_min>0.200000</root2leaf_min>
+    <root2leaf_max>1.800000</root2leaf_max>
+    <root_realloc_dry_thresh>0.5</root_realloc_dry_thresh>
+    <root_realloc_wet_thresh>0.5</root_realloc_wet_thresh>
+    <root_realloc_inc>0.05</root_realloc_inc>
     <C_resorption_fraction>0.25</C_resorption_fraction>
     <N_resorption_fraction>0.48</N_resorption_fraction>
     <P_resorption_fraction>0.48</P_resorption_fraction>

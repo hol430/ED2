@@ -1622,8 +1622,9 @@ module fuse_fiss_utils
       !    Plant hydrodynamics characteristics (XXT)                                       !
       !------------------------------------------------------------------------------------!
       ! Internal water content and water fluxes are weighted by nplant
-      cpatch%leaf_water_int(recc) = cpatch%leaf_water_int(recc) * rnplant                  &
-                                  + cpatch%leaf_water_int(donc) * dnplant
+!      cpatch%leaf_water_int(recc) = cpatch%leaf_water_int(recc) * rnplant                  &
+!                                  + cpatch%leaf_water_int(donc) * dnplant
+cpatch%leaf_psi(recc) = min(cpatch%leaf_psi(recc),cpatch%leaf_psi(donc))
       cpatch%wood_water_int(recc) = cpatch%wood_water_int(recc) * rnplant                  &
                                   + cpatch%wood_water_int(donc) * dnplant
 
@@ -1639,22 +1640,30 @@ module fuse_fiss_utils
       ! Now, we recalculate rwc and psi from water_int
       ! This ensures that psi, rwc, and total water are consistent with each
       ! other
-      call tw2rwc(cpatch%leaf_water_int(recc),cpatch%wood_water_int(recc)                  &
-                 ,cpatch%bleaf(recc),cpatch%bdead(recc),cpatch%broot(recc)                 &
-                 ,dbh2sf(cpatch%dbh(recc),cpatch%pft(recc)),cpatch%pft(recc)               &
-                 ,cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc))
-      call rwc2psi(cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc),cpatch%pft(recc)            &
-                  ,cpatch%leaf_psi(recc),cpatch%wood_psi(recc))
+!      call tw2rwc(cpatch%leaf_water_int(recc),cpatch%wood_water_int(recc)                  &
+!                 ,cpatch%bleaf(recc),cpatch%bdead(recc),cpatch%broot(recc)                 &
+!                 ,dbh2sf(cpatch%dbh(recc),cpatch%pft(recc)),cpatch%pft(recc)               &
+!                 ,cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc))
+!      call rwc2psi(cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc),cpatch%pft(recc)            &
+!                  ,cpatch%leaf_psi(recc),cpatch%wood_psi(recc))
 
-      if(cpatch%wood_rwc(recc) > 1.)then
-         cpatch%wood_psi(recc) = 0.
-         call psi2rwc(cpatch%leaf_psi(recc), cpatch%wood_psi(recc),cpatch%pft(recc) &
-              ,cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc))
-         call rwc2tw(cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc), &
-              cpatch%bleaf(recc), cpatch%bdead(recc), cpatch%broot(recc), &
-              dbh2sf(cpatch%dbh(recc),cpatch%pft(recc)), cpatch%pft(recc), &
-              cpatch%leaf_water_int(recc), cpatch%wood_water_int(recc))
-      endif
+      if(cpatch%wood_rwc(recc) > 1.)cpatch%wood_psi(recc) = 0.
+      call psi2rwc(cpatch%leaf_psi(recc), cpatch%wood_psi(recc),cpatch%pft(recc) &
+           ,cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc))
+      call rwc2tw(cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc), &
+           cpatch%bleaf(recc), cpatch%bdead(recc), cpatch%broot(recc), &
+           dbh2sf(cpatch%dbh(recc),cpatch%pft(recc)), cpatch%pft(recc), &
+           cpatch%leaf_water_int(recc), cpatch%wood_water_int(recc))
+
+!      if(cpatch%wood_rwc(recc) > 1.)then
+!         cpatch%wood_psi(recc) = 0.
+!         call psi2rwc(cpatch%leaf_psi(recc), cpatch%wood_psi(recc),cpatch%pft(recc) &
+!              ,cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc))
+!         call rwc2tw(cpatch%leaf_rwc(recc),cpatch%wood_rwc(recc), &
+!              cpatch%bleaf(recc), cpatch%bdead(recc), cpatch%broot(recc), &
+!              dbh2sf(cpatch%dbh(recc),cpatch%pft(recc)), cpatch%pft(recc), &
+!              cpatch%leaf_water_int(recc), cpatch%wood_water_int(recc))
+!      endif
          
 
 

@@ -65,7 +65,6 @@ subroutine vegetation_dynamics(new_month,new_year)
 
    !----- Apply events. -------------------------------------------------------------------!
    call prescribed_event(current_time%year,doy)
-
   
    !---------------------------------------------------------------------------------------!
    !   Loop over all domains.                                                              !

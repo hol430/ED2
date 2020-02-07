@@ -222,13 +222,17 @@ module rk4_driver
                   call sanity_check_veg_energy(csite,ipa)
                end if
                !---------------------------------------------------------------------------!
-
+!if(cpatch%ncohorts >= 78)print*,1,cpatch%leaf_psi(78),  &
+!     cpatch%leaf_water_int(78),cpatch%leaf_rwc(78),cpatch%root2leaf(78)
 
                !----- Get plant water flow driven by plant hydraulics ---------------------!
                !     This must be placed before canopy_photosynthesis because              !
                !  plant_hydro_driver needs fs_open from last timestep                      !
                call plant_hydro_driver(csite,ipa,cpoly%ntext_soil(:,isi))
                !---------------------------------------------------------------------------!
+!if(cpatch%ncohorts >= 78)print*,2,cpatch%ncohorts,cpatch%leaf_psi(78),  &
+!     cpatch%leaf_water_int(78),cpatch%leaf_rwc(78)
+
 
 
                call mend_update_parameters_coupler(csite%soil_tempk(:,ipa), &
@@ -263,6 +267,9 @@ module rk4_driver
                call copy_patch_init_carbon(csite,ipa,initp)
                !---------------------------------------------------------------------------!
 
+!if(cpatch%ncohorts >= 78)print*,3,cpatch%leaf_psi(78),  &
+!     cpatch%leaf_water_int(78),cpatch%leaf_rwc(78)
+
 
                !---------------------------------------------------------------------------!
                !    This is the driver for the integration process...                      !
@@ -273,6 +280,9 @@ module rk4_driver
                                        ,wcurr_loss2drainage,ecurr_loss2drainage            &
                                        ,wcurr_loss2runoff,ecurr_loss2runoff,nsteps)
                !---------------------------------------------------------------------------!
+!if(cpatch%ncohorts >= 78)print*,4,cpatch%leaf_psi(78),  &
+!     cpatch%leaf_water_int(78),cpatch%leaf_rwc(78)
+
 
                call mend_som_plant_feedback( &
                     initp%mend%som%fluxes%nh4_plant(:,ipa), &

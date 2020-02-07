@@ -392,12 +392,12 @@ subroutine reproduction(cgrid,month)
                      cpatch%pft(ico)       = recruit(inew)%pft
                      cpatch%hite(ico)      = recruit(inew)%hite
                      cpatch%dbh(ico)       = recruit(inew)%dbh
-                     !---------------------------------------------------------------------!
+                      cpatch%root2leaf(ico) = recruit(inew)%root2leaf
+                    !---------------------------------------------------------------------!
 
                      !----- Carry out standard initialization. ----------------------------!
                      call init_ed_cohort_vars(cpatch,ico,cpoly%lsl(isi))
                      !---------------------------------------------------------------------!
-
 
                      !----- Copy from recruitment table (II). -----------------------------!
                      cpatch%nplant          (ico) = recruit(inew)%nplant
@@ -418,8 +418,9 @@ subroutine reproduction(cgrid,month)
                      cpatch%leaf_temp_pv    (ico) = recruit(inew)%leaf_temp_pv
                      cpatch%wood_temp_pv    (ico) = recruit(inew)%wood_temp_pv
                      cpatch%leaf_vpdef      (ico) = recruit(inew)%leaf_vpdef
-                     cpatch%root2leaf(ico) = recruit(inew)%root2leaf
+!                     cpatch%root2leaf(ico) = recruit(inew)%root2leaf
                      !---------------------------------------------------------------------!
+
 
 
                      !----- Initialise the next variables with zeroes... ------------------!
