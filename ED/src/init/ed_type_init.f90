@@ -135,6 +135,8 @@ subroutine init_ed_cohort_vars(cpatch,ico, lsl)
 !   cpatch%nstorage(ico) = cpatch%nstorage_max(ico)
 !   cpatch%pstorage(ico) = cpatch%pstorage_max(ico)
 !   cpatch%bstorage(ico) = cpatch%bstorage_max(ico)
+   cpatch%n_fixation(ico) = 0.
+   cpatch%mmean_n_fixation(ico) = 0.
 
    !---------------------------------------------------------------------------------------!
    !     The carbon balance must be initialised with a number other than zero (and better  !

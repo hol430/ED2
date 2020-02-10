@@ -2229,6 +2229,8 @@ module growth_balive
      use plant_hydro, only: rwc2tw
      use soil_coms, only: soil
      use grid_coms, only: nzg
+     use nutrient_constants, only: cost_bnf, bnf_rate
+     use consts_coms, only: kgCday_2_umols
      implicit none
 
      integer, intent(in), dimension(nzg) :: ntext_soil
@@ -2252,6 +2254,7 @@ module growth_balive
      real :: wgpfrac
      integer :: k
      real :: soilwp
+     real :: c_cost
 
      cpatch => csite%patch(ipa)
 
@@ -2307,6 +2310,12 @@ module growth_balive
            endif
         endif
 
+        if(limitation_flag > 1)then
+           cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
+                cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
+           adjusted = 1
+        endif
+
         if(limitation_flag == 1)then
            adjusted = 0
            if(cpatch%dmax_leaf_psi(ico) < leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft))then
@@ -2326,6 +2335,7 @@ module growth_balive
                    cpatch%root2leaf(ico) * exp(-root_realloc_inc(ipft))))
               adjusted = 1
            endif
+
            if(adjusted == 1)then
               actual_leaf_and_root = cpatch%bleaf(ico) + cpatch%broot(ico)
               bl_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * green_leaf_factor(ipft,ipa) * &
@@ -2340,6 +2350,23 @@ module growth_balive
                    cpatch%bdead(ico),cpatch%broot(ico),dbh2sf(cpatch%dbh(ico),ipft),  &
                    ipft,cpatch%leaf_water_int(ico),cpatch%wood_water_int(ico))
            endif
+        endif
+
+        if(limitation_flag == 2 .and. ipft > 4)then
+           c_cost = cost_bnf
+           cpatch%n_fixation(ico) = (cpatch%bdead(ico)+cpatch%balive(ico)) * 2. * &
+                bnf_rate * cpatch%pstorage(ico) / cpatch%pstorage_max(ico)
+           if(cpatch%bstorage(ico) <= 0.)then
+              cpatch%n_fixation(ico) = 0.
+           elseif(cpatch%bstorage(ico) < c_cost * cpatch%n_fixation(ico))then
+              cpatch%n_fixation(ico) = cpatch%bstorage(ico) / c_cost
+           endif
+           cpatch%nstorage(ico) = cpatch%nstorage(ico) + cpatch%n_fixation(ico)
+           cpatch%bstorage(ico) = cpatch%bstorage(ico) - cpatch%n_fixation(ico) * c_cost
+           csite%rh(ipa) = csite%rh(ipa) + cpatch%n_fixation(ico) * c_cost * &
+                cpatch%nplant(ico) * kgCday_2_umols
+        else
+           cpatch%n_fixation(ico) = 0.
         endif
 
      enddo

@@ -2452,7 +2452,8 @@ cpatch%leaf_psi(recc) = min(cpatch%leaf_psi(recc),cpatch%leaf_psi(donc))
                                              * dnplant
          !---------------------------------------------------------------------------------!
 
-
+         cpatch%mmean_n_fixation(recc) = cpatch%mmean_n_fixation(recc) &
+              *rnplant + cpatch%mmean_n_fixation(donc) * dnplant
 
 
          !---------------------------------------------------------------------------------!

@@ -2626,6 +2626,8 @@ module average_utils
                      cpatch%dmean_nppdaily  (ico) = cpatch%today_nppdaily  (ico)           &
                                                   * yr_day / cpatch%nplant (ico)
                   end if
+                  cpatch%mmean_n_fixation(ico) = cpatch%mmean_n_fixation(ico) + &
+                       cpatch%n_fixation(ico) * cpatch%nplant(ico)
                end do cohortloop
             end do patchloop
          end do siteloop
@@ -5745,6 +5747,7 @@ module average_utils
                   cpatch%mmsqu_transp            (ico) = 0.0
                   cpatch%mmsqu_sensible_wc       (ico) = 0.0
                   cpatch%mmsqu_vapor_wc          (ico) = 0.0
+                  cpatch%mmean_n_fixation(ico) = 0.
                end do cohortloop
                !---------------------------------------------------------------------------!
             end do patchloop

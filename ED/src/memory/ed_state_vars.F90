@@ -211,6 +211,9 @@ module ed_state_vars
       real ,pointer,dimension(:) :: bstorage,nstorage,pstorage
       !<Plant storage pool of carbon [kgC/plant], kgN/plant, kgP/plant
 
+      real, pointer, dimension(:) :: n_fixation
+      real, pointer, dimension(:) :: mmean_n_fixation
+
       real ,pointer,dimension(:) :: bstorage_max,nstorage_max,pstorage_max
       !<Max Plant storage pool of carbon [kgC/plant], kgN/plant, kgP/plant
 
@@ -4762,6 +4765,8 @@ module ed_state_vars
       allocate(cpatch%nstorage_max(ncohorts))
       allocate(cpatch%pstorage(ncohorts))
       allocate(cpatch%pstorage_max(ncohorts))
+      allocate(cpatch%n_fixation                       (                    ncohorts))
+      allocate(cpatch%mmean_n_fixation                       (                    ncohorts))
       allocate(cpatch%bseeds                       (                    ncohorts))
       allocate(cpatch%lai                          (                    ncohorts))
       allocate(cpatch%wai                          (                    ncohorts))
@@ -6641,6 +6646,8 @@ module ed_state_vars
       nullify(cpatch%bstorage              )
       nullify(cpatch%nstorage)
       nullify(cpatch%pstorage)
+      nullify(cpatch%n_fixation)
+      nullify(cpatch%mmean_n_fixation)
       nullify(cpatch%bstorage_max)
       nullify(cpatch%nstorage_max)
       nullify(cpatch%pstorage_max)
@@ -7647,6 +7654,8 @@ module ed_state_vars
       if(associated(cpatch%pstorage            )) deallocate(cpatch%pstorage            )
       if(associated(cpatch%pstorage_max        )) deallocate(cpatch%pstorage_max        )
       if(associated(cpatch%bseeds              )) deallocate(cpatch%bseeds              )
+      if(associated(cpatch%n_fixation         )) deallocate(cpatch%n_fixation         )
+      if(associated(cpatch%mmean_n_fixation         )) deallocate(cpatch%mmean_n_fixation         )
       if(associated(cpatch%lai                 )) deallocate(cpatch%lai                 )
       if(associated(cpatch%wai                 )) deallocate(cpatch%wai                 )
       if(associated(cpatch%crown_area          )) deallocate(cpatch%crown_area          )
@@ -9579,6 +9588,8 @@ module ed_state_vars
          opatch%nstorage              (oco) = ipatch%nstorage              (ico)
          opatch%nstorage_max          (oco) = ipatch%nstorage_max          (ico)
          opatch%pstorage              (oco) = ipatch%pstorage              (ico)
+         opatch%n_fixation          (oco) = ipatch%n_fixation          (ico)
+         opatch%mmean_n_fixation          (oco) = ipatch%mmean_n_fixation          (ico)
          opatch%pstorage_max          (oco) = ipatch%pstorage_max          (ico)
          opatch%bseeds                (oco) = ipatch%bseeds                (ico)
          opatch%lai                   (oco) = ipatch%lai                   (ico)
@@ -10265,6 +10276,8 @@ module ed_state_vars
       opatch%nstorage              (1:z) = pack(ipatch%nstorage                  ,lmask)
       opatch%nstorage_max          (1:z) = pack(ipatch%nstorage_max              ,lmask)
       opatch%pstorage              (1:z) = pack(ipatch%pstorage                  ,lmask)
+      opatch%n_fixation              (1:z) = pack(ipatch%n_fixation           ,lmask)
+      opatch%mmean_n_fixation              (1:z) = pack(ipatch%mmean_n_fixation           ,lmask)
       opatch%pstorage_max          (1:z) = pack(ipatch%pstorage_max              ,lmask)
       opatch%bseeds                (1:z) = pack(ipatch%bseeds                    ,lmask)
       opatch%lai                   (1:z) = pack(ipatch%lai                       ,lmask)
@@ -24539,6 +24552,20 @@ module ed_state_vars
          nvar=nvar+1
            call vtable_edio_r(npts,cpatch%pstorage,nvar,igr,init,cpatch%coglob_id, &
            var_len,var_len_global,max_ptrs,'PSTORAGE :41:hist:anal:year:dail:mont:dcyc') 
+         call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
+      end if
+
+      if (associated(cpatch%n_fixation)) then
+         nvar=nvar+1
+           call vtable_edio_r(npts,cpatch%n_fixation,nvar,igr,init,cpatch%coglob_id, &
+           var_len,var_len_global,max_ptrs,'N_FIXATION :41:hist:anal') 
+         call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
+      end if
+
+      if (associated(cpatch%mmean_n_fixation)) then
+         nvar=nvar+1
+           call vtable_edio_r(npts,cpatch%mmean_n_fixation,nvar,igr,init,cpatch%coglob_id, &
+           var_len,var_len_global,max_ptrs,'MMEAN_N_FIXATION :41:hist:anal:mont') 
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 
