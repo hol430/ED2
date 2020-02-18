@@ -242,11 +242,11 @@ Contains
     input_dom_p_net = (plant2som%dom_p) * &
          gm2_mgg * 1000./86400.
     input_nh4_net = (plant2som%nh4) * &
-         gm2_mgg  * 1000./86400. + som%fluxes%nh4_dep(1)
+         gm2_mgg  * 1000./86400. + som%fluxes%nh4_dep(ipa)
     input_no3_net = (plant2som%no3) * &
-         gm2_mgg  * 1000./86400. + som%fluxes%no3_dep(1)
+         gm2_mgg  * 1000./86400. + som%fluxes%no3_dep(ipa)
     input_psol_net = (plant2som%psol) * &
-         gm2_mgg  * 1000./86400. + som%fluxes%ppar_dep(1)
+         gm2_mgg  * 1000./86400. + som%fluxes%ppar_dep(ipa)
     input_ppar_net = 0.
 
     call mend_derivs_layer(npom, som_consts,  &
@@ -306,15 +306,16 @@ Contains
     return
   end subroutine mend_derivs_coupler
 
-  subroutine mend_update_diag(mend)
+  subroutine mend_update_diag(mend,ipa)
     use mend_state_vars, only: mend_model, nwood
     use mend_consts_coms, only: som_consts
     use mend_diagnose, only: mend_update_diag_layer
     implicit none
     type(mend_model) :: mend
     integer :: iwood
+    integer, intent(in) :: ipa
 
-    call mend_update_diag_layer(mend%som, som_consts, 1, mend%bulk_den(1))
+    call mend_update_diag_layer(mend%som, som_consts, ipa, mend%bulk_den(ipa))
 
     return
   end subroutine mend_update_diag

@@ -1302,7 +1302,7 @@ subroutine update_diagnostic_vars(initp, csite,ipa)
    end if
    !---------------------------------------------------------------------------------------!
    
-   call mend_update_diag(initp%mend)
+   call mend_update_diag(initp%mend,ipa)
 
    return
 end subroutine update_diagnostic_vars

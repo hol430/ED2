@@ -2262,10 +2262,11 @@ module growth_balive
         ipft = cpatch%pft(ico)
 
         limitation_flag = 0
+        ! Actual max, plus a re-flush
         bl_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) *   &
-             green_leaf_factor(ipft,ipa) * cpatch%elongf(ico)
+             (1. + green_leaf_factor(ipft,ipa) * cpatch%elongf(ico))
         br_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * cpatch%root2leaf(ico) *  &
-             (1.+cpatch%elongf(ico))/2.
+             (1. + (1.+cpatch%elongf(ico))/2.)
         target_balive = bl_max + br_max
 
         Climit = (cpatch%bleaf(ico) + cpatch%broot(ico) +   &
@@ -2282,6 +2283,8 @@ module growth_balive
            elseif( (Climit > Nlimit .or. Climit > Plimit) .and. Nlimit > Plimit)then
               limitation_flag = 3
            endif
+!print*,1,limitation_flag,Climit,Nlimit,Plimit
+!if(limitation_flag /= 1)print*,'type 1: ', limitation_flag, cpatch%hite(ico)
         else
            wood_C = cpatch%bleaf(ico) + cpatch%broot(ico) +   &
                 cpatch%bstorage(ico) - target_balive
@@ -2308,6 +2311,9 @@ module growth_balive
            else
               limitation_flag = 3
            endif
+
+!print*,2,limitation_flag,wood_C,wood_N,wood_p
+!if(limitation_flag /= 1)print*,'type 2: ', limitation_flag, cpatch%hite(ico)
         endif
 
         if(limitation_flag > 1)then
