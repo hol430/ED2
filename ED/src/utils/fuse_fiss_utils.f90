@@ -1554,6 +1554,8 @@ module fuse_fiss_utils
                              + cpatch%census_agb      (donc) * dnplant
       cpatch%census_dbh      (recc) = cpatch%census_dbh      (recc) * rnplant                            &
                              + cpatch%census_dbh      (donc) * dnplant
+      cpatch%census_nplant  (recc) = cpatch%census_nplant(recc) * rnplant                            &
+                             + cpatch%census_nplant    (donc) * dnplant
       cpatch%basarea  (recc) = cpatch%basarea  (recc) * rnplant                            &
                              + cpatch%basarea  (donc) * dnplant
       cpatch%dagb_dt  (recc) = cpatch%dagb_dt  (recc) * rnplant                            &
@@ -4539,6 +4541,8 @@ cpatch%leaf_psi(recc) = min(cpatch%leaf_psi(recc),cpatch%leaf_psi(donc))
       csite%today_Af_decomp(recp)        = newareai *                                      &
                                          ( csite%today_Af_decomp(donp)* csite%area(donp)   &
                                          + csite%today_Af_decomp(recp)* csite%area(recp) )
+
+      csite%repro_litter(recp) = newareai * (csite%repro_litter(donp) * csite%area(donp) + csite%repro_litter(recp) * csite%area(recp))
 
       do iii = 1,n_pft
          csite%repro(iii,recp)           = newareai *                                      &

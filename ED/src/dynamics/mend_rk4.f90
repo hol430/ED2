@@ -156,10 +156,15 @@ Contains
          d_vars%fluxes%nh4_bnf(ip2) * step
     vars%fluxes%c_leach(ip1) = vars%fluxes%c_leach(ip1) +   &
          d_vars%fluxes%c_leach(ip2) * step
+if(abs(vars%fluxes%c_leach(ip1)) < 1.e-13)vars%fluxes%c_leach(ip1) = 0.
     vars%fluxes%n_leach(ip1) = vars%fluxes%n_leach(ip1) +   &
          d_vars%fluxes%n_leach(ip2) * step
+if(abs(vars%fluxes%n_leach(ip1)) < 1.e-13)vars%fluxes%n_leach(ip1) = 0.
+!if(vars%fluxes%n_leach(ip1) < 0.)print*,'stepper',vars%fluxes%n_leach(ip1),ip1,&
+!     d_vars%fluxes%n_leach(ip2),ip2,step
     vars%fluxes%p_leach(ip1) = vars%fluxes%p_leach(ip1) +   &
          d_vars%fluxes%p_leach(ip2) * step
+if(abs(vars%fluxes%p_leach(ip1)) < 1.e-13)vars%fluxes%p_leach(ip1) = 0.
     vars%fluxes%nh4_dep(ip1) = vars%fluxes%nh4_dep(ip1) +   &
          d_vars%fluxes%nh4_dep(ip2) * step
     vars%fluxes%no3_dep(ip1) = vars%fluxes%no3_dep(ip1) +   &
@@ -341,13 +346,19 @@ Contains
 !    if(vars%invars%ppar(1) < min_pool_size)reject_step = .true.
 !if(reject_step)print*,3,reject_step
     if(any(vars%fluxes%nh4_plant(:,1) < 0.))reject_step = .true.
-    if(vars%fluxes%nh4_bnf(1) < 0.)reject_step = .true.
-    if(any(vars%fluxes%no3_plant(:,1) < 0.))reject_step = .true.
-    if(vars%fluxes%c_leach(1) < 0.)reject_step = .true.
-    if(vars%fluxes%n_leach(1) < 0.)reject_step = .true.
-    if(vars%fluxes%p_leach(1) < 0.)reject_step = .true.
-    if(any(vars%fluxes%p_plant(:,1) < 0.))reject_step = .true.
 !if(reject_step)print*,4,reject_step
+    if(vars%fluxes%nh4_bnf(1) < 0.)reject_step = .true.
+!if(reject_step)print*,5,reject_step
+    if(any(vars%fluxes%no3_plant(:,1) < 0.))reject_step = .true.
+!if(reject_step)print*,6,reject_step
+    if(vars%fluxes%c_leach(1) < 0.)reject_step = .true.
+!if(reject_step)print*,7,reject_step
+    if(vars%fluxes%n_leach(1) < 0.)reject_step = .true.
+!if(reject_step)print*,8,reject_step,vars%fluxes%n_leach(1),vars%fluxes%c_leach(1)
+    if(vars%fluxes%p_leach(1) < 0.)reject_step = .true.
+!if(reject_step)print*,9,reject_step
+    if(any(vars%fluxes%p_plant(:,1) < 0.))reject_step = .true.
+!if(reject_step)print*,10,reject_step
 
 !    if(reject_step)then
 !       print*,vars%cvars%pom

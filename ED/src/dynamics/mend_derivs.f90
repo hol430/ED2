@@ -575,7 +575,7 @@ Contains
     p_dom_leach_rate = consts%dom_leach_effic * dom_p * water_drainage
     no3_leach_rate = consts%no3_leach_effic * no3 * water_drainage
     psol_leach_rate = consts%psol_leach_effic * psol * water_drainage
-
+    
     d_c_leach = d_c_leach + c_dom_leach_rate
     d_n_leach = d_n_leach + n_dom_leach_rate + no3_leach_rate
     d_p_leach = d_p_leach + p_dom_leach_rate + psol_leach_rate

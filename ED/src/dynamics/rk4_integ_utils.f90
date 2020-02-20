@@ -2237,6 +2237,7 @@ end subroutine initialize_misc_stepvars
                                        , patchtype             ! ! structure
       use grid_coms             , only : nzg                   ! ! intent(in)
       use mend_rk4, only: mend_rk4_sanity
+      use mend_diagnose, only: mend_print_vars
 
       !$ use omp_lib
 
@@ -2889,6 +2890,11 @@ end subroutine initialize_misc_stepvars
       end if
 
       call mend_rk4_sanity(y%mend, reject_step)
+
+      if(reject_step .and. print_problems)then
+         print*,'MEND_SANITY_CHECK'
+         call mend_print_vars(y%mend%som, ipa)
+      endif
 
       return
    end subroutine rk4_sanity_check

@@ -445,6 +445,7 @@ subroutine reproduction(cgrid,month)
                      cpatch%dlndbh_dt(ico) = 0.0
                      cpatch%census_agb(ico) = 0.
                      cpatch%census_dbh(ico) = 0.
+                     cpatch%census_nplant(ico) = 0.
                      !---------------------------------------------------------------------!
 
 
@@ -919,6 +920,8 @@ subroutine seed_dispersal(cpoly,late_spring)
          donpaloop1: do donpa = 1,csite%npatches
             donpatch => csite%patch(donpa)
 
+            csite%repro_litter(donpa) = 0.
+
             doncoloop1: do donco = 1, donpatch%ncohorts
 
                !----- Define an alias for PFT. --------------------------------------------!
@@ -930,6 +933,8 @@ subroutine seed_dispersal(cpoly,late_spring)
                if (phenology(donpft) /= 2 .or. late_spring) then
                   bseedling   = donpatch%nplant(donco) * donpatch%bseeds(donco)            &
                               * (1.0 - seedling_mortality(donpft))
+                  csite%repro_litter(donpa) = csite%repro_litter(donpa) +  &
+                       donpatch%nplant(donco) * donpatch%bseeds(donco)
                   select case (ibigleaf)
                   case (0)
                      bseed_stays = bseedling * (1.0 - nonlocal_dispersal(donpft))

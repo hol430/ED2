@@ -1809,6 +1809,8 @@ module disturbance_utils
       csite%plant_input_P(:,np) = csite%plant_input_P(:,np) +   &
            csite%plant_input_P(:,cp) * area_fac
 
+      csite%repro_litter(np) = csite%repro_litter(np) + csite%repro_litter(cp) * area_fac
+
       !----- Do the same thing for the multiple-level variables. --------------------------!
       do k=1,n_pft
          csite%repro                 (k,np) = csite%repro                    (k,np)        &

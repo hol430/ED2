@@ -7778,6 +7778,7 @@ module average_utils
                   cpatch%first_census (ico) = 1
                   cpatch%census_agb(ico) = cpatch%agb(ico)
                   cpatch%census_dbh(ico) = cpatch%dbh(ico)
+                  cpatch%census_nplant(ico) = cpatch%nplant(ico)
                enddo cohortloop
             enddo patchloop
          enddo

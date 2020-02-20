@@ -3267,6 +3267,8 @@ subroutine fill_history_site(csite,sipa_index,npatches_global,is_burnt)
                      ,'AREA                        ',dsetrank,iparallel,.true. ,foundvar)
    call hdf_getslab_r(csite%age                                                            &
                      ,'AGE                         ',dsetrank,iparallel,.true. ,foundvar)
+   call hdf_getslab_r(csite%repro_litter                                                            &
+                     ,'REPRO_LITTER                ',dsetrank,iparallel,.true. ,foundvar)
    call hdf_getslab_r(csite%fast_soil_C                                                    &
                      ,'FAST_SOIL_C                 ',dsetrank,iparallel,.true. ,foundvar)
    call hdf_getslab_r(csite%slow_soil_C                                                    &
@@ -4390,6 +4392,8 @@ subroutine fill_history_patch(cpatch,paco_index,ncohorts_global)
                      ,'CENSUS_AGB_CO                    ',dsetrank,iparallel,.true. ,foundvar)
    call hdf_getslab_r(cpatch%census_dbh                                                           &
                      ,'CENSUS_DBH_CO                    ',dsetrank,iparallel,.true. ,foundvar)
+   call hdf_getslab_r(cpatch%census_nplant                                                           &
+                     ,'CENSUS_NPLANT_CO                    ',dsetrank,iparallel,.true. ,foundvar)
    call hdf_getslab_r(cpatch%basarea                                                       &
                      ,'BA_CO                     ',dsetrank,iparallel,.true. ,foundvar)
    call hdf_getslab_r(cpatch%dagb_dt                                                       &

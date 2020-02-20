@@ -863,6 +863,7 @@ subroutine read_ed10_ed20_history_file
                         cpatch%agb(ic2) = ed_biomass(cpatch, ic2)
                         cpatch%census_agb(ic2) = cpatch%agb(ic2)
                         cpatch%census_dbh(ic2) = cpatch%dbh(ic2)
+                        cpatch%census_nplant(ic2) = cpatch%nplant(ic2)
                         cpatch%basarea(ic2)  = pio4 * cpatch%dbh(ic2) * cpatch%dbh(ic2)
 
                         !----- Growth rates, start with zero. -----------------------------!

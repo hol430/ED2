@@ -2316,6 +2316,7 @@ module growth_balive
 !if(limitation_flag /= 1)print*,'type 2: ', limitation_flag, cpatch%hite(ico)
         endif
 
+if(.false.)then
         if(limitation_flag > 1)then
            cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
                 cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
@@ -2357,7 +2358,7 @@ module growth_balive
                    ipft,cpatch%leaf_water_int(ico),cpatch%wood_water_int(ico))
            endif
         endif
-
+endif
         if(limitation_flag == 2 .and. ipft > 4)then
            c_cost = cost_bnf
            cpatch%n_fixation(ico) = (cpatch%bdead(ico)+cpatch%balive(ico)) * 2. * &

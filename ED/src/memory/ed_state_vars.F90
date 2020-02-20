@@ -189,6 +189,7 @@ module ed_state_vars
 
       real ,pointer,dimension(:) :: census_agb
       real ,pointer,dimension(:) :: census_dbh
+      real ,pointer,dimension(:) :: census_nplant
 
       real ,pointer,dimension(:) :: bdead
       !<Biomass of the structural wood (kgC/plant)
@@ -1319,6 +1320,8 @@ module ed_state_vars
 
       real, pointer,dimension(:,:) :: repro    !(n_pft,npatches)  
       !<Carbon available to establish recruits [kgC/m2]
+
+      real, pointer, dimension(:) :: repro_litter
 
       real , pointer,dimension(:) :: veg_rough
       !<Vegetation roughness length (m)
@@ -4335,6 +4338,7 @@ module ed_state_vars
       allocate(csite%today_A_decomp                (              npatches))
       allocate(csite%today_Af_decomp               (              npatches))
       allocate(csite%repro                         (        n_pft,npatches))
+      allocate(csite%repro_litter                  (        npatches))
       allocate(csite%veg_rough                     (              npatches))
       allocate(csite%veg_height                    (              npatches))
       allocate(csite%veg_displace                  (              npatches))
@@ -4753,6 +4757,7 @@ module ed_state_vars
       allocate(cpatch%dbh                          (                    ncohorts))
       allocate(cpatch%census_agb                          (                    ncohorts))
       allocate(cpatch%census_dbh                   (                    ncohorts))
+      allocate(cpatch%census_nplant                 (                    ncohorts))
       allocate(cpatch%bdead                        (                    ncohorts))
       allocate(cpatch%bleaf                        (                    ncohorts))
       allocate(cpatch%balive                       (                    ncohorts))
@@ -6247,6 +6252,7 @@ module ed_state_vars
       nullify(csite%today_A_decomp             )
       nullify(csite%today_Af_decomp            )
       nullify(csite%repro                      )
+      nullify(csite%repro_litter               )
       nullify(csite%veg_rough                  )
       nullify(csite%veg_height                 )
       nullify(csite%veg_displace               )
@@ -6637,6 +6643,7 @@ module ed_state_vars
       nullify(cpatch%dbh                   )
       nullify(cpatch%census_agb                   )
       nullify(cpatch%census_dbh               )
+      nullify(cpatch%census_nplant            )
       nullify(cpatch%bdead                 )
       nullify(cpatch%bleaf                 )
       nullify(cpatch%balive                )
@@ -7245,6 +7252,7 @@ module ed_state_vars
       if(associated(csite%today_A_decomp        )) deallocate(csite%today_A_decomp        )
       if(associated(csite%today_Af_decomp       )) deallocate(csite%today_Af_decomp       )
       if(associated(csite%repro                 )) deallocate(csite%repro                 )
+      if(associated(csite%repro_litter           )) deallocate(csite%repro_litter      )
       if(associated(csite%veg_rough             )) deallocate(csite%veg_rough             )
       if(associated(csite%veg_height            )) deallocate(csite%veg_height            )
       if(associated(csite%veg_displace          )) deallocate(csite%veg_displace          )
@@ -7641,6 +7649,7 @@ module ed_state_vars
       if(associated(cpatch%dbh                 )) deallocate(cpatch%dbh                 )
       if(associated(cpatch%census_agb                 )) deallocate(cpatch%census_agb                 )
       if(associated(cpatch%census_dbh                 )) deallocate(cpatch%census_dbh            )
+      if(associated(cpatch%census_nplant         )) deallocate(cpatch%census_nplant    )
       if(associated(cpatch%bdead               )) deallocate(cpatch%bdead               )
       if(associated(cpatch%bleaf               )) deallocate(cpatch%bleaf               )
       if(associated(cpatch%balive              )) deallocate(cpatch%balive              )
@@ -8432,6 +8441,7 @@ module ed_state_vars
          end do
          !---------------------------------------------------------------------------------!
 
+         osite%repro_litter       (opa) = isite%repro_litter     (ipa)
 
          !----- PFT variables. ------------------------------------------------------------!
          do m=1,n_pft
@@ -9025,6 +9035,7 @@ module ed_state_vars
       end do
       !------------------------------------------------------------------------------------!
 
+      osite%repro_litter(1:z) = pack(isite%repro_litter,lmask)
 
       !----- PFT variables. ---------------------------------------------------------------!
       do m=1,n_pft
@@ -9577,6 +9588,7 @@ module ed_state_vars
          opatch%dbh                   (oco) = ipatch%dbh                   (ico)
          opatch%census_agb                (oco) = ipatch%census_agb            (ico)
          opatch%census_dbh              (oco) = ipatch%census_dbh       (ico)
+         opatch%census_nplant         (oco) = ipatch%census_nplant       (ico)
          opatch%bdead                 (oco) = ipatch%bdead                 (ico)
          opatch%bleaf                 (oco) = ipatch%bleaf                 (ico)
          opatch%balive                (oco) = ipatch%balive                (ico)
@@ -10265,6 +10277,7 @@ module ed_state_vars
       opatch%dbh                   (1:z) = pack(ipatch%dbh                       ,lmask)
       opatch%census_agb              (1:z) = pack(ipatch%census_agb            ,lmask)
       opatch%census_dbh              (1:z) = pack(ipatch%census_dbh            ,lmask)
+      opatch%census_nplant              (1:z) = pack(ipatch%census_nplant     ,lmask)
       opatch%bdead                 (1:z) = pack(ipatch%bdead                     ,lmask)
       opatch%bleaf                 (1:z) = pack(ipatch%bleaf                     ,lmask)
       opatch%balive                (1:z) = pack(ipatch%balive                    ,lmask)
@@ -20210,6 +20223,13 @@ module ed_state_vars
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 
+      if (associated(csite%repro_litter)) then
+         nvar=nvar+1
+           call vtable_edio_r(npts,csite%repro_litter,nvar,igr,init,csite%paglob_id, &
+           var_len,var_len_global,max_ptrs,'REPRO_LITTER :31:hist:year:mont:anal') 
+         call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
+      end if
+
       if (associated(csite%fast_soil_C)) then
          nvar=nvar+1
            call vtable_edio_r(npts,csite%fast_soil_C,nvar,igr,init,csite%paglob_id, &
@@ -24452,6 +24472,13 @@ module ed_state_vars
            call vtable_edio_r(npts,cpatch%census_dbh,nvar,igr,init,cpatch%coglob_id, &
            var_len,var_len_global,max_ptrs,'CENSUS_DBH :41:hist:anal:year:dail:mont:dcyc') 
          call metadata_edio(nvar,igr,'Diameter at breast height','[cm]','icohort') 
+      end if
+
+      if (associated(cpatch%census_nplant)) then
+         nvar=nvar+1
+           call vtable_edio_r(npts,cpatch%census_nplant,nvar,igr,init,cpatch%coglob_id, &
+           var_len,var_len_global,max_ptrs,'CENSUS_NPLANT :41:hist:anal:year:dail:mont:dcyc') 
+         call metadata_edio(nvar,igr,'Number of plants','[plant/m2]','icohort') 
       end if
 
       if (associated(cpatch%bdead)) then

@@ -765,6 +765,7 @@ subroutine init_ed_patch_vars(csite,ipaa,ipaz,lsl)
    csite%today_Af_decomp                 (ipaa:ipaz) = 0.0
    !---------------------------------------------------------------------------------------!
 
+   csite%repro_litter(ipaa:ipaz) = 0.
 
    !------ Miscellaneous variables. -------------------------------------------------------!
    csite%repro                   (1:n_pft,ipaa:ipaz) = 0.0
