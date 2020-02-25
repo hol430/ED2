@@ -721,9 +721,9 @@ module plant_hydro
       !--------------------------------------------------------------------------
       ! Handling Potential Errors and Help Debugging
       !--------------------------------------------------------------------------
-      error_flag = (isnan(wflux_wl_d) .or. isnan(wflux_gw_d))       & ! NaN values
-               .or.(proj_leaf_psi > 0. .or. proj_wood_psi > 0.)     & ! psi is positive
-               .or.(leaf_psi_d > 0. .or. wood_psi_d > 0.)
+      error_flag = (isnan(wflux_wl_d) .or. isnan(wflux_gw_d))!       & ! NaN values
+!               .or.(proj_leaf_psi > 0. .or. proj_wood_psi > 0.)     & ! psi is positive
+!               .or.(leaf_psi_d > 0. .or. wood_psi_d > 0.)
 
       ! I copy the error printing from rk4_misc.f90
       if((debug_flag .and. (dco == 0 .or. ico == dco)) .or. error_flag) then

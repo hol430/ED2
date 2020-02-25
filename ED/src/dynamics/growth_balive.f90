@@ -2316,7 +2316,7 @@ module growth_balive
 !if(limitation_flag /= 1)print*,'type 2: ', limitation_flag, cpatch%hite(ico)
         endif
 
-if(.false.)then
+!if(.false.)then
         if(limitation_flag > 1)then
            cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
                 cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
@@ -2325,19 +2325,20 @@ if(.false.)then
 
         if(limitation_flag == 1)then
            adjusted = 0
-           if(cpatch%dmax_leaf_psi(ico) < leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft))then
+           if(cpatch%dmin_leaf_psi(ico) < leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft))then
               k = cpatch%krdepth(ico)
               nsoil = ntext_soil(k)
               wgpfrac = max(soil(nsoil)%soilcp,min(1.0,                                &
                    soil_water(k) * soil_fracliq(k)           &
                    / soil(nsoil)%slmsts))
               soilwp = soil(nsoil)%slpots / wgpfrac ** soil(nsoil)%slbs ! m
-              if(soilwp > leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft))then
+              if(soilwp > leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft) .and. &
+                   soilwp > soil(nsoil)%soilcp)then
                  cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
                       cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
                  adjusted = 1
               endif
-           elseif(cpatch%dmax_leaf_psi(ico) > leaf_psi_tlp(ipft) * root_realloc_wet_thresh(ipft))then
+           elseif(cpatch%dmin_leaf_psi(ico) > leaf_psi_tlp(ipft) * root_realloc_wet_thresh(ipft))then
               cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
                    cpatch%root2leaf(ico) * exp(-root_realloc_inc(ipft))))
               adjusted = 1
@@ -2358,7 +2359,7 @@ if(.false.)then
                    ipft,cpatch%leaf_water_int(ico),cpatch%wood_water_int(ico))
            endif
         endif
-endif
+!endif
         if(limitation_flag == 2 .and. ipft > 4)then
            c_cost = cost_bnf
            cpatch%n_fixation(ico) = (cpatch%bdead(ico)+cpatch%balive(ico)) * 2. * &
