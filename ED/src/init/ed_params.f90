@@ -4060,7 +4060,7 @@ subroutine init_pft_derived_params()
       !    XXT: Now we accumulate seed_rain every month. So, the seed_rain values is       !
       ! divided by 12                                                                      !
       !------------------------------------------------------------------------------------!
-      seed_rain(ipft)  = 0.1 * init_density(ipft) / 12. * 0.
+      seed_rain(ipft)  = 0.1 * init_density(ipft) / 12.
       !------------------------------------------------------------------------------------!
 
 
@@ -4890,7 +4890,6 @@ subroutine init_soil_coms
             *  ( soil(nslcon)%slpots / (soilcp_MPa * wdns / grav))       &
             ** (1. / soil(nslcon)%slbs)
 
-soil(nslcon)%soilcp = 0.05
 
          !----- Wilting point capacity (at -1.5MPa) [ m^3/m^3 ]. --------------------------!
          soil(nslcon)%soilwp  = soil(nslcon)%slmsts                                        &

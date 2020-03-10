@@ -595,7 +595,7 @@ subroutine update_phenology(doy, cpoly, isi, lat)
             !    have crossed some threshold                                               !
             !------------------------------------------------------------------------------!
             !----- Update consecutive wet/dry days ----------!
-            if (cpatch%dmax_leaf_psi(ico) < leaf_psi_tlp(ipft)) then
+            if (cpatch%dmin_leaf_psi(ico) < leaf_psi_tlp(ipft)) then
                 cpatch%low_leaf_psi_days(ico) = cpatch%low_leaf_psi_days(ico) + 1
             else
                 ! reset the number of dry days
@@ -603,7 +603,7 @@ subroutine update_phenology(doy, cpoly, isi, lat)
             endif
 
 
-            if (cpatch%dmax_leaf_psi(ico) >= 0.5 * leaf_psi_tlp(ipft)) then
+            if (cpatch%dmin_leaf_psi(ico) >= 0.5 * leaf_psi_tlp(ipft)) then
                 cpatch%high_leaf_psi_days(ico) = cpatch%high_leaf_psi_days(ico) + 1
             else
                 ! reset the number of wet days
@@ -1257,7 +1257,7 @@ subroutine update_phenology_eq_0(doy, cpoly, isi, lat)
             !    have crossed some threshold                                               !
             !------------------------------------------------------------------------------!
             !----- Update consecutive wet/dry days ----------!
-            if (cpatch%dmax_leaf_psi(ico) < leaf_psi_tlp(ipft)) then
+            if (cpatch%dmin_leaf_psi(ico) < leaf_psi_tlp(ipft)) then
                 cpatch%low_leaf_psi_days(ico) = cpatch%low_leaf_psi_days(ico) + 1
             else
                 ! reset the number of dry days
@@ -1265,7 +1265,7 @@ subroutine update_phenology_eq_0(doy, cpoly, isi, lat)
             endif
 
 
-            if (cpatch%dmax_leaf_psi(ico) >= 0.5 * leaf_psi_tlp(ipft)) then
+            if (cpatch%dmin_leaf_psi(ico) >= 0.5 * leaf_psi_tlp(ipft)) then
                 cpatch%high_leaf_psi_days(ico) = cpatch%high_leaf_psi_days(ico) + 1
             else
                 ! reset the number of wet days
