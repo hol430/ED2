@@ -2150,7 +2150,8 @@ subroutine init_pft_mort_params()
       m3_slope                  = 0.02939297
       m3_scale                  = treefall_disturbance_rate / tdr_default
    end if
-   mort3(1)  = m3_scale * ( m3_slope * (1. - rho( 1) / rho( 4)) )
+   mort3(1)  = 1. * ( m3_slope * (1. - rho( 1) / rho( 4)) )
+!   mort3(1)  = m3_scale * ( m3_slope * (1. - rho( 1) / rho( 4)) )
    mort3(2)  = 0.07235222
    mort3(3)  = 0.04156404
    mort3(4)  = 0.0!check
@@ -2376,7 +2377,8 @@ subroutine init_pft_alloc_params()
       , sla_scale             & ! intent(out)
       , sla_inter             & ! intent(out)
       , sla_slope             & ! intent(out)
-      , sapwood_ratio,root2leaf_min,root2leaf_max         ! ! intent(out)
+      , sapwood_ratio,root2leaf_min,root2leaf_max, &
+      root_realloc_dry_thresh, root_realloc_wet_thresh, root_realloc_inc! ! intent(out)
    use allometry    , only : h2dbh                 & ! function
       , dbh2bd                & ! function
       , size2bl           ! ! function
@@ -2531,7 +2533,7 @@ subroutine init_pft_alloc_params()
 
 
    !----- Ratio between fine roots and leaves [kg_fine_roots/kg_leaves] -------------------!
-   root2leaf_min(1)     = 1.0
+   root2leaf_min(1)     = 0.2
    root2leaf_min(2)     = 1.0
    root2leaf_min(3)     = 1.0
    root2leaf_min(4)     = 1.0
@@ -2547,6 +2549,11 @@ subroutine init_pft_alloc_params()
    root2leaf_min(17)    = 1.0
 
    root2leaf_max(:) = root2leaf_min
+
+   root2leaf_max(1) = 1.8
+   root_realloc_dry_thresh(1) = 0.5
+   root_realloc_wet_thresh(1) = 0.5
+   root_realloc_inc(1) = 0.05
 
    sapwood_ratio(1:17) = 3900.0
 
@@ -2603,7 +2610,7 @@ subroutine init_pft_alloc_params()
    !    Initial density of plants, for near-bare-ground simulations [# of individuals/m2]  !
    !---------------------------------------------------------------------------------------!
    if (igrass==1) then
-      init_density_grass = 1.
+      init_density_grass = 100.
    else
       init_density_grass = 0.1
    end if
@@ -3229,7 +3236,7 @@ subroutine init_pft_alloc_params()
          !----- Size and age structure. ------------------------------------------------------!
          select case (iallom)
             case (0,1)
-               init_density(1)     = 1.0
+               init_density(1)     = 100.0
                init_density(2:4)   = 1.0
                init_density(5)     = 0.1
                init_density(6:8)   = 0.1
@@ -3893,7 +3900,8 @@ subroutine init_pft_derived_params()
       , c2n_recruit          & ! intent(out)
       , veg_hcap_min         & ! intent(out)
       , seed_rain,b1Ht,b2Ht,b1CA,b2CA,bdead_crit,min_bdead,min_dbh,b2Bl_large,b1Bl_large &
-      , C2B, bleaf_adult, dbh_adult,c2p_recruit,c2p_leaf,c2p_wood, root2leaf_min,root2leaf_max! ! intent(out)
+      , C2B, bleaf_adult, dbh_adult,c2p_recruit,c2p_leaf,c2p_wood, &
+      root2leaf_min,root2leaf_max! ! intent(out)
    use allometry            , only : h2dbh                & ! function
       , dbh2h                & ! function
       , size2bl          & ! function
@@ -4052,7 +4060,7 @@ subroutine init_pft_derived_params()
       !    XXT: Now we accumulate seed_rain every month. So, the seed_rain values is       !
       ! divided by 12                                                                      !
       !------------------------------------------------------------------------------------!
-      seed_rain(ipft)  = 0.1 * init_density(ipft) / 12.
+      seed_rain(ipft)  = 0.1 * init_density(ipft) / 12. * 0.
       !------------------------------------------------------------------------------------!
 
 
@@ -4095,7 +4103,7 @@ subroutine init_pft_derived_params()
 
       veg_hcap_min(ipft) = elongf_min * leaf_hcap_min
 
-      veg_hcap_min(ipft) = 0. ! recommend by Xiangtao's config file
+!      veg_hcap_min(ipft) = 0. ! recommend by Xiangtao's config file
 
       lai_min            = elongf_min * init_density(ipft) * bleaf_min * sla(ipft)
       !------------------------------------------------------------------------------------!
@@ -4881,6 +4889,9 @@ subroutine init_soil_coms
          soil(nslcon)%soilcp  = soil(nslcon)%slmsts                                        &
             *  ( soil(nslcon)%slpots / (soilcp_MPa * wdns / grav))       &
             ** (1. / soil(nslcon)%slbs)
+
+soil(nslcon)%soilcp = 0.05
+
          !----- Wilting point capacity (at -1.5MPa) [ m^3/m^3 ]. --------------------------!
          soil(nslcon)%soilwp  = soil(nslcon)%slmsts                                        &
             *  ( soil(nslcon)%slpots / (soilwp_MPa * wdns / grav))       &

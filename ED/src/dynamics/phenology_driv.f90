@@ -595,7 +595,7 @@ subroutine update_phenology(doy, cpoly, isi, lat)
             !    have crossed some threshold                                               !
             !------------------------------------------------------------------------------!
             !----- Update consecutive wet/dry days ----------!
-            if (cpatch%dmin_leaf_psi(ico) < leaf_psi_tlp(ipft)) then
+            if (cpatch%dmax_leaf_psi(ico) < leaf_psi_tlp(ipft)) then
                 cpatch%low_leaf_psi_days(ico) = cpatch%low_leaf_psi_days(ico) + 1
             else
                 ! reset the number of dry days
@@ -603,14 +603,14 @@ subroutine update_phenology(doy, cpoly, isi, lat)
             endif
 
 
-            if (cpatch%dmin_leaf_psi(ico) >= 0.5 * leaf_psi_tlp(ipft)) then
+            if (cpatch%dmax_leaf_psi(ico) >= 0.5 * leaf_psi_tlp(ipft)) then
                 cpatch%high_leaf_psi_days(ico) = cpatch%high_leaf_psi_days(ico) + 1
             else
                 ! reset the number of wet days
                 cpatch%high_leaf_psi_days(ico) = 0
             endif
 
-
+!if(ico==1)print*,cpatch%dmin_leaf_psi(ico),cpatch%dmax_leaf_psi(ico),cpatch%elongf(ico),cpatch%low_leaf_psi_days(ico),cpatch%high_leaf_psi_days(ico),cpatch%wood_psi(ico),cpatch%leaf_psi(ico)
             !----- modify elongf and phenology_status if necessary------!
             if (cpatch%low_leaf_psi_days(ico) >= low_psi_threshold(ipft)) then
                 ! need to reduce elongf

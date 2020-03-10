@@ -232,7 +232,7 @@ module rk4_driver
                !---------------------------------------------------------------------------!
 !if(cpatch%ncohorts >= 78)print*,2,cpatch%ncohorts,cpatch%leaf_psi(78),  &
 !     cpatch%leaf_water_int(78),cpatch%leaf_rwc(78)
-
+!print*,csite%patch(1)%leaf_psi(1)
 
 
                call mend_update_parameters_coupler(csite%soil_tempk(:,ipa), &

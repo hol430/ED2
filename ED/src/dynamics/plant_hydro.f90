@@ -274,6 +274,9 @@ module plant_hydro
                                           + cpatch%leaf_water_int(ico) * dtlsm_o_frqsum
          cpatch%fmean_wood_water_int(ico) = cpatch%fmean_wood_water_int(ico)               &
                                           + cpatch%wood_water_int(ico) * dtlsm_o_frqsum
+
+!if(ico == 1)print*,'before',cpatch%dmin_leaf_psi(ico),cpatch%dmax_leaf_psi(ico), cpatch%leaf_psi(ico)
+
          if (cpatch%dmax_leaf_psi(ico) == 0.) then
              cpatch%dmax_leaf_psi(ico) =  cpatch%leaf_psi(ico)
          else
@@ -285,6 +288,8 @@ module plant_hydro
          else
              cpatch%dmin_leaf_psi(ico) =  min(cpatch%dmin_leaf_psi(ico),cpatch%leaf_psi(ico))
          endif
+
+!if(ico == 1)print*,'after',cpatch%dmin_leaf_psi(ico),cpatch%dmax_leaf_psi(ico), cpatch%leaf_psi(ico)
 
          if (cpatch%dmax_wood_psi(ico) == 0.) then
              cpatch%dmax_wood_psi(ico) =  cpatch%wood_psi(ico)

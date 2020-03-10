@@ -314,7 +314,15 @@ subroutine ed_model()
 
       new_year        = current_time%month == 1 .and. new_month
       mont_analy_time = new_month .and. writing_mont
-      dail_analy_time = new_day   .and. writing_dail
+      dail_analy_time = new_day   .and. writing_dail .and. &
+           ( (current_time%year == 1970 .and. current_time%month > 6) .or. &
+           (current_time%year == 1971 .and. current_time%month < 7) .or.  &
+           (current_time%year == 1975 .and. current_time%month > 6) .or.  &
+           (current_time%year == 1976 .and. current_time%month < 7) .or.  &
+           (current_time%year == 1999 .and. current_time%month > 6) .or.  &
+           (current_time%year == 2000 .and. current_time%month < 7) .or.  &
+           (current_time%year == 2018 .and. current_time%month > 6) .or.  &
+           (current_time%year == 2019 .and. current_time%month < 7))
       dcyc_analy_time = new_month .and. writing_dcyc
       reset_time      = mod(time,dble(frqsum)) < dble(dtlsm)
       annual_time     = new_month .and. writing_year .and.                                 &
