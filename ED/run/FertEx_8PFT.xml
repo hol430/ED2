@@ -55,7 +55,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>48.</SRA>
+    <SRA>20.</SRA>
     <root_beta>0.000285</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>-0.068200</b1Ht>
@@ -109,7 +109,7 @@
     <delta_c>-225.2</delta_c>
     <b1Cl>0.31</b1Cl>
     <b2Cl>1.098</b2Cl>
-    <r_fract>0.03</r_fract>
+    <r_fract>0.06</r_fract>
     <st_fract>0.</st_fract>
     <nonlocal_dispersal>1.</nonlocal_dispersal>
     <repro_min_h>2.000000</repro_min_h>
@@ -196,7 +196,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>48.</SRA>
+    <SRA>20.</SRA>
     <root_beta>0.002261</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.980000</b1Ht>
@@ -250,7 +250,7 @@
     <delta_c>-225.2</delta_c>
     <b1Cl>0.31</b1Cl>
     <b2Cl>1.098</b2Cl>
-    <r_fract>0.03</r_fract>
+    <r_fract>0.06</r_fract>
     <st_fract>0.</st_fract>
     <nonlocal_dispersal>1.</nonlocal_dispersal>
     <repro_min_h>2.000000</repro_min_h>
@@ -337,7 +337,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>48.</SRA>
+    <SRA>20.</SRA>
     <root_beta>0.017588</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.344400</b1Ht>
@@ -391,7 +391,7 @@
     <delta_c>-225.2</delta_c>
     <b1Cl>0.31</b1Cl>
     <b2Cl>1.098</b2Cl>
-    <r_fract>0.03</r_fract>
+    <r_fract>0.06</r_fract>
     <st_fract>0.</st_fract>
     <nonlocal_dispersal>1.</nonlocal_dispersal>
     <repro_min_h>2.000000</repro_min_h>
@@ -478,7 +478,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>48.</SRA>
+    <SRA>20.</SRA>
     <root_beta>0.000035</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.739300</b1Ht>
@@ -532,7 +532,7 @@
     <delta_c>-225.2</delta_c>
     <b1Cl>0.31</b1Cl>
     <b2Cl>1.098</b2Cl>
-    <r_fract>0.03</r_fract>
+    <r_fract>0.06</r_fract>
     <st_fract>0.</st_fract>
     <nonlocal_dispersal>1.</nonlocal_dispersal>
     <repro_min_h>2.000000</repro_min_h>
@@ -619,7 +619,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>48.</SRA>
+    <SRA>20.</SRA>
     <root_beta>0.000285</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>-0.068200</b1Ht>
@@ -673,7 +673,7 @@
     <delta_c>-225.2</delta_c>
     <b1Cl>0.31</b1Cl>
     <b2Cl>1.098</b2Cl>
-    <r_fract>0.03</r_fract>
+    <r_fract>0.06</r_fract>
     <st_fract>0.</st_fract>
     <nonlocal_dispersal>1.</nonlocal_dispersal>
     <repro_min_h>2.000000</repro_min_h>
@@ -760,7 +760,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>48.</SRA>
+    <SRA>20.</SRA>
     <root_beta>0.002261</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.980000</b1Ht>
@@ -814,7 +814,7 @@
     <delta_c>-225.2</delta_c>
     <b1Cl>0.31</b1Cl>
     <b2Cl>1.098</b2Cl>
-    <r_fract>0.03</r_fract>
+    <r_fract>0.06</r_fract>
     <st_fract>0.</st_fract>
     <nonlocal_dispersal>1.</nonlocal_dispersal>
     <repro_min_h>2.000000</repro_min_h>
@@ -901,7 +901,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>48.</SRA>
+    <SRA>20.</SRA>
     <root_beta>0.017588</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.344400</b1Ht>
@@ -955,7 +955,7 @@
     <delta_c>-225.2</delta_c>
     <b1Cl>0.31</b1Cl>
     <b2Cl>1.098</b2Cl>
-    <r_fract>0.03</r_fract>
+    <r_fract>0.06</r_fract>
     <st_fract>0.</st_fract>
     <nonlocal_dispersal>1.</nonlocal_dispersal>
     <repro_min_h>2.000000</repro_min_h>
@@ -1042,7 +1042,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>48.</SRA>
+    <SRA>20.</SRA>
     <root_beta>0.000035</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.739300</b1Ht>
@@ -1096,7 +1096,7 @@
     <delta_c>-225.2</delta_c>
     <b1Cl>0.31</b1Cl>
     <b2Cl>1.098</b2Cl>
-    <r_fract>0.03</r_fract>
+    <r_fract>0.06</r_fract>
     <st_fract>0.</st_fract>
     <nonlocal_dispersal>1.</nonlocal_dispersal>
     <repro_min_h>2.000000</repro_min_h>

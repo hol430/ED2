@@ -2328,12 +2328,13 @@ module growth_balive
            if(cpatch%dmin_leaf_psi(ico) < leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft))then
               k = cpatch%krdepth(ico)
               nsoil = ntext_soil(k)
-              wgpfrac = max(soil(nsoil)%soilcp,min(1.0,                                &
+              wgpfrac = min(1.0,                                &
                    soil_water(k) * soil_fracliq(k)           &
-                   / soil(nsoil)%slmsts))
+                   / soil(nsoil)%slmsts)
               soilwp = soil(nsoil)%slpots / wgpfrac ** soil(nsoil)%slbs ! m
               if(soilwp > leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft) .and. &
-                   soilwp > soil(nsoil)%soilcp)then
+                   (soil_water(k) *soil_fracliq(k) ) > soil(nsoil)%soilcp + 0.02 * &
+                   (soil(nsoil)%slmsts - soil(nsoil)%soilcp))then
                  cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
                       cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
                  adjusted = 1
