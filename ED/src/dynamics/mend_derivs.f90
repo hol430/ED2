@@ -647,7 +647,7 @@ Contains
     real :: co2_function
 
     phi = 0.1  ! * 0. ! was just 0.1
-    nitr = consts%v_nitr * nh4 !* f_nit_nh4
+    nitr = 2. * consts%v_nitr * nh4 !* f_nit_nh4
     denitr = consts%v_denitr * no3 + nitr * phi
 
 !   Potter et al. 1996

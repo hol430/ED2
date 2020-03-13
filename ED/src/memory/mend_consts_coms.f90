@@ -133,7 +133,7 @@ Contains
     som_consts%spec_maint_rate = 0.01 / 3600. ! 1/s; t
     som_consts%prod_frac_enz_pom = 0.07 ! unitless; nt
     som_consts%prod_frac_enz_mom = 0.06  ! unitless; nt
-    som_consts%enz_turnover_rate = 0.0025 / 3600. ! 1/s; nt
+    som_consts%enz_turnover_rate = 0.0025 / 3600. * 2.! 1/s; nt
 
     som_consts%vmax_decomp_pom(1) = 1.2 / 3600. / 1.2 * 0.7 *0.1! 1/s; t
     som_consts%vmax_decomp_pom(2) = 40. / 3600. /40. *47. *0.1! 1/s; t
@@ -141,8 +141,8 @@ Contains
 
 ! This set swapped after run n2 on 11/22/2017.
     som_consts%kmm_decomp_pom(1) = 80. ! mgC/gsoil; t 
-    som_consts%kmm_decomp_pom(2) = 1. ! mgC/gsoil; t 
-    som_consts%kmm_decomp_mom = 780. ! mgC/gsoil; t
+    som_consts%kmm_decomp_pom(2) = 1. * 8. ! mgC/gsoil; t 
+    som_consts%kmm_decomp_mom = 780. / 1.8 ! mgC/gsoil; t
 !    som_consts%kmm_decomp_pom(1) = 180. ! mgC/gsoil; t 
 !    som_consts%kmm_decomp_pom(2) = 30. ! mgC/gsoil; t 
 !    som_consts%kmm_decomp_mom = 1500. ! mgC/gsoil; t
