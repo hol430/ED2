@@ -55,7 +55,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>20.</SRA>
+    <SRA>5.</SRA>
     <root_beta>0.000285</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>-0.068200</b1Ht>
@@ -98,8 +98,8 @@
     <vessel_curl_factor>1.5</vessel_curl_factor>
     <stoma_psi_c>3.</stoma_psi_c>
     <phenology>5</phenology>
-    <high_psi_threshold>10.</high_psi_threshold>
-    <low_psi_threshold>10.</low_psi_threshold>
+    <high_psi_threshold>5.</high_psi_threshold>
+    <low_psi_threshold>5.</low_psi_threshold>
     <leaf_shed_rate>0.05</leaf_shed_rate>
     <leaf_grow_rate>0.05</leaf_grow_rate>
     <c_grn_leaf_dry>3218.</c_grn_leaf_dry>
@@ -196,7 +196,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>20.</SRA>
+    <SRA>5.</SRA>
     <root_beta>0.002261</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.980000</b1Ht>
@@ -239,8 +239,8 @@
     <vessel_curl_factor>1.5</vessel_curl_factor>
     <stoma_psi_c>3.</stoma_psi_c>
     <phenology>5</phenology>
-    <high_psi_threshold>10.</high_psi_threshold>
-    <low_psi_threshold>10.</low_psi_threshold>
+    <high_psi_threshold>5.</high_psi_threshold>
+    <low_psi_threshold>5.</low_psi_threshold>
     <leaf_shed_rate>0.05</leaf_shed_rate>
     <leaf_grow_rate>0.05</leaf_grow_rate>
     <c_grn_leaf_dry>3218.</c_grn_leaf_dry>
@@ -337,7 +337,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>20.</SRA>
+    <SRA>5.</SRA>
     <root_beta>0.017588</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.344400</b1Ht>
@@ -380,8 +380,8 @@
     <vessel_curl_factor>1.5</vessel_curl_factor>
     <stoma_psi_c>3.</stoma_psi_c>
     <phenology>5</phenology>
-    <high_psi_threshold>10.</high_psi_threshold>
-    <low_psi_threshold>10.</low_psi_threshold>
+    <high_psi_threshold>5.</high_psi_threshold>
+    <low_psi_threshold>5.</low_psi_threshold>
     <leaf_shed_rate>0.05</leaf_shed_rate>
     <leaf_grow_rate>0.05</leaf_grow_rate>
     <c_grn_leaf_dry>3218.</c_grn_leaf_dry>
@@ -478,7 +478,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>20.</SRA>
+    <SRA>5.</SRA>
     <root_beta>0.000035</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.739300</b1Ht>
@@ -521,8 +521,8 @@
     <vessel_curl_factor>1.5</vessel_curl_factor>
     <stoma_psi_c>3.</stoma_psi_c>
     <phenology>5</phenology>
-    <high_psi_threshold>10.</high_psi_threshold>
-    <low_psi_threshold>10.</low_psi_threshold>
+    <high_psi_threshold>5.</high_psi_threshold>
+    <low_psi_threshold>5.</low_psi_threshold>
     <leaf_shed_rate>0.05</leaf_shed_rate>
     <leaf_grow_rate>0.05</leaf_grow_rate>
     <c_grn_leaf_dry>3218.</c_grn_leaf_dry>
@@ -619,7 +619,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>20.</SRA>
+    <SRA>5.</SRA>
     <root_beta>0.000285</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>-0.068200</b1Ht>
@@ -662,8 +662,8 @@
     <vessel_curl_factor>1.5</vessel_curl_factor>
     <stoma_psi_c>3.</stoma_psi_c>
     <phenology>5</phenology>
-    <high_psi_threshold>10.</high_psi_threshold>
-    <low_psi_threshold>10.</low_psi_threshold>
+    <high_psi_threshold>5.</high_psi_threshold>
+    <low_psi_threshold>5.</low_psi_threshold>
     <leaf_shed_rate>0.05</leaf_shed_rate>
     <leaf_grow_rate>0.05</leaf_grow_rate>
     <c_grn_leaf_dry>3218.</c_grn_leaf_dry>
@@ -760,7 +760,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>20.</SRA>
+    <SRA>5.</SRA>
     <root_beta>0.002261</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.980000</b1Ht>
@@ -803,8 +803,8 @@
     <vessel_curl_factor>1.5</vessel_curl_factor>
     <stoma_psi_c>3.</stoma_psi_c>
     <phenology>5</phenology>
-    <high_psi_threshold>10.</high_psi_threshold>
-    <low_psi_threshold>10.</low_psi_threshold>
+    <high_psi_threshold>5.</high_psi_threshold>
+    <low_psi_threshold>5.</low_psi_threshold>
     <leaf_shed_rate>0.05</leaf_shed_rate>
     <leaf_grow_rate>0.05</leaf_grow_rate>
     <c_grn_leaf_dry>3218.</c_grn_leaf_dry>
@@ -901,7 +901,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>20.</SRA>
+    <SRA>5.</SRA>
     <root_beta>0.017588</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.344400</b1Ht>
@@ -944,8 +944,8 @@
     <vessel_curl_factor>1.5</vessel_curl_factor>
     <stoma_psi_c>3.</stoma_psi_c>
     <phenology>5</phenology>
-    <high_psi_threshold>10.</high_psi_threshold>
-    <low_psi_threshold>10.</low_psi_threshold>
+    <high_psi_threshold>5.</high_psi_threshold>
+    <low_psi_threshold>5.</low_psi_threshold>
     <leaf_shed_rate>0.05</leaf_shed_rate>
     <leaf_grow_rate>0.05</leaf_grow_rate>
     <c_grn_leaf_dry>3218.</c_grn_leaf_dry>
@@ -1042,7 +1042,7 @@
     <P_resorption_fraction>0.48</P_resorption_fraction>
     <sapwood_ratio>3900.</sapwood_ratio>
     <qsw>0.000000</qsw>
-    <SRA>20.</SRA>
+    <SRA>5.</SRA>
     <root_beta>0.000035</root_beta>
     <init_density>0.1</init_density>
     <b1Ht>0.739300</b1Ht>
@@ -1085,8 +1085,8 @@
     <vessel_curl_factor>1.5</vessel_curl_factor>
     <stoma_psi_c>3.</stoma_psi_c>
     <phenology>5</phenology>
-    <high_psi_threshold>10.</high_psi_threshold>
-    <low_psi_threshold>10.</low_psi_threshold>
+    <high_psi_threshold>5.</high_psi_threshold>
+    <low_psi_threshold>5.</low_psi_threshold>
     <leaf_shed_rate>0.05</leaf_shed_rate>
     <leaf_grow_rate>0.05</leaf_grow_rate>
     <c_grn_leaf_dry>3218.</c_grn_leaf_dry>

@@ -550,9 +550,9 @@ Contains
     if(no3 < 1.0e-12)denitr_rate = 0.
 
     d_nh4 = d_nh4 - nitr_rate
-    d_no3 = d_no3 + nitr_rate - denitr_rate
+    d_no3 = d_no3 + nitr_rate * 0.9 - denitr_rate
 
-    d_ngas_lost = d_ngas_lost + denitr_rate
+    d_ngas_lost = d_ngas_lost + denitr_rate + nitr_rate * 0.1
 
     d_nitr = d_nitr + nitr_rate
 
@@ -647,7 +647,7 @@ Contains
     real :: co2_function
 
     phi = 0.1  ! * 0. ! was just 0.1
-    nitr = consts%v_nitr * nh4 * f_nit_nh4
+    nitr = consts%v_nitr * nh4 !* f_nit_nh4
     denitr = consts%v_denitr * no3 + nitr * phi
 
 !   Potter et al. 1996
@@ -659,7 +659,7 @@ Contains
     water_function = 0.5 + atan(0.6*pi1*(0.1*(wfp*100.)-delGrosso_A))/pi1
     no3_function = 0.001 * (1.15 * (1000.*no3)**0.57) / 86400.
     co2_function = 0.001 * (0.1 * (d_co2_lost*86400.*1000.)**1.3 ) / 86400.
-    denitr = min(no3_function,co2_function) * water_function * f_den_no3
+    denitr = min(no3_function,co2_function) * water_function !* f_den_no3
 
     return
   end subroutine nitr_denitr
