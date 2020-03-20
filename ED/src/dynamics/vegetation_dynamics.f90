@@ -54,6 +54,7 @@ subroutine vegetation_dynamics(new_month,new_year)
    !---------------------------------------------------------------------------------------!
    integer                       :: ipy
    integer                       :: isi, ipa
+   integer :: ifert
 
    !----- Find the day of year. -----------------------------------------------------------!
    doy = julday(current_time%month, current_time%date, current_time%year)
@@ -66,6 +67,12 @@ subroutine vegetation_dynamics(new_month,new_year)
    !----- Apply events. -------------------------------------------------------------------!
    call prescribed_event(current_time%year,doy)
   
+   ifert = 0
+   if(current_time%date == 1 .and. current_time%year >= 2015 .and. &
+        (current_time%month == 6 .or. current_time%month == 9 .or. current_time%month == 12))then
+      ifert = 1
+   endif
+
    !---------------------------------------------------------------------------------------!
    !   Loop over all domains.                                                              !
    !---------------------------------------------------------------------------------------!
@@ -82,7 +89,7 @@ subroutine vegetation_dynamics(new_month,new_year)
                csite%plant_input_N(:,ipa) = 0.
                csite%plant_input_P(:,ipa) = 0.
                csite%rh(ipa) = 0.
-               call mend_slow_P(csite%mend, ipa)
+               call mend_slow_P(csite%mend, ipa, ifert)
             enddo
          enddo
       enddo

@@ -605,6 +605,9 @@ Contains
     real, intent(out), dimension(npom) :: decomp_pom_p
     real, intent(in) :: enz_ptase_c
 
+
+    !! TURNING OFF PTASE
+
 !    denom = 1. + dom_p / consts%kmm_decomp_ptase_dom
     denom = 1.
     do ipom = 1, npom

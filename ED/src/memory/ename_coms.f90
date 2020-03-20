@@ -272,7 +272,7 @@ module ename_coms
       !----- ED restart grid resolution. --------------------------------------------------!
       real                                              :: edres
 
-      real :: ndep_rate, pdep_rate
+      real :: ndep_rate, pdep_rate, ndep_appl, pdep_appl
       real :: soil_bulk_den, soil_pH, soil_cpct, soil_som_c2n, soil_totp, soil_extrp
 
    end Type ename_vars
@@ -542,6 +542,8 @@ module ename_coms
 
       enl%ndep_rate = undef_real
       enl%pdep_rate = undef_real
+      enl%ndep_appl = undef_real
+      enl%pdep_appl = undef_real
 
       enl%soil_bulk_den = undef_real
       enl%soil_pH = undef_real

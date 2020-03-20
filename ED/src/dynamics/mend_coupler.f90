@@ -320,21 +320,31 @@ Contains
     return
   end subroutine mend_update_diag
 
-  subroutine mend_slow_P(mend, ipa)
+  subroutine mend_slow_P(mend, ipa, ifert)
     use mend_state_vars, only: mend_model, nwood
     use mend_derivs, only: mend_slow_P_layer
     use mend_consts_coms, only: som_consts
     use mend_diagnose, only: mend_update_diag_layer
+    use nutrient_constants, only: ndep_appl, pdep_appl
     implicit none
     type(mend_model) :: mend
     integer, intent(in) :: ipa
     integer :: iwood
+    integer, intent(in) :: ifert
 
     call mend_slow_P_layer(som_consts, mend%som%invars%plab(ipa), &
          mend%som%invars%pocc(ipa), mend%som%invars%psec(ipa), &
          mend%som%invars%ppar(ipa), &
          mend%som%invars%psol(ipa), mend%bulk_den(ipa))
     call mend_update_diag_layer(mend%som, som_consts, ipa, mend%bulk_den(ipa))
+
+    ! units were mg/m2/s
+    if(ifert == 1)then
+       mend%som%invars%nh4(ipa) = mend%som%invars%nh4(ipa) + ndep_appl*86400*365.25/3. / &
+            (1000. * mend%bulk_den(ipa) * som_consts%eff_soil_depth)
+       mend%som%invars%psol(ipa) = mend%som%invars%psol(ipa) + pdep_appl*86400*365.25/3. / &
+            (1000. * mend%bulk_den(ipa) * som_consts%eff_soil_depth)
+    endif
 
     return
   end subroutine mend_slow_P

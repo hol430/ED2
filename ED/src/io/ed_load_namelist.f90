@@ -274,7 +274,7 @@ subroutine copy_nl(copy_type)
                                    , min_sec                   ! ! intent(in)
 
    use nutrient_constants, only: nlsl, ndep_rate, pdep_rate, soil_bulk_den, soil_pH, &
-        soil_cpct, soil_som_c2n, soil_totp, soil_extrp
+        soil_cpct, soil_som_c2n, soil_totp, soil_extrp, ndep_appl, pdep_appl
    implicit none
    !----- Arguments. ----------------------------------------------------------------------!
    character(len=*), intent(in) :: copy_type
@@ -552,6 +552,8 @@ subroutine copy_nl(copy_type)
 
       ndep_rate = nl%ndep_rate
       pdep_rate = nl%pdep_rate
+      ndep_appl = nl%ndep_appl
+      pdep_appl = nl%pdep_appl
       soil_bulk_den = nl%soil_bulk_den
       soil_pH = nl%soil_pH
       soil_cpct = nl%soil_cpct

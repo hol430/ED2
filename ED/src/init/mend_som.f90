@@ -104,6 +104,9 @@ Contains
 ! Tipping et al. (2016) Biogeochemistry
     c2p = (cpct*0.1) / (0.012*(cpct*0.1)**0.57)
 
+! Single number from Waring et al
+    c2p = cpct*0.1/(150.e-4)
+
 ! density (g/cm3):
 ! SROAK:0.87  SRTDF:0.90  PVTDF:0.77
 ! %C: 2.65  3.79  4.30
