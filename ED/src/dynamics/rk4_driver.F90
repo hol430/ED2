@@ -242,7 +242,8 @@ module rk4_driver
                     cpatch%ncohorts, cpatch%broot, cpatch%nplant, &
                     cpatch%pft, cpatch%krdepth, csite%mend%bulk_den(ipa), &
                     cpatch%nstorage, cpatch%pstorage, cpatch%nstorage_max, &
-                    cpatch%pstorage_max, cpatch%water_supply_nl, cpatch%lai)
+                    cpatch%pstorage_max, cpatch%water_supply_nl, cpatch%lai, &
+                    cpatch%enz_alloc_frac_n)
 
                !----- Get photosynthesis, stomatal conductance, and transpiration. --------!
                call canopy_photosynthesis(csite,cmet,nzg,ipa,cpoly%ntext_soil(:,isi)       &
@@ -301,7 +302,7 @@ module rk4_driver
                     csite%patch(ipa)%pft, &
                     csite%patch(ipa)%krdepth, &
                     csite%patch(ipa)%water_supply_nl, &
-                    csite%patch(ipa)%lai)
+                    csite%patch(ipa)%lai,csite%patch(ipa)%enz_alloc_frac_n)
 
                !----- Add the number of steps into the step counter. ----------------------!
                !----- workload accumulation is order-independent, so this can stay shared

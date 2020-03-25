@@ -8,7 +8,8 @@ Contains
   subroutine mend_som_plant_enzymes(ncohorts, broot, nplant, pft, &
        krdepth, slden, enz_plant_n, &
        enz_plant_p, vnh4up_plant, vno3up_plant, vpup_plant, consts, &
-       nstorage, pstorage, nstorage_max, pstorage_max, water_supply_nl, lai)
+       nstorage, pstorage, nstorage_max, pstorage_max, water_supply_nl, lai, &
+       enz_alloc_frac_n)
     use mend_consts_coms, only: decomp_consts
     use pft_coms, only: root_beta
     use soil_coms, only: slz
@@ -33,6 +34,7 @@ Contains
     real, intent(in), dimension(ncohorts) :: pstorage
     real, intent(in), dimension(ncohorts) :: nstorage_max
     real, intent(in), dimension(ncohorts) :: pstorage_max
+    real, intent(in), dimension(ncohorts) :: enz_alloc_frac_n
     type(decomp_consts) :: consts
     integer :: ico
     real :: broot_nl
@@ -130,22 +132,27 @@ Contains
        p_limit_factor = max(min(1., p_limit_factor), 0.)
           
        enz_plant_n(pft(ico)) = enz_plant_n(pft(ico)) + &
-            consts%enz2biomass_plant * nplant(ico) * broot_nl /   &
+            consts%enz2biomass_plant * enz_alloc_frac_n(ico)/0.5 *   &
+            nplant(ico) * broot_nl /   &
             consts%eff_soil_depth / slden * 14.
        enz_plant_p(pft(ico)) = enz_plant_p(pft(ico)) + &
-            consts%enz2biomass_plant * nplant(ico) * broot_nl /   & 
+            consts%enz2biomass_plant * (1-enz_alloc_frac_n(ico))/0.5 *   &
+            nplant(ico) * broot_nl /   & 
             consts%eff_soil_depth / slden * 31.
        
        vnh4up_plant(pft(ico)) = vnh4up_plant(pft(ico)) + consts%vnh4up_plant_base *  &
-            consts%enz2biomass_plant * nplant(ico) * broot_nl /   & 
+            consts%enz2biomass_plant * enz_alloc_frac_n(ico) / 0.5 *   &
+            nplant(ico) * broot_nl /   & 
             consts%eff_soil_depth / slden * 14. * &
             n_limit_factor
        vno3up_plant(pft(ico)) = vno3up_plant(pft(ico)) + consts%vno3up_plant_base *  &
-            consts%enz2biomass_plant * nplant(ico) * broot_nl /   & 
+            consts%enz2biomass_plant * enz_alloc_frac_n(ico) / 0.5 *   &
+            nplant(ico) * broot_nl /   & 
             consts%eff_soil_depth / slden * 14. * &
             n_limit_factor
        vpup_plant(pft(ico)) = vpup_plant(pft(ico)) + consts%vpup_plant_base *  &
-            consts%enz2biomass_plant * nplant(ico) * broot_nl /   & 
+            consts%enz2biomass_plant * (1.-enz_alloc_frac_n(ico))/0.5 *  &
+            nplant(ico) * broot_nl /   & 
             consts%eff_soil_depth / slden * 31. * &
             p_limit_factor
     enddo
@@ -155,7 +162,8 @@ Contains
 
   subroutine mend_som_plant_feedback(nh4_plant, no3_plant, p_plant, slden,  &
        consts, ncohorts, nstorage, pstorage, nstorage_max, pstorage_max, &
-       nplant, broot, rh, co2_lost, pft, krdepth, water_supply_nl, lai)
+       nplant, broot, rh, co2_lost, pft, krdepth, water_supply_nl, lai, &
+       enz_alloc_frac_n)
     use ed_misc_coms, only: dtlsm
     use mend_consts_coms, only: decomp_consts
     use nutrient_constants, only: nlsl
@@ -190,6 +198,7 @@ Contains
     real, intent(in), dimension(ncohorts) :: pstorage_max
     real, intent(in), dimension(ncohorts) :: nplant
     real, intent(in), dimension(ncohorts) :: broot
+    real, intent(in), dimension(ncohorts) :: enz_alloc_frac_n
     real, intent(inout) :: rh
     real :: co2_lost_units
     real, intent(in) :: co2_lost
@@ -223,9 +232,9 @@ Contains
        p_limit_factor(ico) = max(min(1., p_limit_factor(ico)), 0.)
 
        total_n_activity(pft(ico)) = total_n_activity(pft(ico)) + nplant(ico) *   &
-            broot_nl * n_limit_factor(ico)
+            broot_nl * n_limit_factor(ico) * enz_alloc_frac_n(ico)
        total_p_activity(pft(ico)) = total_p_activity(pft(ico)) + nplant(ico) *   &
-            broot_nl * p_limit_factor(ico)
+            broot_nl * p_limit_factor(ico) * (1.-enz_alloc_frac_n(ico))
     enddo
 
     do ico = 1, ncohorts
@@ -234,12 +243,12 @@ Contains
 
        if(total_n_activity(pft(ico)) > 1.e-30)then
           nstorage(ico) = nstorage(ico) + plant_n_uptake(pft(ico)) * broot_nl /  &
-               total_n_activity(pft(ico)) * n_limit_factor(ico)
+               total_n_activity(pft(ico)) * n_limit_factor(ico) * enz_alloc_frac_n(ico)
        endif
 
        if(total_p_activity(pft(ico)) > 1.e-30)then
           pstorage(ico) = pstorage(ico) + plant_p_uptake(pft(ico)) * broot_nl /  &
-               total_p_activity(pft(ico)) * p_limit_factor(ico)
+               total_p_activity(pft(ico)) * p_limit_factor(ico) * (1.-enz_alloc_frac_n(ico))
        endif
     enddo
 

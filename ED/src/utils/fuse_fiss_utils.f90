@@ -1223,6 +1223,8 @@ module fuse_fiss_utils
                                      + cpatch%pstorage        (donc) * dnplant
       cpatch%pstorage_max     (recc) = cpatch%pstorage_max    (recc) * rnplant             &
                                      + cpatch%pstorage_max    (donc) * dnplant
+      cpatch%enz_alloc_frac_n(recc) = cpatch%enz_alloc_frac_n(recc) * rnplant             &
+                                     + cpatch%enz_alloc_frac_n(donc) * dnplant
       cpatch%bseeds           (recc) = cpatch%bseeds          (recc) * rnplant             &
                                      + cpatch%bseeds          (donc) * dnplant
       cpatch%leaf_maintenance (recc) = cpatch%leaf_maintenance(recc) * rnplant             &

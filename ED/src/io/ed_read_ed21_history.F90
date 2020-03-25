@@ -577,15 +577,17 @@ subroutine read_ed21_history_file
                                           ,dsetrank,iparallel,.true.,foundvar)
                         call hdf_getslab_r(cpatch%bstorage,'BSTORAGE '                         &
                                           ,dsetrank,iparallel,.true.,foundvar)
-                        call hdf_getslab_r(cpatch%bstorage,'NSTORAGE '                         &
+                        call hdf_getslab_r(cpatch%nstorage,'NSTORAGE '                         &
                                           ,dsetrank,iparallel,.true.,foundvar)
-                        call hdf_getslab_r(cpatch%bstorage,'PSTORAGE '                         &
+                        call hdf_getslab_r(cpatch%pstorage,'PSTORAGE '                         &
                                           ,dsetrank,iparallel,.true.,foundvar)
-                        call hdf_getslab_r(cpatch%bstorage,'BSTORAGE_MAX '                         &
+                        call hdf_getslab_r(cpatch%bstorage_max,'BSTORAGE_MAX '                     &
                                           ,dsetrank,iparallel,.true.,foundvar)
-                        call hdf_getslab_r(cpatch%bstorage,'NSTORAGE_MAX '                         &
+                        call hdf_getslab_r(cpatch%nstorage_max,'NSTORAGE_MAX '                    &
                                           ,dsetrank,iparallel,.true.,foundvar)
-                        call hdf_getslab_r(cpatch%bstorage,'PSTORAGE_MAX '                         &
+                        call hdf_getslab_r(cpatch%pstorage_max,'PSTORAGE_MAX '                      &
+                                          ,dsetrank,iparallel,.true.,foundvar)
+                        call hdf_getslab_r(cpatch%enz_alloc_frac_n,'ENZ_ALLOC_FRAC_N '             &
                                           ,dsetrank,iparallel,.true.,foundvar)
 
                         !------------------------------------------------------------------!
@@ -1823,6 +1825,8 @@ subroutine read_ed21_history_unstruct
                                           ,dsetrank,iparallel,.true.,foundvar)
                         call hdf_getslab_r(cpatch%pstorage_max          ,'PSTORAGE_MAX '               &
                                           ,dsetrank,iparallel,.true.,foundvar)
+                        call hdf_getslab_r(cpatch%enz_alloc_frac_n,'ENZ_ALLOC_FRAC_N '  &
+                                          ,dsetrank,iparallel,.true.,foundvar)
 
                         !------------------------------------------------------------------!
                         !    Find derived properties from Bdead.  In the unlikely case     !
@@ -3034,6 +3038,8 @@ subroutine read_ed21_polyclone
                         call hdf_getslab_r(cpatch%nstorage_max          ,'NSTORAGE_MAX '               &
                                           ,dsetrank,iparallel,.true.,foundvar)
                         call hdf_getslab_r(cpatch%pstorage_max          ,'PSTORAGE_MAX '               &
+                                          ,dsetrank,iparallel,.true.,foundvar)
+                        call hdf_getslab_r(cpatch%enz_alloc_frac_n    ,'ENZ_ALLOC_FRAC_N '       &
                                           ,dsetrank,iparallel,.true.,foundvar)
 
                         !------------------------------------------------------------------!
