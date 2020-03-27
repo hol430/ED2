@@ -587,7 +587,7 @@ subroutine read_ed21_history_file
                                           ,dsetrank,iparallel,.true.,foundvar)
                         call hdf_getslab_r(cpatch%pstorage_max,'PSTORAGE_MAX '                      &
                                           ,dsetrank,iparallel,.true.,foundvar)
-                        call hdf_getslab_r(cpatch%enz_alloc_frac_n,'ENZ_ALLOC_FRAC_N '             &
+                        call hdf_getslab_r(cpatch%enz_alloc_frac_p,'ENZ_ALLOC_FRAC_P '             &
                                           ,dsetrank,iparallel,.true.,foundvar)
 
                         !------------------------------------------------------------------!
@@ -1825,7 +1825,7 @@ subroutine read_ed21_history_unstruct
                                           ,dsetrank,iparallel,.true.,foundvar)
                         call hdf_getslab_r(cpatch%pstorage_max          ,'PSTORAGE_MAX '               &
                                           ,dsetrank,iparallel,.true.,foundvar)
-                        call hdf_getslab_r(cpatch%enz_alloc_frac_n,'ENZ_ALLOC_FRAC_N '  &
+                        call hdf_getslab_r(cpatch%enz_alloc_frac_p,'ENZ_ALLOC_FRAC_P '  &
                                           ,dsetrank,iparallel,.true.,foundvar)
 
                         !------------------------------------------------------------------!
@@ -3039,7 +3039,7 @@ subroutine read_ed21_polyclone
                                           ,dsetrank,iparallel,.true.,foundvar)
                         call hdf_getslab_r(cpatch%pstorage_max          ,'PSTORAGE_MAX '               &
                                           ,dsetrank,iparallel,.true.,foundvar)
-                        call hdf_getslab_r(cpatch%enz_alloc_frac_n    ,'ENZ_ALLOC_FRAC_N '       &
+                        call hdf_getslab_r(cpatch%enz_alloc_frac_p   ,'ENZ_ALLOC_FRAC_P '       &
                                           ,dsetrank,iparallel,.true.,foundvar)
 
                         !------------------------------------------------------------------!

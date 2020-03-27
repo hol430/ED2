@@ -838,7 +838,7 @@ subroutine read_ed10_ed20_history_file
                              c2n_leaf(cpatch%pft(ic2))
                         cpatch%pstorage_max(ic2) = cpatch%bstorage_max(ic2) /  &
                              c2p_leaf(cpatch%pft(ic2))
-                        cpatch%enz_alloc_frac_n(ic2) = 0.5
+                        cpatch%enz_alloc_frac_p(ic2) = 0.01
                         cpatch%bstorage(ic2) = cpatch%bstorage_max(ic2)
                         cpatch%nstorage(ic2) = cpatch%nstorage_max(ic2)
                         cpatch%pstorage(ic2) = cpatch%pstorage_max(ic2)

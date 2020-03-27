@@ -119,7 +119,7 @@ Contains
 
   subroutine mend_extern_forcing(mend, ipa, ncohorts, broot, nplant, &
        pft, krdepth, slden, nstorage, pstorage,   &
-       nstorage_max, pstorage_max, water_supply_nl, lai,enz_alloc_frac_n)
+       nstorage_max, pstorage_max, water_supply_nl, lai,enz_alloc_frac_p)
     use mend_state_vars, only: mend_model, nwood
     use mend_som, only: mend_som_extern_forcing
     use mend_consts_coms, only: som_consts
@@ -142,7 +142,7 @@ Contains
     real, intent(in), dimension(ncohorts) :: pstorage_max
     real, intent(in), dimension(ncohorts) :: lai
     real, intent(in), dimension(ncohorts) :: water_supply_nl
-    real, intent(in), dimension(ncohorts) :: enz_alloc_frac_n
+    real, intent(in), dimension(ncohorts) :: enz_alloc_frac_p
     real :: broot_total
     integer :: ico
     real, intent(in) :: slden
@@ -158,7 +158,7 @@ Contains
          mend%som%plvars%vnh4up_plant(:,ipa),  &
          mend%som%plvars%vno3up_plant(:,ipa), &
          mend%som%plvars%vpup_plant(:,ipa), som_consts, nstorage, pstorage, &
-         nstorage_max, pstorage_max, water_supply_nl, lai, enz_alloc_frac_n)
+         nstorage_max, pstorage_max, water_supply_nl, lai, enz_alloc_frac_p)
 
     return
   end subroutine mend_extern_forcing

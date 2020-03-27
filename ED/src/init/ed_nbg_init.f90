@@ -244,7 +244,7 @@ subroutine init_nbg_cohorts(csite,lsl,ipa_a,ipa_z)
          cpatch%pstorage(ico) = 0.5 * cpatch%pstorage_max(ico)
          cpatch%n_fixation(ico) = 0.
          cpatch%mmean_n_fixation(ico) = 0.
-         cpatch%enz_alloc_frac_n(ico) = 0.5
+         cpatch%enz_alloc_frac_p(ico) = 0.01
 
          !----- Find the above-ground biomass and basal area. -----------------------------!
          cpatch%agb(ico) = ed_biomass(cpatch, ico)
@@ -387,7 +387,7 @@ subroutine init_cohorts_by_layers(csite,lsl,ipa_a,ipa_z)
          cpatch%pstorage(ico) = 0.5 * cpatch%pstorage_max(ico)
          cpatch%n_fixation(ico) = 0.
          cpatch%mmean_n_fixation(ico) = 0.
-         cpatch%enz_alloc_frac_n(ico) = 0.5
+         cpatch%enz_alloc_frac_p(ico) = 0.01
 
          !----- NPlant is defined such that the cohort LAI is equal to LAI0
          cpatch%nplant(ico)           = lai0 / (cpatch%bleaf(ico) * cpatch%sla(ico))
@@ -572,7 +572,7 @@ subroutine near_bare_ground_big_leaf_init(cgrid)
                cpatch%pstorage(ico) = 0.5 * cpatch%pstorage_max(ico)
                cpatch%n_fixation(ico) = 0.
                cpatch%mmean_n_fixation(ico) = 0.
-               cpatch%enz_alloc_frac_n(ico) = 0.5
+               cpatch%enz_alloc_frac_p(ico) = 0.01
 
                !----- Find the initial area indices (LAI, WAI, CAI). ----------------------!
                call area_indices(cpatch, ico)

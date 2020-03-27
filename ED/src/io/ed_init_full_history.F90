@@ -4434,7 +4434,7 @@ subroutine fill_history_patch(cpatch,paco_index,ncohorts_global)
         iparallel,.true., foundvar)
    call hdf_getslab_r(cpatch%pstorage_max,'PSTORAGE_MAX              ',dsetrank, &
         iparallel,.true., foundvar)
-   call hdf_getslab_r(cpatch%enz_alloc_frac_n,'ENZ_ALLOC_FRAC_N         ',dsetrank, &
+   call hdf_getslab_r(cpatch%enz_alloc_frac_p,'ENZ_ALLOC_FRAC_P         ',dsetrank, &
         iparallel,.true., foundvar)
    call hdf_getslab_r(cpatch%bseeds                                                        &
                      ,'BSEEDS_CO                 ',dsetrank,iparallel,.true. ,foundvar)

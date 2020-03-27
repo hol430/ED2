@@ -2317,7 +2317,7 @@ module growth_balive
         endif
 
 !if(.false.)then
-        if(limitation_flag > 1 .and. .false.)then
+        if(limitation_flag ==2)then
            cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
                 cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
            adjusted = 1
@@ -2378,10 +2378,10 @@ module growth_balive
            cpatch%n_fixation(ico) = 0.
         endif
 
-        if(limitation_flag == 2)then
-           cpatch%enz_alloc_frac_n(ico) = min(1.,cpatch%enz_alloc_frac_n(ico)*1.05)
-        elseif(limitation_flag == 3)then
-           cpatch%enz_alloc_frac_n(ico) = max(0.,cpatch%enz_alloc_frac_n(ico)*0.95)
+        if(limitation_flag == 3)then
+           cpatch%enz_alloc_frac_p(ico) = cpatch%enz_alloc_frac_p(ico) * 1.1
+        else
+           cpatch%enz_alloc_frac_p(ico) = max(0.,cpatch%enz_alloc_frac_p(ico)*0.95)
         endif
 
 

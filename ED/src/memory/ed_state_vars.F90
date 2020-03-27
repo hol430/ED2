@@ -218,7 +218,7 @@ module ed_state_vars
       real ,pointer,dimension(:) :: bstorage_max,nstorage_max,pstorage_max
       !<Max Plant storage pool of carbon [kgC/plant], kgN/plant, kgP/plant
 
-      real, pointer, dimension(:) :: enz_alloc_frac_n
+      real, pointer, dimension(:) :: enz_alloc_frac_p
 
       real ,pointer,dimension(:) :: bseeds
       !<Amount of seeds produced for dispersal [kgC/plant]
@@ -4772,7 +4772,7 @@ module ed_state_vars
       allocate(cpatch%nstorage_max(ncohorts))
       allocate(cpatch%pstorage(ncohorts))
       allocate(cpatch%pstorage_max(ncohorts))
-      allocate(cpatch%enz_alloc_frac_n(ncohorts))
+      allocate(cpatch%enz_alloc_frac_p(ncohorts))
       allocate(cpatch%n_fixation                       (                    ncohorts))
       allocate(cpatch%mmean_n_fixation                       (                    ncohorts))
       allocate(cpatch%bseeds                       (                    ncohorts))
@@ -6661,7 +6661,7 @@ module ed_state_vars
       nullify(cpatch%bstorage_max)
       nullify(cpatch%nstorage_max)
       nullify(cpatch%pstorage_max)
-      nullify(cpatch%enz_alloc_frac_n)
+      nullify(cpatch%enz_alloc_frac_p)
       nullify(cpatch%bseeds                )
       nullify(cpatch%lai                   )
       nullify(cpatch%wai                   )
@@ -7666,7 +7666,7 @@ module ed_state_vars
       if(associated(cpatch%nstorage_max        )) deallocate(cpatch%nstorage_max        )
       if(associated(cpatch%pstorage            )) deallocate(cpatch%pstorage            )
       if(associated(cpatch%pstorage_max        )) deallocate(cpatch%pstorage_max        )
-      if(associated(cpatch%enz_alloc_frac_n   )) deallocate(cpatch%enz_alloc_frac_n )
+      if(associated(cpatch%enz_alloc_frac_p   )) deallocate(cpatch%enz_alloc_frac_p )
       if(associated(cpatch%bseeds              )) deallocate(cpatch%bseeds              )
       if(associated(cpatch%n_fixation         )) deallocate(cpatch%n_fixation         )
       if(associated(cpatch%mmean_n_fixation         )) deallocate(cpatch%mmean_n_fixation         )
@@ -9608,7 +9608,7 @@ module ed_state_vars
          opatch%n_fixation          (oco) = ipatch%n_fixation          (ico)
          opatch%mmean_n_fixation          (oco) = ipatch%mmean_n_fixation          (ico)
          opatch%pstorage_max          (oco) = ipatch%pstorage_max          (ico)
-         opatch%enz_alloc_frac_n    (oco) = ipatch%enz_alloc_frac_n    (ico)
+         opatch%enz_alloc_frac_p    (oco) = ipatch%enz_alloc_frac_p    (ico)
          opatch%bseeds                (oco) = ipatch%bseeds                (ico)
          opatch%lai                   (oco) = ipatch%lai                   (ico)
          opatch%wai                   (oco) = ipatch%wai                   (ico)
@@ -10298,7 +10298,7 @@ module ed_state_vars
       opatch%n_fixation              (1:z) = pack(ipatch%n_fixation           ,lmask)
       opatch%mmean_n_fixation              (1:z) = pack(ipatch%mmean_n_fixation           ,lmask)
       opatch%pstorage_max          (1:z) = pack(ipatch%pstorage_max              ,lmask)
-      opatch%enz_alloc_frac_n  (1:z) = pack(ipatch%enz_alloc_frac_n    ,lmask)
+      opatch%enz_alloc_frac_p  (1:z) = pack(ipatch%enz_alloc_frac_p    ,lmask)
       opatch%bseeds                (1:z) = pack(ipatch%bseeds                    ,lmask)
       opatch%lai                   (1:z) = pack(ipatch%lai                       ,lmask)
       opatch%wai                   (1:z) = pack(ipatch%wai                       ,lmask)
@@ -24610,10 +24610,10 @@ module ed_state_vars
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 
-      if (associated(cpatch%enz_alloc_frac_n)) then
+      if (associated(cpatch%enz_alloc_frac_p)) then
          nvar=nvar+1
-           call vtable_edio_r(npts,cpatch%enz_alloc_frac_n,nvar,igr,init,cpatch%coglob_id, &
-           var_len,var_len_global,max_ptrs,'ENZ_ALLOC_FRAC_N :41:hist:anal:year:dail:mont:dcyc') 
+           call vtable_edio_r(npts,cpatch%enz_alloc_frac_p,nvar,igr,init,cpatch%coglob_id, &
+           var_len,var_len_global,max_ptrs,'ENZ_ALLOC_FRAC_P :41:hist:anal:year:dail:mont:dcyc') 
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 
