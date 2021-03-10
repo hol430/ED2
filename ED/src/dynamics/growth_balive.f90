@@ -2379,11 +2379,10 @@ module growth_balive
         endif
 
         if(limitation_flag == 3)then
-           cpatch%enz_alloc_frac_p(ico) = cpatch%enz_alloc_frac_p(ico) * 1.1
+           cpatch%enz_alloc_frac_p(ico) = min(1.,cpatch%enz_alloc_frac_p(ico) * 2.0)
         else
-           cpatch%enz_alloc_frac_p(ico) = max(0.,cpatch%enz_alloc_frac_p(ico)*0.95)
+           cpatch%enz_alloc_frac_p(ico) = max(0.01,cpatch%enz_alloc_frac_p(ico)*0.5)
         endif
-
 
      enddo
 
