@@ -2383,6 +2383,7 @@ module growth_balive
         else
            cpatch%enz_alloc_frac_p(ico) = max(0.01,cpatch%enz_alloc_frac_p(ico)*0.5)
         endif
+        cpatch%enz_alloc_frac_p(ico) = 1.
 
      enddo
 
