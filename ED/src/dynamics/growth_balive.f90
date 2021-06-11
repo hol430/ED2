@@ -2317,14 +2317,14 @@ module growth_balive
         endif
 
 !if(.false.)then
+        adjusted = 0
         if(limitation_flag ==2)then
            cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
                 cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
            adjusted = 1
         endif
-
+        
         if(limitation_flag == 1)then
-           adjusted = 0
            if(cpatch%dmin_leaf_psi(ico) < leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft))then
               k = cpatch%krdepth(ico)
               nsoil = ntext_soil(k)
@@ -2344,21 +2344,21 @@ module growth_balive
                    cpatch%root2leaf(ico) * exp(-root_realloc_inc(ipft))))
               adjusted = 1
            endif
+        endif
 
-           if(adjusted == 1)then
-              actual_leaf_and_root = cpatch%bleaf(ico) + cpatch%broot(ico)
-              bl_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * green_leaf_factor(ipft,ipa) * &
-                   cpatch%elongf(ico)
-              br_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * cpatch%root2leaf(ico) * &
-                   (cpatch%elongf(ico) + 1.) / 2.
-              target_leaf_and_root = bl_max + br_max
-              actual_to_target = actual_leaf_and_root / target_leaf_and_root
-              cpatch%bleaf(ico) = bl_max * actual_to_target
-              cpatch%broot(ico) = br_max * actual_to_target
-              call rwc2tw(cpatch%leaf_rwc(ico),cpatch%wood_rwc(ico),cpatch%bleaf(ico), &
-                   cpatch%bdead(ico),cpatch%broot(ico),dbh2sf(cpatch%dbh(ico),ipft),  &
-                   ipft,cpatch%leaf_water_int(ico),cpatch%wood_water_int(ico))
-           endif
+        if(adjusted == 1)then
+           actual_leaf_and_root = cpatch%bleaf(ico) + cpatch%broot(ico)
+           bl_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * green_leaf_factor(ipft,ipa) * &
+                cpatch%elongf(ico)
+           br_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * cpatch%root2leaf(ico) * &
+                (cpatch%elongf(ico) + 1.) / 2.
+           target_leaf_and_root = bl_max + br_max
+           actual_to_target = actual_leaf_and_root / target_leaf_and_root
+           cpatch%bleaf(ico) = bl_max * actual_to_target
+           cpatch%broot(ico) = br_max * actual_to_target
+           call rwc2tw(cpatch%leaf_rwc(ico),cpatch%wood_rwc(ico),cpatch%bleaf(ico), &
+                cpatch%bdead(ico),cpatch%broot(ico),dbh2sf(cpatch%dbh(ico),ipft),  &
+                ipft,cpatch%leaf_water_int(ico),cpatch%wood_water_int(ico))
         endif
 !endif
         if(limitation_flag == 2 .and. ipft > 4)then
@@ -2379,11 +2379,12 @@ module growth_balive
         endif
 
         if(limitation_flag == 3)then
-           cpatch%enz_alloc_frac_p(ico) = min(1.,cpatch%enz_alloc_frac_p(ico) * 2.0)
+           cpatch%enz_alloc_frac_p(ico) = cpatch%enz_alloc_frac_p(ico) + 0.05
+!           cpatch%enz_alloc_frac_p(ico) = min(1.,cpatch%enz_alloc_frac_p(ico) + 0.05)
         else
-           cpatch%enz_alloc_frac_p(ico) = max(0.01,cpatch%enz_alloc_frac_p(ico)*0.5)
+           cpatch%enz_alloc_frac_p(ico) = max(0.01,cpatch%enz_alloc_frac_p(ico) - 0.05)
         endif
-        cpatch%enz_alloc_frac_p(ico) = 1.
+!        cpatch%enz_alloc_frac_p(ico) = 1.
 
      enddo
 

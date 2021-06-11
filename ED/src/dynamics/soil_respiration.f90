@@ -87,7 +87,7 @@ subroutine soil_respiration(csite,ipa,mzg,ntext_soil)
       !------------------------------------------------------------------------------------!
       cpatch%root_respiration(ico) = - cpatch%root_respiration(ico) * cpatch%broot(ico)    &
                                      * cpatch%nplant(ico) / slz(kroot) *   &
-                                     (1. + 0.*cpatch%enz_alloc_frac_p(ico))
+                                     (0.5 + 0.5*cpatch%enz_alloc_frac_p(ico))
       !------------------------------------------------------------------------------------!
 
 

@@ -371,6 +371,9 @@ Contains
     
     SELECT CASE (trim(sCase))
     CASE ("NITRIF")  !!
+!       WFPcr = (/0.0d0, 0.3d0,0.7d0,1.00d0/)
+!       Slope       = (/ 3.33d0, -3.33d0/)
+!       Intercept   = (/ 0.00d0,  3.33d0 /)
        WFPcr = (/0.09d0, 0.54d0,0.69d0,1.00d0/)
        Slope       = (/ 2.20d0, -3.23d0/)
        Intercept   = (/-0.19d0,  3.23d0 /)
