@@ -192,6 +192,8 @@ subroutine get_work(ifm,nxp,nyp)
                           , grid_type      & ! intent(in)
                           , maxsite        ! ! intent(in)
    use ed_misc_coms, only : min_site_area  ! ! intent(in)
+   use ed_enhanced_soil, only: wise_soil_database
+   use nutrient_constants, only: soil_cpct, soil_som_c2n
    implicit none
    !----- Arguments. ----------------------------------------------------------------------!
    integer, intent(in) :: ifm
@@ -203,6 +205,8 @@ subroutine get_work(ifm,nxp,nyp)
    real   , dimension(:,:), allocatable :: lon_list
    integer, dimension(:,:), allocatable :: leaf_class_list
    integer, dimension(:,:), allocatable :: ntext_soil_list
+   real, dimension(:,:), allocatable :: orgc_list
+   real, dimension(:,:), allocatable :: c2n_list
    integer, dimension(:,:), allocatable :: ncol_soil_list
    real   , dimension(:,:), allocatable :: ipcent_land
    real   , dimension(:,:), allocatable :: ipcent_soil
@@ -225,6 +229,8 @@ subroutine get_work(ifm,nxp,nyp)
    allocate(lon_list       (      3,npoly))
    allocate(leaf_class_list(maxsite,npoly))
    allocate(ntext_soil_list(maxsite,npoly))
+   allocate(orgc_list(maxsite,npoly))
+   allocate(c2n_list(maxsite,npoly))
    allocate(ncol_soil_list (maxsite,npoly))
    allocate(ipcent_land    (maxsite,npoly))
    allocate(ipcent_soil    (maxsite,npoly))
@@ -351,10 +357,14 @@ subroutine get_work(ifm,nxp,nyp)
 
    call leaf_database(trim(veg_database(ifm)),maxsite,npoly,'leaf_class'                   &
                      ,lat_list,lon_list,leaf_class_list,ipcent_land)
-
    if (isoilflg(ifm) == 1) then
       call leaf_database(trim(soil_database(ifm)),maxsite,npoly,'soil_text'                &
                         ,lat_list,lon_list,ntext_soil_list,ipcent_soil)
+      orgc_list(:,:) = soil_cpct
+      c2n_list(:,:) = soil_som_c2n
+   elseif (isoilflg(ifm) == 3)then
+      call wise_soil_database(trim(soil_database(ifm)), maxsite, npoly,  &
+           lat_list, lon_list, ntext_soil_list, ipcent_soil, orgc_list, c2n_list)
    else
       !------------------------------------------------------------------------------------!
       !   Allow for only one site by making the first site with the default soil type and  !
@@ -363,6 +373,8 @@ subroutine get_work(ifm,nxp,nyp)
       ntext_soil_list        (:,:) = nslcon
       ipcent_soil            (:,:) = 0.
       ipcent_soil            (1,:) = 1.
+      orgc_list(:,:) = soil_cpct
+      c2n_list(:,:) = soil_som_c2n
       !------------------------------------------------------------------------------------!
    end if
    !---------------------------------------------------------------------------------------!
@@ -384,6 +396,11 @@ subroutine get_work(ifm,nxp,nyp)
       do i=1,nxp
          ipy = ipy + 1
          work_e(ifm)%land(i,j) = ipcent_land(1,ipy) > min_site_area
+         if(isoilflg(ifm) == 3)then
+            if(work_e(ifm)%land(i,j))then
+               work_e(ifm)%land(i,j) = ntext_soil_list(1,ipy) > 0
+            endif
+         endif
 
          if (work_e(ifm)%land(i,j)) then
             work_e(ifm)%landfrac(i,j) = ipcent_land(1,ipy)
@@ -395,6 +412,8 @@ subroutine get_work(ifm,nxp,nyp)
                end if
                work_e(ifm)%soilfrac(itext,i,j) = ipcent_soil(itext,ipy)
                work_e(ifm)%ntext   (itext,i,j) = ntext_soil_list (itext,ipy)
+               work_e(ifm)%orgc   (itext,i,j) = orgc_list (itext,ipy)
+               work_e(ifm)%c2n   (itext,i,j) = c2n_list (itext,ipy)
             end do
             work_e(ifm)%nscol            (i,j) = ncol_soil_list(1,ipy)
 
@@ -407,6 +426,8 @@ subroutine get_work(ifm,nxp,nyp)
             work_e(ifm)%nscol     (i,j) = 0
             work_e(ifm)%ntext   (:,i,j) = 0
             work_e(ifm)%soilfrac(:,i,j) = 0.
+            work_e(ifm)%orgc(:,i,j) = 0.
+            work_e(ifm)%c2n(:,i,j) = 0.
          end if
       end do
    end do
@@ -428,6 +449,8 @@ subroutine get_work(ifm,nxp,nyp)
    deallocate(lon_list       )
    deallocate(leaf_class_list)
    deallocate(ntext_soil_list)
+   deallocate(orgc_list)
+   deallocate(c2n_list)
    deallocate(ncol_soil_list )
    deallocate(ipcent_land    )
    deallocate(ipcent_soil    )

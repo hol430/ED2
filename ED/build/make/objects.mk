@@ -30,6 +30,7 @@ OBJ_MODEL =                        \
 	ed_1st.o                   \
 	ed_bigleaf_init.o          \
 	ed_driver.o                \
+	ed_enhanced_soil.o                \
 	ed_filelist.o              \
 	ed_grid.o                  \
 	ed_init.o                  \

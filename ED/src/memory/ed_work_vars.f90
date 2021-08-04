@@ -10,6 +10,8 @@ module ed_work_vars
       logical, dimension(  :,:), pointer :: land
       real   , dimension(  :,:), pointer :: landfrac
       real   , dimension(:,:,:), pointer :: soilfrac
+      real   , dimension(:,:,:), pointer :: c2n
+      real   , dimension(:,:,:), pointer :: orgc
       integer, dimension(:,:,:), pointer :: ntext
       integer, dimension(  :,:), pointer :: nscol
       integer, dimension(  :,:), pointer :: xatm
@@ -23,6 +25,8 @@ module ed_work_vars
       real   , dimension(:  ), pointer :: work
       real   , dimension(:  ), pointer :: landfrac
       real   , dimension(:,:), pointer :: soilfrac
+      real   , dimension(:,:), pointer :: orgc
+      real   , dimension(:,:), pointer :: c2n
       integer, dimension(:,:), pointer :: ntext
       integer, dimension(:  ), pointer :: nscol
       integer, dimension(:  ), pointer :: xid
@@ -66,6 +70,8 @@ module ed_work_vars
       allocate (worke%land    (      n2,n3))
       allocate (worke%landfrac(      n2,n3))
       allocate (worke%soilfrac(nsite,n2,n3))
+      allocate (worke%orgc(nsite,n2,n3))
+      allocate (worke%c2n(nsite,n2,n3))
       allocate (worke%ntext   (nsite,n2,n3))
       allocate (worke%nscol   (      n2,n3))
       !------------------------------------------------------------------------------------!
@@ -97,6 +103,8 @@ module ed_work_vars
       if (associated(worke%land     )) nullify (worke%land    )
       if (associated(worke%landfrac )) nullify (worke%landfrac)
       if (associated(worke%soilfrac )) nullify (worke%soilfrac)
+      if (associated(worke%orgc )) nullify (worke%orgc)
+      if (associated(worke%c2n )) nullify (worke%c2n)
       if (associated(worke%ntext    )) nullify (worke%ntext   )
       if (associated(worke%nscol    )) nullify (worke%nscol   )
 
@@ -124,6 +132,8 @@ module ed_work_vars
       if (associated(worke%land        )) deallocate (worke%land        )
       if (associated(worke%landfrac    )) deallocate (worke%landfrac    )
       if (associated(worke%soilfrac    )) deallocate (worke%soilfrac    )
+      if (associated(worke%c2n    )) deallocate (worke%c2n    )
+      if (associated(worke%orgc    )) deallocate (worke%orgc    )
       if (associated(worke%ntext       )) deallocate (worke%ntext       )
       if (associated(worke%nscol       )) deallocate (worke%nscol       )
 
@@ -155,6 +165,8 @@ module ed_work_vars
       allocate (workv%work    (      npolys))
       allocate (workv%landfrac(      npolys))
       allocate (workv%soilfrac(nsite,npolys))
+      allocate (workv%orgc(nsite,npolys))
+      allocate (workv%c2n(nsite,npolys))
       allocate (workv%ntext   (nsite,npolys))
       allocate (workv%nscol   (      npolys))
       allocate (workv%xid     (      npolys))
@@ -185,6 +197,8 @@ module ed_work_vars
       if (associated(workv%work    ))   nullify(workv%work    )
       if (associated(workv%landfrac))   nullify(workv%landfrac)
       if (associated(workv%soilfrac))   nullify(workv%soilfrac)
+      if (associated(workv%orgc))   nullify(workv%orgc)
+      if (associated(workv%c2n))   nullify(workv%c2n)
       if (associated(workv%ntext   ))   nullify(workv%ntext   )
       if (associated(workv%nscol   ))   nullify(workv%nscol   )
       if (associated(workv%xid     ))   nullify(workv%xid     )
@@ -214,6 +228,8 @@ module ed_work_vars
       if (associated(workv%work    ))   deallocate(workv%work    )
       if (associated(workv%landfrac))   deallocate(workv%landfrac)
       if (associated(workv%soilfrac))   deallocate(workv%soilfrac)
+      if (associated(workv%c2n))   deallocate(workv%c2n)
+      if (associated(workv%orgc))   deallocate(workv%orgc)
       if (associated(workv%ntext   ))   deallocate(workv%ntext   )
       if (associated(workv%nscol   ))   deallocate(workv%nscol   )
       if (associated(workv%xid     ))   deallocate(workv%xid     )

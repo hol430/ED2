@@ -1449,7 +1449,7 @@ subroutine ed_opspec_misc
    end do
 #else
    do ifm=1,ngrids
-      if (isoilflg(ifm) < 1 .or. isoilflg(ifm) > 2) then
+      if (isoilflg(ifm) < 1 .or. isoilflg(ifm) > 3) then
          write (reason,fmt='(a,1x,i4,1x,a,1x,i4,a)')                                       &
                        'Invalid ISOILFLG, it must be between 1 and 3. Yours is set to'     &
                       ,isoilflg(ifm),'for grid',ifm,'...'
