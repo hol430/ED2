@@ -207,6 +207,7 @@ subroutine get_work(ifm,nxp,nyp)
    integer, dimension(:,:), allocatable :: ntext_soil_list
    real, dimension(:,:), allocatable :: orgc_list
    real, dimension(:,:), allocatable :: c2n_list
+   real, dimension(:,:), allocatable :: apa_list, lab_list, occ_list, org_list, sec_list
    integer, dimension(:,:), allocatable :: ncol_soil_list
    real   , dimension(:,:), allocatable :: ipcent_land
    real   , dimension(:,:), allocatable :: ipcent_soil
@@ -231,6 +232,11 @@ subroutine get_work(ifm,nxp,nyp)
    allocate(ntext_soil_list(maxsite,npoly))
    allocate(orgc_list(maxsite,npoly))
    allocate(c2n_list(maxsite,npoly))
+   allocate(apa_list(maxsite,npoly))
+   allocate(lab_list(maxsite,npoly))
+   allocate(org_list(maxsite,npoly))
+   allocate(occ_list(maxsite,npoly))
+   allocate(sec_list(maxsite,npoly))
    allocate(ncol_soil_list (maxsite,npoly))
    allocate(ipcent_land    (maxsite,npoly))
    allocate(ipcent_soil    (maxsite,npoly))
@@ -362,9 +368,12 @@ subroutine get_work(ifm,nxp,nyp)
                         ,lat_list,lon_list,ntext_soil_list,ipcent_soil)
       orgc_list(:,:) = soil_cpct
       c2n_list(:,:) = soil_som_c2n
+      print*,'Error: Phosphorus pools not initialized.'
+      stop
    elseif (isoilflg(ifm) == 3)then
       call wise_soil_database(trim(soil_database(ifm)), maxsite, npoly,  &
-           lat_list, lon_list, ntext_soil_list, ipcent_soil, orgc_list, c2n_list)
+           lat_list, lon_list, ntext_soil_list, ipcent_soil, orgc_list, c2n_list, &
+           apa_list, lab_list, occ_list, org_list, sec_list)
    else
       !------------------------------------------------------------------------------------!
       !   Allow for only one site by making the first site with the default soil type and  !
@@ -397,9 +406,8 @@ subroutine get_work(ifm,nxp,nyp)
          ipy = ipy + 1
          work_e(ifm)%land(i,j) = ipcent_land(1,ipy) > min_site_area
          if(isoilflg(ifm) == 3)then
-            if(work_e(ifm)%land(i,j))then
-               work_e(ifm)%land(i,j) = ntext_soil_list(1,ipy) > 0
-            endif
+            if(work_e(ifm)%land(i,j))work_e(ifm)%land(i,j) = ntext_soil_list(1,ipy) > 0
+            if(work_e(ifm)%land(i,j))work_e(ifm)%land(i,j) = apa_list(1,ipy) > 0.
          endif
 
          if (work_e(ifm)%land(i,j)) then
@@ -414,6 +422,11 @@ subroutine get_work(ifm,nxp,nyp)
                work_e(ifm)%ntext   (itext,i,j) = ntext_soil_list (itext,ipy)
                work_e(ifm)%orgc   (itext,i,j) = orgc_list (itext,ipy)
                work_e(ifm)%c2n   (itext,i,j) = c2n_list (itext,ipy)
+               work_e(ifm)%apa(itext,i,j) = apa_list(itext,ipy)
+               work_e(ifm)%lab(itext,i,j) = lab_list(itext,ipy)
+               work_e(ifm)%occ(itext,i,j) = occ_list(itext,ipy)
+               work_e(ifm)%org(itext,i,j) = org_list(itext,ipy)
+               work_e(ifm)%sec(itext,i,j) = sec_list(itext,ipy)
             end do
             work_e(ifm)%nscol            (i,j) = ncol_soil_list(1,ipy)
 
@@ -428,6 +441,11 @@ subroutine get_work(ifm,nxp,nyp)
             work_e(ifm)%soilfrac(:,i,j) = 0.
             work_e(ifm)%orgc(:,i,j) = 0.
             work_e(ifm)%c2n(:,i,j) = 0.
+            work_e(ifm)%apa(:,i,j) = 0.
+            work_e(ifm)%lab(:,i,j) = 0.
+            work_e(ifm)%occ(:,i,j) = 0.
+            work_e(ifm)%org(:,i,j) = 0.
+            work_e(ifm)%sec(:,i,j) = 0.
          end if
       end do
    end do
@@ -451,6 +469,11 @@ subroutine get_work(ifm,nxp,nyp)
    deallocate(ntext_soil_list)
    deallocate(orgc_list)
    deallocate(c2n_list)
+   deallocate(apa_list)
+   deallocate(lab_list)
+   deallocate(occ_list)
+   deallocate(org_list)
+   deallocate(sec_list)
    deallocate(ncol_soil_list )
    deallocate(ipcent_land    )
    deallocate(ipcent_soil    )
@@ -533,6 +556,13 @@ subroutine ed_parvec_work(ifm,nxp,nyp)
             do itext=1,maxsite
                work_v(ifm)%ntext   (itext,poly) = work_e(ifm)%ntext   (itext,i,j)
                work_v(ifm)%soilfrac(itext,poly) = work_e(ifm)%soilfrac(itext,i,j)
+               work_v(ifm)%orgc(itext,poly) = work_e(ifm)%orgc(itext,i,j)
+               work_v(ifm)%c2n(itext,poly) = work_e(ifm)%c2n(itext,i,j)
+               work_v(ifm)%apa(itext,poly) = work_e(ifm)%apa(itext,i,j)
+               work_v(ifm)%lab(itext,poly) = work_e(ifm)%lab(itext,i,j)
+               work_v(ifm)%occ(itext,poly) = work_e(ifm)%occ(itext,i,j)
+               work_v(ifm)%org(itext,poly) = work_e(ifm)%org(itext,i,j)
+               work_v(ifm)%sec(itext,poly) = work_e(ifm)%sec(itext,i,j)
             end do
          end if
       end do

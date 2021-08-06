@@ -11,6 +11,7 @@ module ed_work_vars
       real   , dimension(  :,:), pointer :: landfrac
       real   , dimension(:,:,:), pointer :: soilfrac
       real   , dimension(:,:,:), pointer :: c2n
+      real   , dimension(:,:,:), pointer :: apa,lab,occ,org,sec
       real   , dimension(:,:,:), pointer :: orgc
       integer, dimension(:,:,:), pointer :: ntext
       integer, dimension(  :,:), pointer :: nscol
@@ -27,6 +28,7 @@ module ed_work_vars
       real   , dimension(:,:), pointer :: soilfrac
       real   , dimension(:,:), pointer :: orgc
       real   , dimension(:,:), pointer :: c2n
+      real   , dimension(:,:), pointer :: apa,lab,occ,org,sec
       integer, dimension(:,:), pointer :: ntext
       integer, dimension(:  ), pointer :: nscol
       integer, dimension(:  ), pointer :: xid
@@ -72,6 +74,11 @@ module ed_work_vars
       allocate (worke%soilfrac(nsite,n2,n3))
       allocate (worke%orgc(nsite,n2,n3))
       allocate (worke%c2n(nsite,n2,n3))
+      allocate (worke%apa(nsite,n2,n3))
+      allocate (worke%lab(nsite,n2,n3))
+      allocate (worke%occ(nsite,n2,n3))
+      allocate (worke%org(nsite,n2,n3))
+      allocate (worke%sec(nsite,n2,n3))
       allocate (worke%ntext   (nsite,n2,n3))
       allocate (worke%nscol   (      n2,n3))
       !------------------------------------------------------------------------------------!
@@ -105,6 +112,11 @@ module ed_work_vars
       if (associated(worke%soilfrac )) nullify (worke%soilfrac)
       if (associated(worke%orgc )) nullify (worke%orgc)
       if (associated(worke%c2n )) nullify (worke%c2n)
+      if (associated(worke%apa )) nullify (worke%apa)
+      if (associated(worke%lab )) nullify (worke%lab)
+      if (associated(worke%occ )) nullify (worke%occ)
+      if (associated(worke%org )) nullify (worke%org)
+      if (associated(worke%sec )) nullify (worke%sec)
       if (associated(worke%ntext    )) nullify (worke%ntext   )
       if (associated(worke%nscol    )) nullify (worke%nscol   )
 
@@ -133,6 +145,11 @@ module ed_work_vars
       if (associated(worke%landfrac    )) deallocate (worke%landfrac    )
       if (associated(worke%soilfrac    )) deallocate (worke%soilfrac    )
       if (associated(worke%c2n    )) deallocate (worke%c2n    )
+      if (associated(worke%apa    )) deallocate (worke%apa    )
+      if (associated(worke%lab    )) deallocate (worke%lab    )
+      if (associated(worke%occ    )) deallocate (worke%occ    )
+      if (associated(worke%org    )) deallocate (worke%org    )
+      if (associated(worke%sec    )) deallocate (worke%sec    )
       if (associated(worke%orgc    )) deallocate (worke%orgc    )
       if (associated(worke%ntext       )) deallocate (worke%ntext       )
       if (associated(worke%nscol       )) deallocate (worke%nscol       )
@@ -167,6 +184,11 @@ module ed_work_vars
       allocate (workv%soilfrac(nsite,npolys))
       allocate (workv%orgc(nsite,npolys))
       allocate (workv%c2n(nsite,npolys))
+      allocate (workv%apa(nsite,npolys))
+      allocate (workv%lab(nsite,npolys))
+      allocate (workv%occ(nsite,npolys))
+      allocate (workv%org(nsite,npolys))
+      allocate (workv%sec(nsite,npolys))
       allocate (workv%ntext   (nsite,npolys))
       allocate (workv%nscol   (      npolys))
       allocate (workv%xid     (      npolys))
@@ -199,6 +221,11 @@ module ed_work_vars
       if (associated(workv%soilfrac))   nullify(workv%soilfrac)
       if (associated(workv%orgc))   nullify(workv%orgc)
       if (associated(workv%c2n))   nullify(workv%c2n)
+      if (associated(workv%apa))   nullify(workv%apa)
+      if (associated(workv%lab))   nullify(workv%lab)
+      if (associated(workv%occ))   nullify(workv%occ)
+      if (associated(workv%org))   nullify(workv%org)
+      if (associated(workv%sec))   nullify(workv%sec)
       if (associated(workv%ntext   ))   nullify(workv%ntext   )
       if (associated(workv%nscol   ))   nullify(workv%nscol   )
       if (associated(workv%xid     ))   nullify(workv%xid     )
@@ -229,6 +256,11 @@ module ed_work_vars
       if (associated(workv%landfrac))   deallocate(workv%landfrac)
       if (associated(workv%soilfrac))   deallocate(workv%soilfrac)
       if (associated(workv%c2n))   deallocate(workv%c2n)
+      if (associated(workv%apa))   deallocate(workv%apa)
+      if (associated(workv%lab))   deallocate(workv%lab)
+      if (associated(workv%occ))   deallocate(workv%occ)
+      if (associated(workv%org))   deallocate(workv%org)
+      if (associated(workv%sec))   deallocate(workv%sec)
       if (associated(workv%orgc))   deallocate(workv%orgc)
       if (associated(workv%ntext   ))   deallocate(workv%ntext   )
       if (associated(workv%nscol   ))   deallocate(workv%nscol   )

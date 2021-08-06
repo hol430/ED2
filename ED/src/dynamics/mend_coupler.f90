@@ -41,6 +41,7 @@ Contains
     use mend_state_vars, only: npom, nwood, mend_zero_vars, mend_mm_time
     use nutrient_constants, only: soil_cpct, soil_som_c2n, soil_totp,   &
          soil_extrp
+    use soil_coms, only: soil, isoilflg
     implicit none
 
     type(edtype), pointer :: cgrid
@@ -66,9 +67,14 @@ Contains
 
              call mend_zero_vars(csite%mend_mm, ipa, ipa)
 
-             csite%mend%bulk_den(ipa) = soil_bulk_den
-             csite%mend%pH(ipa) = soil_ph
+             if(isoilflg(1) == 3)then
+                csite%mend%bulk_den(ipa) = soil(cpoly%ntext_soil(1,isi))%slden
+             else
+                csite%mend%bulk_den(ipa) = soil_bulk_den
+             endif
+
              csite%mend_mm%bulk_den(ipa) = csite%mend%bulk_den(ipa)
+             csite%mend%pH(ipa) = soil_ph
              csite%mend_mm%pH(ipa) = csite%mend%pH(ipa)
 
              call mend_som_init(npom,  &
@@ -109,7 +115,8 @@ Contains
                   csite%mend%som%plvars%plant_input_N_dom(ipa), &
                   csite%mend%som%plvars%plant_input_P_dom(ipa), &
                   som_consts, csite%mend%bulk_den(ipa),   &
-                  soil_cpct, soil_som_c2n, soil_totp, soil_extrp)
+                  soil_cpct, soil_som_c2n, soil_totp, soil_extrp, isoilflg(1), &
+                  isi, ipy, som_consts%eff_soil_depth)
           enddo
        enddo
     enddo

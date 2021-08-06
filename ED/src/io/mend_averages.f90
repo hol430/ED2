@@ -11,8 +11,6 @@ Contains
 
     call mend_normalize_type(y%som, step)
 
-    step = 0.
-
     return
   end subroutine mend_normalize
 

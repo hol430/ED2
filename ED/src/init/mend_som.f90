@@ -14,11 +14,14 @@ Contains
        vpup_plant, &
        plant_input_C_pom, plant_input_N_pom, plant_input_P_pom, &
        plant_input_C_dom, plant_input_N_dom, plant_input_P_dom, &
-       consts, bulk_den, soil_cpct, soil_som_c2n, soil_totp, soil_extrp)
+       consts, bulk_den, soil_cpct, soil_som_c2n, soil_totp, soil_extrp, isoilflg, &
+       isi, ipy, eff_soil_depth)
     use ed_max_dims, only: n_pft
     use mend_consts_coms, only: decomp_consts
+    use ed_work_vars, only: work_v
     implicit none
 
+    integer, intent(in) :: isoilflg
     real, intent(in) :: soil_cpct
     real, intent(in) :: soil_som_c2n
     real, intent(in) :: soil_totp
@@ -95,23 +98,29 @@ Contains
     real :: totp
     real :: extrp
     real :: c2p
+    integer, intent(in) :: isi, ipy
+    real :: Yang_conv_fac ! convert gP/m2 to mgP/gSoil
+    real, intent(in) :: eff_soil_depth
 
-    cpct = soil_cpct
-    c2n = soil_som_c2n
-    totp = soil_totp
-    extrp = soil_extrp
+    Yang_conv_fac = 1. / (eff_soil_depth * bulk_den)
 
-! Tipping et al. (2016) Biogeochemistry
-    c2p = (cpct*0.1) / (0.012*(cpct*0.1)**0.57)
+    if(isoilflg == 3)then
+       cpct = work_v(1)%orgc(isi,ipy) * 10.0 ! Divide by 100 to turn percentage into fraction.
+       ! Then, multiply by 1000 because we want mg/g. Net is a factor of 10.
+       c2n = work_v(1)%c2n(isi,ipy)
+       extrp = work_v(1)%lab(isi,ipy) * Yang_conv_fac
+       ! Tipping et al. (2016) Biogeochemistry
+       !       c2p = (cpct*0.1) / (0.012*(cpct*0.1)**0.57)
+       c2p = cpct / (work_v(1)%org(isi,ipy) * Yang_conv_fac)
+    else
+       cpct = soil_cpct
+       c2n = soil_som_c2n
+       totp = soil_totp
+       extrp = soil_extrp
+       ! Single number from Waring et al
+       c2p = cpct*0.1/(150.e-4)
+    endif
 
-! Single number from Waring et al
-    c2p = cpct*0.1/(150.e-4)
-
-! density (g/cm3):
-! SROAK:0.87  SRTDF:0.90  PVTDF:0.77
-! %C: 2.65  3.79  4.30
-! So, for SRTDF, SOM_C=37.9
-! %N: 0.22  0.35  0.44
     pom_c(1) = 7./31. * cpct
     pom_n(1) = pom_c(1) / c2n
     pom_p(1) = pom_c(1) / c2p
@@ -161,21 +170,27 @@ Contains
     nh4 = 1.0e-5
     no3 = 1.0e-5
 
-    ! See Yang et al. 2013, Biogeosciences, 10, 2525-2537
-    !  the total is from measurements, but I am very rougly assuming
-    !  a 3:1 ratio of occluded:secondary P, based on Yang et al. (2013)
-    !  results for inceptisols.
-    pocc = (totp - extrp) * 0.001 * 0.75
-    psec = (totp - extrp) * 0.001 * 0.25
-    ppar = 100. * 2. / bulk_den ! gP/m2 * 1000mg/g / 0.5 m / bulk_den / 1000kg/g
+    if(isoilflg /= 3)then
+       ! See Yang et al. 2013, Biogeosciences, 10, 2525-2537
+       !  the total is from measurements, but I am very rougly assuming
+       !  a 3:1 ratio of occluded:secondary P, based on Yang et al. (2013)
+       !  results for inceptisols.
+       pocc = (totp - extrp) * 0.001 * 0.75
+       psec = (totp - extrp) * 0.001 * 0.25
+       ppar = 100. * 2. / bulk_den ! gP/m2 * 1000mg/g / 0.5 m / bulk_den / 1000kg/g
+       my_total = extrp * 0.001
+    else
+       pocc = work_v(1)%occ(isi,ipy) * Yang_conv_fac
+       psec = work_v(1)%sec(isi,ipy) * Yang_conv_fac
+       ppar = work_v(1)%apa(isi,ipy) * Yang_conv_fac
+       my_total = extrp
+    endif
 
-    ! SROAK:84 SRTDF:358 PV:527  mgP/kg
-    my_total = extrp * 0.001
     my_b = consts%kmm_plang / bulk_den + consts%plab_max / bulk_den - my_total
     my_c = - consts%kmm_plang / bulk_den * my_total
     psol = (-my_b + sqrt(my_b**2-4.*my_c))*0.5
     plab = my_total - psol
-
+    
     if(plab > consts%plab_max / bulk_den)then
        print*,'initialization problem.'
        print*,'initial plab > plab_max'

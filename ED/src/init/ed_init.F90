@@ -106,6 +106,7 @@ subroutine set_site_defprops()
          !---------------------------------------------------------------------------------!
          nsite     = min(maxsite, count(work_v(ifm)%soilfrac(:,ipy) > min_site_area))
          text_area = sum(work_v(ifm)%soilfrac(1:nsite,ipy))
+
          !----- Sanity check. -------------------------------------------------------------!
          if (nsite == 0 .or. text_area <= 0.) then
             write (unit=*,fmt='(a)'          ) '------------------------------------------'
@@ -216,7 +217,6 @@ subroutine set_site_defprops()
 
    end do gridloop
    !---------------------------------------------------------------------------------------!
-
 
    return
 end subroutine set_site_defprops
@@ -402,7 +402,6 @@ subroutine load_ecosystem_state()
          end do
       end select
       call mend_init(0)
-
    case (1,2,3,6)
       !----- Initialize with ED1-type restart information. --------------------------------!
       write(unit=*,fmt='(a,i3.3)') ' + Initializing from ED restart file. Node: ',mynum

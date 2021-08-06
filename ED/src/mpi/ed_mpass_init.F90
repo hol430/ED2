@@ -1107,6 +1107,41 @@ subroutine ed_masterput_worklist_info(par_run)
                call MPI_Send(rscratch,npoly,MPI_REAL,machnum(nm),mpiid,MPI_COMM_WORLD      &
                             ,ierr)
                mpiid = mpiid + 1
+
+               rscratch(1:npoly) = work_v(ifm)%orgc(itext,ipya:ipyz)
+               call MPI_Send(rscratch,npoly,MPI_REAL,machnum(nm),mpiid,MPI_COMM_WORLD      &
+                            ,ierr)
+               mpiid = mpiid + 1
+
+               rscratch(1:npoly) = work_v(ifm)%c2n(itext,ipya:ipyz)
+               call MPI_Send(rscratch,npoly,MPI_REAL,machnum(nm),mpiid,MPI_COMM_WORLD      &
+                            ,ierr)
+               mpiid = mpiid + 1
+               rscratch(1:npoly) = work_v(ifm)%apa(itext,ipya:ipyz)
+               call MPI_Send(rscratch,npoly,MPI_REAL,machnum(nm),mpiid,MPI_COMM_WORLD      &
+                            ,ierr)
+               mpiid = mpiid + 1
+
+               rscratch(1:npoly) = work_v(ifm)%lab(itext,ipya:ipyz)
+               call MPI_Send(rscratch,npoly,MPI_REAL,machnum(nm),mpiid,MPI_COMM_WORLD      &
+                            ,ierr)
+               mpiid = mpiid + 1
+
+               rscratch(1:npoly) = work_v(ifm)%occ(itext,ipya:ipyz)
+               call MPI_Send(rscratch,npoly,MPI_REAL,machnum(nm),mpiid,MPI_COMM_WORLD      &
+                            ,ierr)
+               mpiid = mpiid + 1
+
+               rscratch(1:npoly) = work_v(ifm)%org(itext,ipya:ipyz)
+               call MPI_Send(rscratch,npoly,MPI_REAL,machnum(nm),mpiid,MPI_COMM_WORLD      &
+                            ,ierr)
+               mpiid = mpiid + 1
+
+               rscratch(1:npoly) = work_v(ifm)%sec(itext,ipya:ipyz)
+               call MPI_Send(rscratch,npoly,MPI_REAL,machnum(nm),mpiid,MPI_COMM_WORLD      &
+                            ,ierr)
+               mpiid = mpiid + 1
+
             end do
 
             !----- Deallocate the scratch arrays, as the polygon sizes may change. --------!
@@ -1141,6 +1176,13 @@ subroutine ed_masterput_worklist_info(par_run)
       sc_work(ifm)%glat              (1:npoly) = work_v(ifm)%glat              (ipya:ipyz)
       sc_work(ifm)%landfrac          (1:npoly) = work_v(ifm)%landfrac          (ipya:ipyz)
       sc_work(ifm)%soilfrac(1:maxsite,1:npoly) = work_v(ifm)%soilfrac(1:maxsite,ipya:ipyz)
+      sc_work(ifm)%orgc(1:maxsite,1:npoly) = work_v(ifm)%orgc(1:maxsite,ipya:ipyz)
+      sc_work(ifm)%c2n(1:maxsite,1:npoly) = work_v(ifm)%c2n(1:maxsite,ipya:ipyz)
+      sc_work(ifm)%apa(1:maxsite,1:npoly) = work_v(ifm)%apa(1:maxsite,ipya:ipyz)
+      sc_work(ifm)%lab(1:maxsite,1:npoly) = work_v(ifm)%lab(1:maxsite,ipya:ipyz)
+      sc_work(ifm)%occ(1:maxsite,1:npoly) = work_v(ifm)%occ(1:maxsite,ipya:ipyz)
+      sc_work(ifm)%org(1:maxsite,1:npoly) = work_v(ifm)%org(1:maxsite,ipya:ipyz)
+      sc_work(ifm)%sec(1:maxsite,1:npoly) = work_v(ifm)%sec(1:maxsite,ipya:ipyz)
       sc_work(ifm)%ntext   (1:maxsite,1:npoly) = work_v(ifm)%ntext   (1:maxsite,ipya:ipyz)
       sc_work(ifm)%nscol             (1:npoly) = work_v(ifm)%nscol             (ipya:ipyz)
       sc_work(ifm)%xid               (1:npoly) = work_v(ifm)%xid               (ipya:ipyz)
@@ -1171,6 +1213,13 @@ subroutine ed_masterput_worklist_info(par_run)
       work_v(ifm)%glat              (1:npoly) = sc_work(ifm)%glat              (1:npoly)
       work_v(ifm)%landfrac          (1:npoly) = sc_work(ifm)%landfrac          (1:npoly)
       work_v(ifm)%soilfrac(1:maxsite,1:npoly) = sc_work(ifm)%soilfrac(1:maxsite,1:npoly)
+      work_v(ifm)%orgc(1:maxsite,1:npoly) = sc_work(ifm)%orgc(1:maxsite,1:npoly)
+      work_v(ifm)%c2n(1:maxsite,1:npoly) = sc_work(ifm)%c2n(1:maxsite,1:npoly)
+      work_v(ifm)%apa(1:maxsite,1:npoly) = sc_work(ifm)%apa(1:maxsite,1:npoly)
+      work_v(ifm)%lab(1:maxsite,1:npoly) = sc_work(ifm)%lab(1:maxsite,1:npoly)
+      work_v(ifm)%occ(1:maxsite,1:npoly) = sc_work(ifm)%occ(1:maxsite,1:npoly)
+      work_v(ifm)%org(1:maxsite,1:npoly) = sc_work(ifm)%org(1:maxsite,1:npoly)
+      work_v(ifm)%sec(1:maxsite,1:npoly) = sc_work(ifm)%sec(1:maxsite,1:npoly)
       work_v(ifm)%ntext   (1:maxsite,1:npoly) = sc_work(ifm)%ntext   (1:maxsite,1:npoly)
       work_v(ifm)%nscol             (1:npoly) = sc_work(ifm)%nscol             (1:npoly)
       work_v(ifm)%xid               (1:npoly) = sc_work(ifm)%xid               (1:npoly)
@@ -1978,6 +2027,35 @@ subroutine ed_nodeget_worklist_info
          call MPI_Recv(work_v(ifm)%soilfrac(itext,:),npolygons,MPI_REAL,master_num,mpiid   &
                       ,MPI_COMM_WORLD,status,ierr)
          mpiid = mpiid + 1
+
+         call MPI_Recv(work_v(ifm)%orgc(itext,:),npolygons,MPI_REAL,master_num,mpiid   &
+                      ,MPI_COMM_WORLD,status,ierr)
+         mpiid = mpiid + 1
+
+         call MPI_Recv(work_v(ifm)%c2n(itext,:),npolygons,MPI_REAL,master_num,mpiid   &
+                      ,MPI_COMM_WORLD,status,ierr)
+         mpiid = mpiid + 1
+
+         call MPI_Recv(work_v(ifm)%apa(itext,:),npolygons,MPI_REAL,master_num,mpiid   &
+                      ,MPI_COMM_WORLD,status,ierr)
+         mpiid = mpiid + 1
+
+         call MPI_Recv(work_v(ifm)%lab(itext,:),npolygons,MPI_REAL,master_num,mpiid   &
+                      ,MPI_COMM_WORLD,status,ierr)
+         mpiid = mpiid + 1
+
+         call MPI_Recv(work_v(ifm)%occ(itext,:),npolygons,MPI_REAL,master_num,mpiid   &
+                      ,MPI_COMM_WORLD,status,ierr)
+         mpiid = mpiid + 1
+
+         call MPI_Recv(work_v(ifm)%org(itext,:),npolygons,MPI_REAL,master_num,mpiid   &
+                      ,MPI_COMM_WORLD,status,ierr)
+         mpiid = mpiid + 1
+
+         call MPI_Recv(work_v(ifm)%sec(itext,:),npolygons,MPI_REAL,master_num,mpiid   &
+                      ,MPI_COMM_WORLD,status,ierr)
+         mpiid = mpiid + 1
+
       end do
 #endif
    end do
