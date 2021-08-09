@@ -140,13 +140,11 @@ subroutine ed_output(observation_time,analysis_time,new_day         &
 
    !----- Monthly analysis and monthly mean diurnal cycle output. -------------------------!
    if (mont_analy_time .or. dcyc_analy_time) then
-!print*,'2',edgrid_g(1)%polygon(1:3)%site(1)%mend_mm%som%cvars%dom(1)
       do ifm=1,ngrids
          call normalize_ed_mmean_vars(edgrid_g(ifm))
          if (writing_dcyc) call normalize_ed_qmean_vars(edgrid_g(ifm))
       end do
-print*,mend_mm_time
-if(mend_mm_time > 0.)print*,'3',edgrid_g(1)%polygon(1:3)%site(1)%mend_mm%som%cvars%dom(1)
+
       if (mont_analy_time) call h5_output('MONT')
       if (dcyc_analy_time) call h5_output('DCYC')
       do ifm=1,ngrids

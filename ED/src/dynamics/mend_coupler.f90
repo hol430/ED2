@@ -126,7 +126,7 @@ Contains
 
   subroutine mend_extern_forcing(mend, ipa, ncohorts, broot, nplant, &
        pft, krdepth, slden, nstorage, pstorage,   &
-       nstorage_max, pstorage_max, water_supply_nl, lai,enz_alloc_frac_p)
+       nstorage_max, pstorage_max, water_supply_nl, lai,enz_alloc_frac_p, ndep_met, pdep_met)
     use mend_state_vars, only: mend_model, nwood
     use mend_som, only: mend_som_extern_forcing
     use mend_consts_coms, only: som_consts
@@ -152,12 +152,12 @@ Contains
     real, intent(in), dimension(ncohorts) :: enz_alloc_frac_p
     real :: broot_total
     integer :: ico
-    real, intent(in) :: slden
+    real, intent(in) :: slden, ndep_met, pdep_met
 
     call mend_som_extern_forcing(ndep_rate, som_consts, slden, &
          mend%som%fluxes%nh4_dep(ipa), mend%som%fluxes%no3_dep(ipa), &
          pdep_rate, mend%som%fluxes%ppar_dep(ipa), current_time%year, &
-         ndep_appl, pdep_appl)
+         ndep_appl, pdep_appl, ndep_met, pdep_met)
     
     call mend_som_plant_enzymes(ncohorts, broot, nplant, pft,  &
          krdepth, slden, mend%som%plvars%enz_plant_n(:,ipa),  &

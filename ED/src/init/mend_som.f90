@@ -229,9 +229,10 @@ Contains
   end subroutine mend_som_init
 
   subroutine mend_som_extern_forcing(ndep_rate, consts, slden, input_nh4, &
-       input_no3, pdep_rate, input_ppar, year, ndep_appl, pdep_appl)
+       input_no3, pdep_rate, input_ppar, year, ndep_appl, pdep_appl, ndep_met, pdep_met)
 
     use mend_consts_coms, only: decomp_consts
+    use soil_coms, only: isoilflg
 
     implicit none
 
@@ -245,12 +246,19 @@ Contains
     real, intent(in) :: ndep_appl
     real, intent(in) :: pdep_appl
     integer, intent(in) :: year
+    real, intent(in) :: ndep_met, pdep_met
 
     input_nh4 = ndep_rate / (consts%eff_soil_depth * slden * 1000.)
 
     input_no3 = 0.
 
     input_ppar = pdep_rate / (consts%eff_soil_depth * slden * 1000.)
+
+    if(isoilflg(1) == 3)then
+       input_nh4 = ndep_met  / (consts%eff_soil_depth * slden * 1000.)
+       input_ppar = pdep_met  / (consts%eff_soil_depth * slden * 1000.)
+       input_no3 = 0.
+    endif
 
 !    if(year >= 2015)then
 !       input_nh4 = input_nh4 + ndep_appl / (consts%eff_soil_depth * slden * 1000.)

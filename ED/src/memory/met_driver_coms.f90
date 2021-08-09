@@ -117,6 +117,7 @@ module met_driver_coms
       real, pointer, dimension(:) :: sh
       real, pointer, dimension(:) :: tmp
       real, pointer, dimension(:) :: co2
+      real, dimension(:), allocatable :: ndep,pdep
    end type met_driv_data
    !---------------------------------------------------------------------------------------!
 
@@ -151,6 +152,8 @@ module met_driver_coms
       real :: geoht
       real :: atm_co2
       real :: pptnorm
+      real :: ndep
+      real :: pdep
    end type met_driv_state
    !---------------------------------------------------------------------------------------!
 

@@ -243,7 +243,7 @@ module rk4_driver
                     cpatch%pft, cpatch%krdepth, csite%mend%bulk_den(ipa), &
                     cpatch%nstorage, cpatch%pstorage, cpatch%nstorage_max, &
                     cpatch%pstorage_max, cpatch%water_supply_nl, cpatch%lai, &
-                    cpatch%enz_alloc_frac_p)
+                    cpatch%enz_alloc_frac_p, cgrid%met(ipy)%ndep, cgrid%met(ipy)%pdep)
 
                !----- Get photosynthesis, stomatal conductance, and transpiration. --------!
                call canopy_photosynthesis(csite,cmet,nzg,ipa,cpoly%ntext_soil(:,isi)       &

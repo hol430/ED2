@@ -291,6 +291,12 @@ subroutine init_met_drivers
                end select
 
             end do varloop
+
+            mem_size = 22
+            allocate(cgrid%metinput(ipy)%ndep(mem_size))
+            allocate(cgrid%metinput(ipy)%pdep(mem_size))
+            cgrid%metinput(ipy)%ndep = 0.
+            cgrid%metinput(ipy)%pdep = 0.
          end do polyloop
       end do gridloop
    end do formloop
@@ -327,7 +333,7 @@ subroutine read_met_drivers_init
                                 , edtype         & ! structure
                                 , polygontype    ! ! structure
    use hdf5_utils        , only : shdf5_open_f   & ! subroutine
-                                , shdf5_close_f  ! ! subroutine
+                                , shdf5_close_f, shdf5_info_f, shdf5_irec_f  ! ! subroutine
    use met_driver_coms   , only : nformats       & ! intent(in)
                                 , ishuffle       & ! intent(in)
                                 , met_names      & ! intent(in)
@@ -344,6 +350,7 @@ subroutine read_met_drivers_init
    use grid_coms         , only : ngrids         ! ! intent(in)
    use consts_coms       , only : day_sec        ! ! intent(in)
    use ed_node_coms      , only : mynum          ! ! intent(in)
+   use soil_coms, only: soil_database
    implicit none
    !----- Local variables -----------------------------------------------------------------!
    type(edtype)          , pointer :: cgrid
@@ -373,8 +380,18 @@ subroutine read_met_drivers_init
    !----- Variables to be saved. ----------------------------------------------------------!
    logical         , save      :: first_time=.true.
    !---------------------------------------------------------------------------------------!
- 
-
+   integer :: ndims
+   integer, dimension(2) :: idims
+   real, allocatable, dimension(:,:) :: metvar
+   real, allocatable, dimension(:,:) :: metvar_t
+   integer :: nfile
+   integer :: i,j
+   integer, parameter, dimension(22) :: ylist = (/ 1850, 1960, 1970, 1980, 1990, &
+        1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, &
+        2009, 2010, 2011, 2012, 2013 /)
+   integer :: depyear
+   character(len=32) :: depname
+   integer :: ipy
 
    !---------------------------------------------------------------------------------------!
    !    If this is the first time this subroutine is called, we build the meteorological   !
@@ -611,6 +628,57 @@ subroutine read_met_drivers_init
          call shdf5_close_f()
 
       end do formloop
+
+      infile = trim(soil_database(1))
+      inquire(file=trim(infile),exist=exans)
+      if(.not.exans)then
+         write(*,*)'File does not exist in ed_met_driver'
+         write(*,*)trim(infile)
+         stop
+      endif
+
+      open(12,file=trim(infile),form='formatted',status='old')
+      read(12,*)nfile
+      read(12,'(a)')infile
+      read(12,'(a)')infile
+      read(12,'(a)')infile
+      close(12)
+      call shdf5_open_f(trim(infile),'R')
+      call shdf5_info_f('NDEP_1850',ndims,idims)
+      allocate(metvar_t(idims(1),idims(2)))
+      allocate(metvar(idims(2),idims(1)))
+      do depyear = 1, 22
+         write(depname,'(a5,i4.4)')'NDEP_',ylist(depyear)
+         call shdf5_irec_f(ndims,idims,trim(depname),rvara=metvar_t)
+         do i = 1,360
+            do j = 1, 180
+               metvar(i,j) = metvar_t(181-j,i)
+            enddo
+         enddo
+         do ipy = 1, cgrid%npolygons
+            i = int(cgrid%lon(ipy)+180.)+1
+            j = int(cgrid%lat(ipy)+90.)+1
+            cgrid%metinput(ipy)%ndep(depyear) = metvar(i,j)
+         enddo
+
+         write(depname,'(a5,i4.4)')'PDEP_',ylist(depyear)
+         call shdf5_irec_f(ndims,idims,trim(depname),rvara=metvar_t)
+         do i = 1,360
+            do j = 1, 180
+               metvar(i,j) = metvar_t(181-j,i)
+            enddo
+         enddo
+         do ipy = 1, cgrid%npolygons
+            i = int(cgrid%lon(ipy)+180.)+1
+            j = int(cgrid%lat(ipy)+90.)+1
+            cgrid%metinput(ipy)%pdep(depyear) = metvar(i,j)
+         enddo
+      enddo
+
+      deallocate(metvar)
+      deallocate(metvar_t)
+      call shdf5_close_f()
+
    end do gridloop
 
 
@@ -884,7 +952,8 @@ subroutine update_met_drivers(cgrid)
    real(kind=4)    , external :: ed_zen           ! Cosine of zenith angle
    real(kind=4)    , external :: mean_daysecz     ! Average daytime secant(zenith angle)
    !---------------------------------------------------------------------------------------!
-
+   real :: fac1
+   integer :: tind1, tind2
 
    !---------------------------------------------------------------------------------------!
    !     Flush vels to zero, so we can integrate by adding zonal and meridional winds.     !
@@ -895,6 +964,46 @@ subroutine update_met_drivers(cgrid)
       cgrid%cosz(ipy)     = ed_zen(cgrid%lon(ipy),cgrid%lat(ipy),current_time)
    end do
    !---------------------------------------------------------------------------------------!
+
+   do ipy = 1, cgrid%npolygons
+      if(current_time%year < 1940)then
+         fac1 = 1.
+         tind1 = 1
+         tind2 = 1
+      elseif(current_time%year <= 1960)then
+         fac1 = 1.0 - (current_time%year - 1940) * 0.05
+         tind1 = 1
+         tind2 = 2
+      elseif(current_time%year <= 1970)then
+         fac1 = 1.0 - (current_time%year - 1960) * 0.1
+         tind1 = 2
+         tind2 = 3
+      elseif(current_time%year <= 1980)then
+         fac1 = 1.0 - (current_time%year - 1970) * 0.1
+         tind1 = 3
+         tind2 = 4
+      elseif(current_time%year <= 1990)then
+         fac1 = 1.0 - (current_time%year - 1980) * 0.1
+         tind1 = 4
+         tind2 = 5
+      elseif(current_time%year <= 1997)then
+         fac1 = 1.0 - (current_time%year - 1990) / 7.0
+         tind1 = 5
+         tind2 = 6
+      elseif(current_time%year <= 2013)then
+         fac1 = 1.0
+         tind1 = current_time%year - 1997 + 6
+         tind2 = current_time%year - 1997 + 6
+      else
+         fac1 = 1.0
+         tind1 = 22
+         tind2 = 22
+      endif
+      cgrid%met(ipy)%ndep = fac1 * cgrid%metinput(ipy)%ndep(tind1) + (1.0 - fac1) * &
+           cgrid%metinput(ipy)%ndep(tind2)
+      cgrid%met(ipy)%pdep = fac1 * cgrid%metinput(ipy)%pdep(tind1) + (1.0 - fac1) * &
+           cgrid%metinput(ipy)%pdep(tind2)
+   enddo
 
 
    formloop: do iformat = 1, nformats
