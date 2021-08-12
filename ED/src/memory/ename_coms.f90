@@ -122,6 +122,8 @@ module ename_coms
       character(len=str_len)                            :: ed_met_driver_db
       character(len=str_len)                            :: obstime_db
 
+      integer :: imask_type
+
       !----- ED polygon specification. ----------------------------------------------------!
       integer                                           :: n_poi
       integer                                           :: n_ed_region

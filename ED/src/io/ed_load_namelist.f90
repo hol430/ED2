@@ -65,7 +65,7 @@ subroutine copy_nl(copy_type)
                                    , soildepth_db              & ! intent(out)
                                    , runoff_time               & ! intent(out)
                                    , slz                       & ! intent(out)
-                                   , veg_database              ! ! intent(out)
+                                   , veg_database, imask_type              ! ! intent(out)
    use met_driver_coms      , only : ed_met_driver_db          & ! intent(out)
                                    , ishuffle                  & ! intent(out)
                                    , metcyc1                   & ! intent(out)
@@ -351,6 +351,8 @@ subroutine copy_nl(copy_type)
       plantation_file           = nl%plantation_file
       lu_rescale_file           = nl%lu_rescale_file
       thsums_database           = nl%thsums_database
+
+      imask_type = nl%imask_type
 
       ed_met_driver_db          = nl%ed_met_driver_db
       obstime_db                = nl%obstime_db

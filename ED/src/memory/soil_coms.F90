@@ -204,7 +204,7 @@ module soil_coms
    character(len=str_len)                     :: soilstate_db
    character(len=str_len)                     :: soildepth_db
    !---------------------------------------------------------------------------------------!
-
+   integer :: imask_type
 
 
 
