@@ -4,7 +4,7 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
 
    use hdf5_utils , only : shdf5_open_f  & ! subroutine
                          , shdf5_close_f & ! subroutine
-                         , shdf5_irec_f  ! ! subroutine
+                         , shdf5_irec_f, shdf5_info_f  ! ! subroutine
    use soil_coms  , only : nslcon        & ! intent(in)
                          , isoilcol      & ! intent(in)
                          , ed_nstyp      & ! intent(in)
@@ -44,7 +44,7 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
    logical                                                 :: l1
    logical                                                 :: l2
    integer                                                 :: ndims
-   integer        , dimension(2)                           :: idims
+   integer        , dimension(3)                           :: idims
    integer                                                 :: ierr
    !----- Variables for file indexing. ----------------------------------------------------!
    integer        , dimension(:,:)           , allocatable :: nump
@@ -86,9 +86,41 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
    !------ External functions. ------------------------------------------------------------!
    integer, external                                       :: find_rank
    !---------------------------------------------------------------------------------------!
+   real, allocatable, dimension(:,:,:) :: dlwrf
+   real, allocatable, dimension(:,:) :: lat_in,lon_in
+   integer :: ilat, ilon
 
-
-
+   if(iaction == 'leaf_class')then
+      call shdf5_open_f('/afs/crc/group/dmedvigy/met_driver/Australia/Australia_2020JAN.h5','R')
+      call shdf5_info_f('dlwrf',ndims,idims)
+      allocate(dlwrf(idims(1),idims(2),idims(3)))
+      call shdf5_irec_f(ndims,idims,'dlwrf',rvara=dlwrf)
+      call shdf5_info_f('lat',ndims,idims)
+      allocate(lat_in(idims(1),idims(2)))
+      allocate(lon_in(idims(1),idims(2)))
+      call shdf5_irec_f(ndims,idims,'lat',rvara=lat_in)
+      call shdf5_irec_f(ndims,idims,'lon',rvara=lon_in)
+      call shdf5_close_f()
+      do ilandsea = 1, nlandsea
+         do ilat = 1, idims(1)
+            if(abs(lat(1,ilandsea)-lat_in(ilat,1)) < 0.05)exit
+         enddo
+         do ilon = 1, idims(2)
+            if(abs(lon(1,ilandsea)-lon_in(1,ilon)) < 0.05)exit
+         enddo
+         if(dlwrf(1,ilat,ilon) == dlwrf(1,ilat,ilon))then
+            pctout(:,ilandsea) = 1.
+            classout(:,ilandsea) = 1
+         else
+            pctout(:,ilandsea) = 0.
+            classout(:,ilandsea) = 0
+         endif
+      enddo
+      deallocate(dlwrf)
+      deallocate(lat_in)
+      deallocate(lon_in)
+      return
+   endif
 
    !----- Allocate some auxiliary variables and initialise them. --------------------------!
    ed_nctyp = max(ed_nvtyp,ed_nstyp)

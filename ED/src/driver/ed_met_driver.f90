@@ -2389,8 +2389,6 @@ subroutine update_met_drivers(cgrid)
    !---------------------------------------------------------------------------------------!
 
 
-
-
    !---------------------------------------------------------------------------------------!
    !     Now that all variables from the met driver were read and updated, we update the   !
    ! derived variables.                                                                    !
