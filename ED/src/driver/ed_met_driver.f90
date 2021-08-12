@@ -986,6 +986,8 @@ subroutine update_met_drivers(cgrid)
    !---------------------------------------------------------------------------------------!
    real :: fac1
    integer :: tind1, tind2
+   integer :: ipa
+   real :: tallest_cohort
 
    !---------------------------------------------------------------------------------------!
    !     Flush vels to zero, so we can integrate by adding zonal and meridional winds.     !
@@ -2513,7 +2515,12 @@ subroutine update_met_drivers(cgrid)
       !------------------------------------------------------------------------------------!
 
       cpoly => cgrid%polygon(ipy)
+      tallest_cohort = 0.
       siteloop: do isi = 1,cpoly%nsites
+
+         do ipa = 1, cpoly%site(isi)%npatches
+            tallest_cohort = max(tallest_cohort,cpoly%site(isi)%patch(ipa)%hite(1))
+         enddo
 
          !----- Vels. The site level is also still in kinetic energy form. ----------------!
          cpoly%met(isi)%vels        = sqrt(max(ubmin*ubmin,cpoly%met(isi)%vels))
@@ -2671,6 +2678,7 @@ subroutine update_met_drivers(cgrid)
          !---------------------------------------------------------------------------------!
       end do siteloop
       !------------------------------------------------------------------------------------!
+      cgrid%met(ipy)%geoht = tallest_cohort+10.0
    end do polyloop
    !---------------------------------------------------------------------------------------!
 
