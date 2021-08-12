@@ -297,6 +297,7 @@ subroutine init_met_drivers
             allocate(cgrid%metinput(ipy)%pdep(mem_size))
             cgrid%metinput(ipy)%ndep = 0.
             cgrid%metinput(ipy)%pdep = 0.
+
          end do polyloop
       end do gridloop
    end do formloop
@@ -342,7 +343,7 @@ subroutine read_met_drivers_init
                                 , met_frq        & ! intent(in)
                                 , metcyc1        & ! intent(in)
                                 , metcycf        & ! intent(in)
-                                , metyears       ! ! intent(inout)
+                                , metyears, co2_scheme, co2_file, co2_year1, co2_nyear       ! ! intent(inout)
    use ed_misc_coms      , only : current_time   & ! intent(in)
                                 , iyeara         & ! intent(in)
                                 , iyearz         & ! intent(in)
@@ -392,6 +393,8 @@ subroutine read_met_drivers_init
    integer :: depyear
    character(len=32) :: depname
    integer :: ipy
+   integer, dimension(:), allocatable :: co2_year
+   real, dimension(:), allocatable :: co2_in
 
    !---------------------------------------------------------------------------------------!
    !    If this is the first time this subroutine is called, we build the meteorological   !
@@ -679,6 +682,35 @@ subroutine read_met_drivers_init
       deallocate(metvar_t)
       call shdf5_close_f()
 
+      if(co2_scheme == 3)then
+         infile = trim(co2_file)
+         inquire(file=trim(infile),exist=exans)
+         if(.not.exans)then
+            write(*,*)'File does not exist in ed_met_driver'
+            write(*,*)trim(infile)
+            stop
+         endif
+
+         call shdf5_open_f(trim(infile),'R')
+         call shdf5_info_f('year',ndims,idims)
+         allocate(co2_year(idims(1)))
+         allocate(co2_in(idims(1)))
+         do ipy = 1, cgrid%npolygons
+            allocate(cgrid%metinput(ipy)%co2((idims(1))))
+            cgrid%metinput(ipy)%co2 = huge(1.)
+         enddo
+         call shdf5_irec_f(ndims,idims,'year',ivara=co2_year)
+         call shdf5_irec_f(ndims,idims,'co2',rvara=co2_in)
+         do ipy=1,cgrid%npolygons
+            cgrid%metinput(ipy)%co2 = co2_in
+         enddo
+         co2_year1 = co2_year(1)
+         co2_nyear = idims(1)
+         deallocate(co2_year)
+         deallocate(co2_in)
+         call shdf5_close_f()
+      endif
+
    end do gridloop
 
 
@@ -888,7 +920,7 @@ subroutine update_met_drivers(cgrid)
                                    , humid_scenario    & ! intent(in)
                                    , atm_rhv_min       & ! intent(in)
                                    , atm_rhv_max       & ! intent(in)
-                                   , print_radinterp   ! ! intent(in)
+                                   , print_radinterp, co2_scheme, co2_year1, co2_nyear   ! ! intent(in)
    use ed_misc_coms         , only : simtime           & ! intent(in)
                                    , current_time      ! ! intent(in)
    use canopy_air_coms      , only : ubmin             & ! intent(in)
@@ -1005,6 +1037,24 @@ subroutine update_met_drivers(cgrid)
            cgrid%metinput(ipy)%pdep(tind2)
    enddo
 
+   if(co2_scheme == 3)then
+      do ipy = 1, cgrid%npolygons
+         if(current_time%year < 1850)then
+            cgrid%met(ipy)%atm_co2 = 280.0
+         elseif(current_time%year < co2_year1)then
+            fac1 = 1.0 - (current_time%year - 1850) / (co2_year1 - 1850)
+            cgrid%met(ipy)%atm_co2 = 280.0 * fac1 + (1.0 - fac1) * cgrid%metinput(ipy)%co2(1)
+         elseif(current_time%year <= co2_year1+co2_nyear-1)then
+            cgrid%met(ipy)%atm_co2 = cgrid%metinput(ipy)%co2(current_time%year-co2_year1+1)
+         else
+            cgrid%met(ipy)%atm_co2 = cgrid%metinput(ipy)%co2(co2_nyear)
+         endif
+         cpoly => cgrid%polygon(ipy)
+         do isi = 1,cpoly%nsites
+            cpoly%met(isi)%atm_co2 = cgrid%met(ipy)%atm_co2
+         enddo
+      enddo
+   endif
 
    formloop: do iformat = 1, nformats
       
@@ -2347,7 +2397,7 @@ subroutine update_met_drivers(cgrid)
    !---------------------------------------------------------------------------------------!
    polyloop: do ipy = 1,cgrid%npolygons
       !----- CO2 (only if it hasn't been read). -------------------------------------------!
-      if (.not. has_co2) cgrid%met(ipy)%atm_co2 = initial_co2
+      if (.not. has_co2 .and. co2_scheme /= 3) cgrid%met(ipy)%atm_co2 = initial_co2
       !------------------------------------------------------------------------------------!
 
       !----- Set the default Exner function from pressure. --------------------------------!
@@ -2476,7 +2526,7 @@ subroutine update_met_drivers(cgrid)
 
 
          !----- CO2.  In case we used the namelist, use that value. -----------------------!
-         if (.not. has_co2) cpoly%met(isi)%atm_co2 = initial_co2
+         if (.not. has_co2 .and. co2_scheme /= 3) cpoly%met(isi)%atm_co2 = initial_co2
          !---------------------------------------------------------------------------------!
 
 
@@ -2919,7 +2969,7 @@ subroutine read_ol_file(infile,iformat, iv, mname, year, offset, cgrid)
          ilon = cgrid%ilon(ipy)
          ilat = cgrid%ilat(ipy)
       end if
-      
+
       !----- Get the time series. ---------------------------------------------------------!
       select case (trim(met_vars(iformat,iv)))
       case('nbdsf')

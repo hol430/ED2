@@ -154,6 +154,8 @@ module ename_coms
       integer                                           :: iphen_scheme
       integer                                           :: repro_scheme
       integer                                           :: lapse_scheme
+      integer :: co2_scheme
+      character(len=str_len) :: co2_file
       integer                                           :: crown_mod
       integer                                           :: icanrad
       real                                              :: ltrans_vis

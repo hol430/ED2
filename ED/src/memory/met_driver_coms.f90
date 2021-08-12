@@ -74,7 +74,8 @@ module met_driver_coms
                                            ! 1 = constant RH
    !---------------------------------------------------------------------------------------!
 
-
+   integer :: co2_scheme, co2_year1, co2_nyear
+   character(len=str_len) :: co2_file
 
    !---------------------------------------------------------------------------------------!
    !      Variables that define the meteorological dataset.                                !

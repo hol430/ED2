@@ -363,6 +363,7 @@ subroutine get_work(ifm,nxp,nyp)
 
    call leaf_database(trim(veg_database(ifm)),maxsite,npoly,'leaf_class'                   &
                      ,lat_list,lon_list,leaf_class_list,ipcent_land)
+!print*,lat_list,lon_list,leaf_class_list,ipcent_land;stop
    if (isoilflg(ifm) == 1) then
       call leaf_database(trim(soil_database(ifm)),maxsite,npoly,'soil_text'                &
                         ,lat_list,lon_list,ntext_soil_list,ipcent_soil)
