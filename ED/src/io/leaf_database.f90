@@ -91,7 +91,7 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
    integer :: ilat, ilon
 
    if(iaction == 'leaf_class')then
-      call shdf5_open_f('/afs/crc/group/dmedvigy/met_driver/Australia/Australia_2020JAN.h5','R')
+      call shdf5_open_f(trim(ofn),'R')
       call shdf5_info_f('dlwrf',ndims,idims)
       allocate(dlwrf(idims(1),idims(2),idims(3)))
       call shdf5_irec_f(ndims,idims,'dlwrf',rvara=dlwrf)
