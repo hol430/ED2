@@ -1243,13 +1243,13 @@ Contains
     real, intent(in) :: bulk_den
 
     ! Subroutine is called daily; rates are in 1/s.
-!!!!!!    weath_flux = consts%weath_rate * ppar * 86400.
+    weath_flux = consts%weath_rate * ppar * 86400.
 
-    weath_flux = consts%weath_rate / bulk_den
+!!!!    weath_flux = consts%weath_rate / bulk_den
     psol = psol + weath_flux
 
 !! In ed2_sensitivity, not updating ppar here.
-!!!!!!!    ppar = ppar - weath_flux
+    ppar = ppar - weath_flux
 
     occlu_flux = consts%occlu_rate * psec * 86400.
     psec = psec - occlu_flux

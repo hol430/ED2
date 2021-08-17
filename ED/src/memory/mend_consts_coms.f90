@@ -284,7 +284,7 @@ Contains
     som_consts%p_adsorp_rate = 0.003 / 30.4 / 24/ 3600.
     som_consts%p_desorp_rate = 0.00022 / 30.4 / 24/ 3600.
 
-    som_consts%weath_rate = 200. * 1.0e-4 / 30.4 ! gP/m3/day  
+!    som_consts%weath_rate = 200. * 1.0e-4 / 30.4 ! gP/m3/day  
 
     if(sens_type == 2)then
        if(sens_params == 1)then
