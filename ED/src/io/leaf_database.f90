@@ -122,6 +122,14 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
          deallocate(lon_in)
          return
       endif
+   elseif(imask_type == 3)then ! no mask
+      if(iaction == 'leaf_class')then
+         do ilandsea = 1, nlandsea
+            pctout(:,ilandsea) = 1.
+            classout(:,ilandsea) = 1
+         enddo
+         return
+      endif
    endif
 
    !----- Allocate some auxiliary variables and initialise them. --------------------------!
