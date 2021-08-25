@@ -118,7 +118,9 @@ Contains
        totp = soil_totp
        extrp = soil_extrp
        ! Single number from Waring et al
-       c2p = cpct*0.1/(150.e-4)
+!       c2p = cpct*0.1/(150.e-4)
+       ! Use Tipping et al meta-analysis
+       c2p = (cpct*0.1) / (0.012*(cpct*0.1)**0.57)
     endif
 
     pom_c(1) = 7./31. * cpct
