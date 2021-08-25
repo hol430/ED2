@@ -438,7 +438,7 @@ $ED_NL
    !             3. Enhanced soil data: Bulk density, %C, C:N, Sand and Clay from          !
    !                WISE database. P pools from Xiaojuan Yang. Deposition from Rong Wang.  !
    !---------------------------------------------------------------------------------------!
-   NL%ISOILFLG = 3
+   NL%ISOILFLG = 2
    !---------------------------------------------------------------------------------------!
 
 
@@ -1661,15 +1661,15 @@ $ED_NL
    !---------------------------------------------------------------------------------------!
 
    NL%SOIL_BULK_DEN = 1410.
-   NL%SOIL_PH = 6.3
-   NL%SOIL_CPCT = 35.0
-   NL%SOIL_SOM_C2N = 13.6
-   NL%SOIL_TOTP = 395.33
-   NL%SOIL_EXTRP = 7.872
-   NL%NDEP_RATE = 4.0e-7
-   NL%PDEP_RATE = 6.0e-8
-   NL%NDEP_APPL = 0. 
-   NL%PDEP_APPL = 1.6e-4 ! mgP/m2/s
+   NL%SOIL_PH = 6.3 ! Not used
+   NL%SOIL_CPCT = 10.2
+   NL%SOIL_SOM_C2N = 17.9
+   NL%SOIL_TOTP = 58.8
+   NL%SOIL_EXTRP = 3.5
+   NL%NDEP_RATE = 7.1e-6 ! mgN/m2/s
+   NL%PDEP_RATE = 2.9e-7 ! mgP/m2/s
+   NL%NDEP_APPL = 0.  ! mgN/m2/s
+   NL%PDEP_APPL = 0. ! mgP/m2/s
 
 $END
 !==========================================================================================!
