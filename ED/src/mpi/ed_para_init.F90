@@ -66,7 +66,11 @@ subroutine ed_node_decomp(init,standalone,masterworks)
       call ed_alloc_work(work_e(ngr),nnxp(ngr),nnyp(ngr),maxsite)
    end do
 
+   write(*,*)'++ Finished ed_alloc_work'
+
    call get_grid()
+
+   write(*,*)'++ Finished get_grid'
 
    do ngr = 1,ngrids!n_ed_region
 
@@ -75,11 +79,16 @@ subroutine ed_node_decomp(init,standalone,masterworks)
       ! each column in the region of the domain.                                           !
       !------------------------------------------------------------------------------------!
       call get_work(ngr,mmxp(ngr),mmyp(ngr))
+      write(*,*)'++ Finished get_work'
       call ed_parvec_work(ngr,mmxp(ngr),mmyp(ngr))
    end do
 
+   write(*,*)'++ Finished ed_parvec_work'
+
    !----- Check whether we have a good first guess of how different polygons work. --------!
    call ed_load_work_from_history()
+
+   write(*,*)'++ Finished ed_load_work_from_history'
 
    !---------------------------------------------------------------------------------------!
    !     Polygons of interest (POI) are single polygons, so they get the simplest          !
@@ -364,6 +373,8 @@ subroutine get_work(ifm,nxp,nyp)
    call leaf_database(trim(veg_database(ifm)),maxsite,npoly,'leaf_class'                   &
                      ,lat_list,lon_list,leaf_class_list,ipcent_land)
 
+   write(*,*)'+++ Finished first leaf_database'
+
 !print*,lat_list,lon_list,leaf_class_list,ipcent_land;stop
    if (isoilflg(ifm) == 1) then
       call leaf_database(trim(soil_database(ifm)),maxsite,npoly,'soil_text'                &
@@ -386,6 +397,11 @@ subroutine get_work(ifm,nxp,nyp)
       ipcent_soil            (1,:) = 1.
       orgc_list(:,:) = soil_cpct
       c2n_list(:,:) = soil_som_c2n
+      apa_list(:,:) = 0.
+      lab_list(:,:) = 0.
+      occ_list(:,:) = 0.
+      org_list(:,:) = 0.
+      sec_list(:,:) = 0.
       !------------------------------------------------------------------------------------!
    end if
    !---------------------------------------------------------------------------------------!
@@ -536,7 +552,7 @@ subroutine ed_parvec_work(ifm,nxp,nyp)
    !---------------------------------------------------------------------------------------!
 
 
-
+   write(*,*)'++++ Finished ed_alloc_work_vec'
 
    !----- Copy variables to the vector version of the work structure. ---------------------!
    poly = 0

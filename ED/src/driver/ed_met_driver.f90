@@ -554,7 +554,9 @@ subroutine read_met_drivers_init
                                            ,mname(current_time%month),'.h5'
          inquire(file=trim(infile),exist=exans)
          if (exans) then
+            write(*,'(a)')'Attempting to open met driver file'
             call shdf5_open_f(trim(infile),'R')
+            write(*,'(a)')'Successfully opened met driver file'
          else
             write (unit=*,fmt='(a)'       )  '------------------------------'
             write (unit=*,fmt='(a,1x,i12)')  ' - METCYC1  =',metcyc1

@@ -132,17 +132,24 @@ subroutine ed_1st_master (ipara, nnodestotal,nslaves, headnode_num, name_name)
    ! read-in of the land-sea mask and soil textural class.                                 !
    !---------------------------------------------------------------------------------------!
    call ed_node_decomp(1,standalone,masterworks)
+
+   write(*,*)'+ Finished ed_node_decomp'
+
 #if defined(RAMS_MPI)
    if (iparallel == 1) call MPI_Barrier(MPI_COMM_WORLD,ierr)
 #endif
 
    call ed_masterput_poly_dims(iparallel,masterworks)
 
+   write(*,*)'+ Finished ed_node_decomp'
+
 #if defined(RAMS_MPI)
    if (iparallel == 1) call MPI_Barrier(MPI_COMM_WORLD,ierr)
 #endif
 
    call ed_masterput_worklist_info(iparallel)
+
+   write(*,*)'+ Finished ed_masterput_worklist_info'
 
 #if defined(RAMS_MPI)
    if (iparallel == 1) call MPI_Barrier(MPI_COMM_WORLD,ierr)
