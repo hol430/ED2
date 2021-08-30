@@ -74,7 +74,7 @@ subroutine copy_nl(copy_type)
                                    , imetavg                   & ! intent(out)
                                    , imetrad                   & ! intent(out)
                                    , initial_co2               & ! intent(out)
-                                   , lapse_scheme, co2_scheme, co2_file              ! ! intent(out)
+                                   , lapse_scheme, co2_scheme, co2_file, dep_scheme, dep_file              ! ! intent(out)
    use mem_polygons         , only : n_poi                     & ! intent(out)
                                    , poi_lat                   & ! intent(out)
                                    , poi_lon                   & ! intent(out)
@@ -392,6 +392,8 @@ subroutine copy_nl(copy_type)
       lapse_scheme              = nl%lapse_scheme
       co2_scheme = nl%co2_scheme
       co2_file = trim(nl%co2_file)
+      dep_scheme = nl%dep_scheme
+      dep_file = trim(nl%dep_file)
       crown_mod                 = nl%crown_mod
       icanrad                   = nl%icanrad
       ltrans_vis                = nl%ltrans_vis

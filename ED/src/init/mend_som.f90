@@ -235,6 +235,7 @@ Contains
 
     use mend_consts_coms, only: decomp_consts
     use soil_coms, only: isoilflg
+    use met_driver_coms, only: dep_scheme
 
     implicit none
 
@@ -250,13 +251,11 @@ Contains
     integer, intent(in) :: year
     real, intent(in) :: ndep_met, pdep_met
 
-    input_nh4 = ndep_rate / (consts%eff_soil_depth * slden * 1000.)
-
-    input_no3 = 0.
-
-    input_ppar = pdep_rate / (consts%eff_soil_depth * slden * 1000.)
-
-    if(isoilflg(1) == 3)then
+    if(dep_scheme == 0)then
+       input_nh4 = ndep_rate / (consts%eff_soil_depth * slden * 1000.)
+       input_no3 = 0.
+       input_ppar = pdep_rate / (consts%eff_soil_depth * slden * 1000.)
+   elseif(dep_scheme == 1)then
        input_nh4 = ndep_met  / (consts%eff_soil_depth * slden * 1000.)
        input_ppar = pdep_met  / (consts%eff_soil_depth * slden * 1000.)
        input_no3 = 0.

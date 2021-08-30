@@ -343,7 +343,7 @@ subroutine read_met_drivers_init
                                 , met_frq        & ! intent(in)
                                 , metcyc1        & ! intent(in)
                                 , metcycf        & ! intent(in)
-                                , metyears, co2_scheme, co2_file, co2_year1, co2_nyear       ! ! intent(inout)
+                                , metyears, co2_scheme, co2_file, co2_year1, co2_nyear, dep_scheme, dep_file       ! ! intent(inout)
    use ed_misc_coms      , only : current_time   & ! intent(in)
                                 , iyeara         & ! intent(in)
                                 , iyearz         & ! intent(in)
@@ -634,55 +634,51 @@ subroutine read_met_drivers_init
 
       end do formloop
 
-      infile = trim(soil_database(1))
-      inquire(file=trim(infile),exist=exans)
-      if(.not.exans)then
-         write(*,*)'File does not exist in ed_met_driver'
-         write(*,*)trim(infile)
-         stop
+      if(dep_scheme == 1)then
+         infile = trim(dep_file)
+         inquire(file=trim(infile),exist=exans)
+         if(.not.exans)then
+            write(*,*)'File does not exist in ed_met_driver'
+            write(*,*)trim(infile)
+            stop
+         endif
+
+         call shdf5_open_f(trim(infile),'R')
+         call shdf5_info_f('NDEP_1850',ndims,idims)
+         allocate(metvar_t(idims(1),idims(2)))
+         allocate(metvar(idims(2),idims(1)))
+         do depyear = 1, 22
+            write(depname,'(a5,i4.4)')'NDEP_',ylist(depyear)
+            call shdf5_irec_f(ndims,idims,trim(depname),rvara=metvar_t)
+            do i = 1,360
+               do j = 1, 180
+                  metvar(i,j) = metvar_t(181-j,i)
+               enddo
+            enddo
+            do ipy = 1, cgrid%npolygons
+               i = int(cgrid%lon(ipy)+180.)+1
+               j = int(cgrid%lat(ipy)+90.)+1
+               cgrid%metinput(ipy)%ndep(depyear) = metvar(i,j)
+            enddo
+
+            write(depname,'(a5,i4.4)')'PDEP_',ylist(depyear)
+            call shdf5_irec_f(ndims,idims,trim(depname),rvara=metvar_t)
+            do i = 1,360
+               do j = 1, 180
+                  metvar(i,j) = metvar_t(181-j,i)
+               enddo
+            enddo
+            do ipy = 1, cgrid%npolygons
+               i = int(cgrid%lon(ipy)+180.)+1
+               j = int(cgrid%lat(ipy)+90.)+1
+               cgrid%metinput(ipy)%pdep(depyear) = metvar(i,j)
+            enddo
+         enddo
+
+         deallocate(metvar)
+         deallocate(metvar_t)
+         call shdf5_close_f()
       endif
-
-      open(12,file=trim(infile),form='formatted',status='old')
-      read(12,*)nfile
-      read(12,'(a)')infile
-      read(12,'(a)')infile
-      read(12,'(a)')infile
-      close(12)
-      call shdf5_open_f(trim(infile),'R')
-      call shdf5_info_f('NDEP_1850',ndims,idims)
-      allocate(metvar_t(idims(1),idims(2)))
-      allocate(metvar(idims(2),idims(1)))
-      do depyear = 1, 22
-         write(depname,'(a5,i4.4)')'NDEP_',ylist(depyear)
-         call shdf5_irec_f(ndims,idims,trim(depname),rvara=metvar_t)
-         do i = 1,360
-            do j = 1, 180
-               metvar(i,j) = metvar_t(181-j,i)
-            enddo
-         enddo
-         do ipy = 1, cgrid%npolygons
-            i = int(cgrid%lon(ipy)+180.)+1
-            j = int(cgrid%lat(ipy)+90.)+1
-            cgrid%metinput(ipy)%ndep(depyear) = metvar(i,j)
-         enddo
-
-         write(depname,'(a5,i4.4)')'PDEP_',ylist(depyear)
-         call shdf5_irec_f(ndims,idims,trim(depname),rvara=metvar_t)
-         do i = 1,360
-            do j = 1, 180
-               metvar(i,j) = metvar_t(181-j,i)
-            enddo
-         enddo
-         do ipy = 1, cgrid%npolygons
-            i = int(cgrid%lon(ipy)+180.)+1
-            j = int(cgrid%lat(ipy)+90.)+1
-            cgrid%metinput(ipy)%pdep(depyear) = metvar(i,j)
-         enddo
-      enddo
-
-      deallocate(metvar)
-      deallocate(metvar_t)
-      call shdf5_close_f()
 
       if(co2_scheme == 3)then
          infile = trim(co2_file)
@@ -922,7 +918,7 @@ subroutine update_met_drivers(cgrid)
                                    , humid_scenario    & ! intent(in)
                                    , atm_rhv_min       & ! intent(in)
                                    , atm_rhv_max       & ! intent(in)
-                                   , print_radinterp, co2_scheme, co2_year1, co2_nyear   ! ! intent(in)
+                                   , print_radinterp, co2_scheme, co2_year1, co2_nyear, dep_scheme   ! ! intent(in)
    use ed_misc_coms         , only : simtime           & ! intent(in)
                                    , current_time      ! ! intent(in)
    use canopy_air_coms      , only : ubmin             & ! intent(in)
@@ -1001,45 +997,47 @@ subroutine update_met_drivers(cgrid)
    end do
    !---------------------------------------------------------------------------------------!
 
-   do ipy = 1, cgrid%npolygons
-      if(current_time%year < 1940)then
-         fac1 = 1.
-         tind1 = 1
-         tind2 = 1
-      elseif(current_time%year <= 1960)then
-         fac1 = 1.0 - (current_time%year - 1940) * 0.05
-         tind1 = 1
-         tind2 = 2
-      elseif(current_time%year <= 1970)then
-         fac1 = 1.0 - (current_time%year - 1960) * 0.1
-         tind1 = 2
-         tind2 = 3
-      elseif(current_time%year <= 1980)then
-         fac1 = 1.0 - (current_time%year - 1970) * 0.1
-         tind1 = 3
-         tind2 = 4
-      elseif(current_time%year <= 1990)then
-         fac1 = 1.0 - (current_time%year - 1980) * 0.1
-         tind1 = 4
-         tind2 = 5
-      elseif(current_time%year <= 1997)then
-         fac1 = 1.0 - (current_time%year - 1990) / 7.0
-         tind1 = 5
-         tind2 = 6
-      elseif(current_time%year <= 2013)then
-         fac1 = 1.0
-         tind1 = current_time%year - 1997 + 6
-         tind2 = current_time%year - 1997 + 6
-      else
-         fac1 = 1.0
-         tind1 = 22
-         tind2 = 22
-      endif
-      cgrid%met(ipy)%ndep = fac1 * cgrid%metinput(ipy)%ndep(tind1) + (1.0 - fac1) * &
-           cgrid%metinput(ipy)%ndep(tind2)
-      cgrid%met(ipy)%pdep = fac1 * cgrid%metinput(ipy)%pdep(tind1) + (1.0 - fac1) * &
-           cgrid%metinput(ipy)%pdep(tind2)
-   enddo
+   if(dep_scheme == 1)then
+      do ipy = 1, cgrid%npolygons
+         if(current_time%year < 1940)then
+            fac1 = 1.
+            tind1 = 1
+            tind2 = 1
+         elseif(current_time%year <= 1960)then
+            fac1 = 1.0 - (current_time%year - 1940) * 0.05
+            tind1 = 1
+            tind2 = 2
+         elseif(current_time%year <= 1970)then
+            fac1 = 1.0 - (current_time%year - 1960) * 0.1
+            tind1 = 2
+            tind2 = 3
+         elseif(current_time%year <= 1980)then
+            fac1 = 1.0 - (current_time%year - 1970) * 0.1
+            tind1 = 3
+            tind2 = 4
+         elseif(current_time%year <= 1990)then
+            fac1 = 1.0 - (current_time%year - 1980) * 0.1
+            tind1 = 4
+            tind2 = 5
+         elseif(current_time%year <= 1997)then
+            fac1 = 1.0 - (current_time%year - 1990) / 7.0
+            tind1 = 5
+            tind2 = 6
+         elseif(current_time%year <= 2013)then
+            fac1 = 1.0
+            tind1 = current_time%year - 1997 + 6
+            tind2 = current_time%year - 1997 + 6
+         else
+            fac1 = 1.0
+            tind1 = 22
+            tind2 = 22
+         endif
+         cgrid%met(ipy)%ndep = fac1 * cgrid%metinput(ipy)%ndep(tind1) + (1.0 - fac1) * &
+              cgrid%metinput(ipy)%ndep(tind2)
+         cgrid%met(ipy)%pdep = fac1 * cgrid%metinput(ipy)%pdep(tind1) + (1.0 - fac1) * &
+              cgrid%metinput(ipy)%pdep(tind2)
+      enddo
+   endif
 
    if(co2_scheme == 3)then
       do ipy = 1, cgrid%npolygons

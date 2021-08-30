@@ -1527,6 +1527,8 @@ $ED_NL
    NL%INITIAL_CO2 = 390.
    NL%CO2_SCHEME = 0 ! 3 gives Mauna Loa time series
    NL%CO2_FILE = '/afs/crc/group/dmedvigy/DATA/ed2_co2/MaunaLoaCO2.h5'
+   NL%DEP_SCHEME = 0 ! 0 means use namelist values; 1 means use Rong Wang's values
+   NL%DEP_FILE = '/afs/crc/group/dmedvigy/DATA/ed2_soil_enhanced/RongWangDeposition.h5' ! Only used if DEP_SCHEME = 1. 
    !---------------------------------------------------------------------------------------!
 
 
