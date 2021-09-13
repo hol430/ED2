@@ -136,6 +136,7 @@ subroutine canopy_photosynthesis(csite,cmet,mzg,ipa,ntext_soil                  
    !----- Allocate the available water function for plants. -------------------------------!
    if (cpatch%ncohorts > 0) then
       allocate (avail_h2o_coh(cpatch%ncohorts))
+      avail_h2o_coh(:) = 0.
    end if
    !---------------------------------------------------------------------------------------!
 
@@ -160,7 +161,6 @@ subroutine canopy_photosynthesis(csite,cmet,mzg,ipa,ntext_soil                  
          !---------------------------------------------------------------------------------!
          !     Find the available water for each layer.                                    !
          !---------------------------------------------------------------------------------!
-         avail_h2o_coh(ico) = 0.
          do k=mzg,kroot,-1
             !----- Alias for soil type. ---------------------------------------------------!
             nsoil = ntext_soil(k)
@@ -207,7 +207,6 @@ subroutine canopy_photosynthesis(csite,cmet,mzg,ipa,ntext_soil                  
          !---------------------------------------------------------------------------------!
          !     Find the available water for each layer.                                    !
          !---------------------------------------------------------------------------------!
-         avail_h2o_coh(ico) = 0.
          do k = mzg, kroot, -1
             !----- Alias for soil type. ---------------------------------------------------!
             nsoil = ntext_soil(k)
@@ -564,6 +563,7 @@ subroutine canopy_photosynthesis(csite,cmet,mzg,ipa,ntext_soil                  
             !----- Supply of water. -------------------------------------------------------!
             cpatch%water_supply      (ico) = water_conductance       (ipft) * broot_loc    &
                                            * avail_h2o_coh            (ico)
+
             cpatch%fmean_water_supply(ico) = cpatch%fmean_water_supply(ico)                &
                                            + cpatch%water_supply      (ico)                &
                                            * dtlsm_o_frqsum

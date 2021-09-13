@@ -124,10 +124,9 @@ Contains
     return
   end subroutine mend_init
 
-  subroutine mend_extern_forcing(mend, ipa, ncohorts, broot, nplant, &
-       pft, krdepth, slden, nstorage, pstorage,   &
-       nstorage_max, pstorage_max, water_supply_nl, lai,enz_alloc_frac_p, ndep_met, pdep_met)
+  subroutine mend_extern_forcing(mend, ipa, cpatch, slden, ndep_met, pdep_met)
     use mend_state_vars, only: mend_model, nwood
+    use ed_state_vars, only: patchtype
     use mend_som, only: mend_som_extern_forcing
     use mend_consts_coms, only: som_consts
     use nutrient_constants, only: ndep_rate, pdep_rate, ndep_appl, pdep_appl, nlsl
@@ -135,37 +134,33 @@ Contains
     use mend_plant, only: mend_som_plant_enzymes
     use soil_coms, only: nzg
     implicit none
+
     type(mend_model) :: mend
     integer, intent(in) :: ipa
-    integer :: iwood
-    integer, intent(in) :: ncohorts
-    integer, intent(in), dimension(ncohorts) :: pft
-    integer, intent(in), dimension(ncohorts) :: krdepth
-    real, intent(in), dimension(ncohorts) :: broot
-    real, intent(in), dimension(ncohorts) :: nplant
-    real, intent(in), dimension(ncohorts) :: nstorage
-    real, intent(in), dimension(ncohorts) :: pstorage
-    real, intent(in), dimension(ncohorts) :: nstorage_max
-    real, intent(in), dimension(ncohorts) :: pstorage_max
-    real, intent(in), dimension(ncohorts) :: lai
-    real, intent(in), dimension(ncohorts) :: water_supply_nl
-    real, intent(in), dimension(ncohorts) :: enz_alloc_frac_p
-    real :: broot_total
-    integer :: ico
     real, intent(in) :: slden, ndep_met, pdep_met
+    type(patchtype), target :: cpatch
 
     call mend_som_extern_forcing(ndep_rate, som_consts, slden, &
          mend%som%fluxes%nh4_dep(ipa), mend%som%fluxes%no3_dep(ipa), &
          pdep_rate, mend%som%fluxes%ppar_dep(ipa), current_time%year, &
          ndep_appl, pdep_appl, ndep_met, pdep_met)
     
-    call mend_som_plant_enzymes(ncohorts, broot, nplant, pft,  &
-         krdepth, slden, mend%som%plvars%enz_plant_n(:,ipa),  &
-         mend%som%plvars%enz_plant_p(:,ipa), &
-         mend%som%plvars%vnh4up_plant(:,ipa),  &
-         mend%som%plvars%vno3up_plant(:,ipa), &
-         mend%som%plvars%vpup_plant(:,ipa), som_consts, nstorage, pstorage, &
-         nstorage_max, pstorage_max, water_supply_nl, lai, enz_alloc_frac_p)
+    mend%som%plvars%enz_plant_n(:,ipa) = 0.
+    mend%som%plvars%enz_plant_p(:,ipa) = 0.
+    mend%som%plvars%vnh4up_plant(:,ipa) = 0.
+    mend%som%plvars%vno3up_plant(:,ipa) = 0.
+    mend%som%plvars%vpup_plant(:,ipa) = 0.
+
+    if(cpatch%ncohorts > 0)then
+       call mend_som_plant_enzymes(cpatch%ncohorts, cpatch%broot, cpatch%nplant, cpatch%pft,  &
+            cpatch%krdepth, slden, mend%som%plvars%enz_plant_n(:,ipa),  &
+            mend%som%plvars%enz_plant_p(:,ipa), &
+            mend%som%plvars%vnh4up_plant(:,ipa),  &
+            mend%som%plvars%vno3up_plant(:,ipa), &
+            mend%som%plvars%vpup_plant(:,ipa), som_consts, cpatch%nstorage, cpatch%pstorage, &
+            cpatch%nstorage_max, cpatch%pstorage_max, cpatch%water_supply_nl, cpatch%lai, &
+            cpatch%enz_alloc_frac_p)
+    endif
 
     return
   end subroutine mend_extern_forcing
@@ -214,6 +209,7 @@ Contains
     real :: wfp
     integer, dimension(nzg) :: ntext_soil
 
+
     wfp = soil_water(nzg) / soil(ntext_soil(nzg))%slmsts
     gm2_mgg = 1. / (som_consts%eff_soil_depth * csite%mend%bulk_den(ipa))
     total_water = 0.
@@ -230,9 +226,12 @@ Contains
          csite%plant_input_C(:,ipa), csite%plant_input_N(:,ipa),  &
          csite%plant_input_P(:,ipa))
 
-    d_som%plvars%plant_input_C_pom(:,ipa) = plant2som%pom_c * gm2_mgg * 1000./86400.
-    d_som%plvars%plant_input_N_pom(:,ipa) = plant2som%pom_n * gm2_mgg * 1000./86400.
-    d_som%plvars%plant_input_P_pom(:,ipa) = plant2som%pom_p * gm2_mgg * 1000./86400.
+    d_som%plvars%plant_input_C_pom(:,1) = plant2som%pom_c * gm2_mgg * 1000./86400.
+    d_som%plvars%plant_input_N_pom(:,1) = plant2som%pom_n * gm2_mgg * 1000./86400.
+    d_som%plvars%plant_input_P_pom(:,1) = plant2som%pom_p * gm2_mgg * 1000./86400.
+!    d_som%plvars%plant_input_C_pom(:,ipa) = plant2som%pom_c * gm2_mgg * 1000./86400.
+!    d_som%plvars%plant_input_N_pom(:,ipa) = plant2som%pom_n * gm2_mgg * 1000./86400.
+!    d_som%plvars%plant_input_P_pom(:,ipa) = plant2som%pom_p * gm2_mgg * 1000./86400.
     d_som%plvars%plant_input_C_dom = plant2som%dom_c * gm2_mgg * 1000./86400.
     d_som%plvars%plant_input_N_dom = plant2som%dom_n * gm2_mgg * 1000./86400.
     d_som%plvars%plant_input_P_dom = plant2som%dom_p * gm2_mgg * 1000./86400.
@@ -250,64 +249,64 @@ Contains
     input_dom_p_net = (plant2som%dom_p) * &
          gm2_mgg * 1000./86400.
     input_nh4_net = (plant2som%nh4) * &
-         gm2_mgg  * 1000./86400. + som%fluxes%nh4_dep(ipa)
+         gm2_mgg  * 1000./86400. + som%fluxes%nh4_dep(1)
     input_no3_net = (plant2som%no3) * &
-         gm2_mgg  * 1000./86400. + som%fluxes%no3_dep(ipa)
+         gm2_mgg  * 1000./86400. + som%fluxes%no3_dep(1)
     input_psol_net = (plant2som%psol) * &
-         gm2_mgg  * 1000./86400. + som%fluxes%ppar_dep(ipa)
+         gm2_mgg  * 1000./86400. + som%fluxes%ppar_dep(1)
     input_ppar_net = 0.
 
     call mend_derivs_layer(npom, som_consts,  &
-         som%cvars%pom(:,ipa), input_pom_c_net, d_som%cvars%pom(:,ipa),  &
-         som%cvars%dom(ipa), input_dom_c_net, d_som%cvars%dom(ipa),  &
-         som%cvars%enz_pom(:,ipa), d_som%cvars%enz_pom(:,ipa),  &
-         som%cvars%mom(ipa), d_som%cvars%mom(ipa),  &
-         som%cvars%qom(ipa), d_som%cvars%qom(ipa),  &
-         som%cvars%enz_mom(ipa), d_som%cvars%enz_mom(ipa),  &
-         som%cvars%amb(ipa), d_som%cvars%amb(ipa),   &
-         som%cvars%dmb(ipa), d_som%cvars%dmb(ipa),   &
-         som%fluxes%co2_lost(ipa), d_som%fluxes%co2_lost(ipa),  &
-         som%fluxes%nmin(ipa), d_som%fluxes%nmin(ipa),  &
-         som%fluxes%nitr(ipa), d_som%fluxes%nitr(ipa),  &
-         som%nvars%pom(:,ipa), input_pom_n_net, d_som%nvars%pom(:,ipa),  &
-         som%nvars%dom(ipa), input_dom_n_net, d_som%nvars%dom(ipa),  &
-         som%nvars%enz_pom(:,ipa), d_som%nvars%enz_pom(:,ipa),  &
-         som%nvars%mom(ipa), d_som%nvars%mom(ipa),   &
-         som%nvars%qom(ipa), d_som%nvars%qom(ipa),   &
-         som%nvars%enz_mom(ipa), d_som%nvars%enz_mom(ipa),   &
-         som%nvars%amb(ipa), d_som%nvars%amb(ipa),  &
-         som%nvars%dmb(ipa), d_som%nvars%dmb(ipa),  &
-         som%invars%nh4(ipa), input_nh4_net, d_som%invars%nh4(ipa), &
-         som%invars%no3(ipa), input_no3_net, d_som%invars%no3(ipa),  &
-         som%pvars%pom(:,ipa), input_pom_p_net, d_som%pvars%pom(:,ipa),  &
-         som%pvars%dom(ipa), input_dom_p_net, d_som%pvars%dom(ipa),  &
-         som%pvars%enz_pom(:,ipa), d_som%pvars%enz_pom(:,ipa),  &
-         som%pvars%mom(ipa), d_som%pvars%mom(ipa),   &
-         som%pvars%qom(ipa), d_som%pvars%qom(ipa),  &
-         som%pvars%enz_mom(ipa), d_som%pvars%enz_mom(ipa),   &
-         som%pvars%amb(ipa), d_som%pvars%amb(ipa),  &
-         som%pvars%dmb(ipa), d_som%pvars%dmb(ipa),   &
-         som%invars%psol(ipa), input_psol_net, d_som%invars%psol(ipa),  &
-         som%invars%plab(ipa), d_som%invars%plab(ipa), &
-         som%fluxes%ngas_lost(ipa), d_som%fluxes%ngas_lost(ipa), &
-         som%cvars%enz_ptase(ipa), d_som%cvars%enz_ptase(ipa), &
-         som%nvars%enz_ptase(ipa), d_som%nvars%enz_ptase(ipa), &
-         som%pvars%enz_ptase(ipa), d_som%pvars%enz_ptase(ipa),  &
-         d_som%fluxes%nh4_plant(:,ipa), &
-         som%fluxes%nh4_bnf(ipa), d_som%fluxes%nh4_bnf(ipa), &
-         d_som%fluxes%no3_plant(:,ipa), &
-         som%fluxes%c_leach(ipa), d_som%fluxes%c_leach(ipa), &
-         som%fluxes%n_leach(ipa), d_som%fluxes%n_leach(ipa),  &
-         som%fluxes%p_leach(ipa), d_som%fluxes%p_leach(ipa), &
-         d_som%fluxes%p_plant(:,ipa), &
-         som%invars%pocc(ipa), d_som%invars%pocc(ipa), &
-         som%invars%ppar(ipa), d_som%invars%ppar(ipa), input_ppar_net,  &
-         som%plvars%enz_plant_n(:,ipa), som%plvars%enz_plant_p(:,ipa), &
-         som%plvars%vnh4up_plant(:,ipa), som%plvars%vno3up_plant(:,ipa),  &
-         som%plvars%vpup_plant(:,ipa), som_water_drainage_ps, &
+         som%cvars%pom, input_pom_c_net, d_som%cvars%pom,  &
+         som%cvars%dom(1), input_dom_c_net, d_som%cvars%dom(1),  &
+         som%cvars%enz_pom, d_som%cvars%enz_pom,  &
+         som%cvars%mom(1), d_som%cvars%mom(1),  &
+         som%cvars%qom(1), d_som%cvars%qom(1),  &
+         som%cvars%enz_mom(1), d_som%cvars%enz_mom(1),  &
+         som%cvars%amb(1), d_som%cvars%amb(1),   &
+         som%cvars%dmb(1), d_som%cvars%dmb(1),   &
+         som%fluxes%co2_lost(1), d_som%fluxes%co2_lost(1),  &
+         som%fluxes%nmin(1), d_som%fluxes%nmin(1),  &
+         som%fluxes%nitr(1), d_som%fluxes%nitr(1),  &
+         som%nvars%pom, input_pom_n_net, d_som%nvars%pom,  &
+         som%nvars%dom(1), input_dom_n_net, d_som%nvars%dom(1),  &
+         som%nvars%enz_pom, d_som%nvars%enz_pom,  &
+         som%nvars%mom(1), d_som%nvars%mom(1),   &
+         som%nvars%qom(1), d_som%nvars%qom(1),   &
+         som%nvars%enz_mom(1), d_som%nvars%enz_mom(1),   &
+         som%nvars%amb(1), d_som%nvars%amb(1),  &
+         som%nvars%dmb(1), d_som%nvars%dmb(1),  &
+         som%invars%nh4(1), input_nh4_net, d_som%invars%nh4(1), &
+         som%invars%no3(1), input_no3_net, d_som%invars%no3(1),  &
+         som%pvars%pom, input_pom_p_net, d_som%pvars%pom,  &
+         som%pvars%dom(1), input_dom_p_net, d_som%pvars%dom(1),  &
+         som%pvars%enz_pom, d_som%pvars%enz_pom,  &
+         som%pvars%mom(1), d_som%pvars%mom(1),   &
+         som%pvars%qom(1), d_som%pvars%qom(1),  &
+         som%pvars%enz_mom(1), d_som%pvars%enz_mom(1),   &
+         som%pvars%amb(1), d_som%pvars%amb(1),  &
+         som%pvars%dmb(1), d_som%pvars%dmb(1),   &
+         som%invars%psol(1), input_psol_net, d_som%invars%psol(1),  &
+         som%invars%plab(1), d_som%invars%plab(1), &
+         som%fluxes%ngas_lost(1), d_som%fluxes%ngas_lost(1), &
+         som%cvars%enz_ptase(1), d_som%cvars%enz_ptase(1), &
+         som%nvars%enz_ptase(1), d_som%nvars%enz_ptase(1), &
+         som%pvars%enz_ptase(1), d_som%pvars%enz_ptase(1),  &
+         d_som%fluxes%nh4_plant, &
+         som%fluxes%nh4_bnf(1), d_som%fluxes%nh4_bnf(1), &
+         d_som%fluxes%no3_plant, &
+         som%fluxes%c_leach(1), d_som%fluxes%c_leach(1), &
+         som%fluxes%n_leach(1), d_som%fluxes%n_leach(1),  &
+         som%fluxes%p_leach(1), d_som%fluxes%p_leach(1), &
+         d_som%fluxes%p_plant, &
+         som%invars%pocc(1), d_som%invars%pocc(1), &
+         som%invars%ppar(1), d_som%invars%ppar(1), input_ppar_net,  &
+         som%plvars%enz_plant_n, som%plvars%enz_plant_p, &
+         som%plvars%vnh4up_plant, som%plvars%vno3up_plant,  &
+         som%plvars%vpup_plant, som_water_drainage_ps, &
          csite%mend%bulk_den(ipa), pi1, wfp)
 
-    call mend_som2canopy_exchange(d_som%fluxes%co2_lost(ipa),  &
+    call mend_som2canopy_exchange(d_som%fluxes%co2_lost(1),  &
          csite%mend%bulk_den(ipa), som_consts, &
          d_can_co2, d_co2budget_storage, ccapcani)
 
@@ -323,7 +322,9 @@ Contains
     integer :: iwood
     integer, intent(in) :: ipa
 
-    call mend_update_diag_layer(mend%som, som_consts, ipa, mend%bulk_den(ipa))
+    ! Third argument was ipa, but should be 1 because mend%som is here always 
+    ! the single integration patch.
+    call mend_update_diag_layer(mend%som, som_consts, 1, mend%bulk_den(1))
 
     return
   end subroutine mend_update_diag

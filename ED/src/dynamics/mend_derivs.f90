@@ -334,6 +334,7 @@ Contains
        d_pom_c(ipom) = d_pom_c(ipom) + input_pom_c(ipom)
        d_pom_n(ipom) = d_pom_n(ipom) + input_pom_n(ipom)
        d_pom_p(ipom) = d_pom_p(ipom) + input_pom_p(ipom)
+!print*,1,d_pom_p(ipom), input_pom_p(ipom)
     enddo
 
     d_dom_c = d_dom_c + input_dom_c
@@ -356,6 +357,7 @@ Contains
        d_pom_c(ipom) = d_pom_c(ipom) - decomp_pom_c(ipom)
        d_pom_n(ipom) = d_pom_n(ipom) - decomp_pom_n(ipom)
        d_pom_p(ipom) = d_pom_p(ipom) - decomp_pom_p(ipom)
+!print*,2,d_pom_p(ipom), decomp_pom_p(ipom)
 
        d_dom_c = d_dom_c + consts%decomp_dissolved_frac * decomp_pom_c(ipom)
        d_dom_n = d_dom_n + consts%decomp_dissolved_frac * decomp_pom_n(ipom)
@@ -849,12 +851,6 @@ Contains
     tot_enz_plant_n_no3 = sum(enz_plant_n/consts%ksno3_plant)*bulk_den
     tot_enz_plant_p = sum(enz_plant_p/consts%kspsol_plant)*bulk_den
 
-!print*
-!print*,enz_plant_p(24:29)
-!print*,consts%kspsol_plant(24:29)
-!print*,tot_enz_plant_p
-
-
     no3_eff = no3
     if(no3 < 1.0e-12)then
        no3_eff = 0.
@@ -1028,15 +1024,17 @@ Contains
          (rtp1 + plab + psol_eff)**2
 !    if(plab < 1.0e-10)f_lab_p = 0.
 
+    ovflow_dmb_c = 0.
+    ovflow_amb_c = 0.
+    min_dmb_p = 0.
+    min_dmb_n = 0.
     ! Stoichiometric bounds: N
     cn_dmb = dmb_c / dmb_n
     if(cn_dmb < consts%mb_cn_min)then
        n_target = dmb_c / consts%mb_cn_min
        min_dmb_n = consts%stoich_adj_rate * (dmb_n - n_target)
-       ovflow_dmb_c = 0.
     elseif(cn_dmb > consts%mb_cn_max)then
        c_target = dmb_n * consts%mb_cn_max
-       min_dmb_n = 0.
        ovflow_dmb_c = consts%stoich_adj_rate * (dmb_c - c_target)
     endif
 
@@ -1044,7 +1042,6 @@ Contains
     if(cn_amb < consts%mb_cn_min)then
        n_target = amb_c / consts%mb_cn_min
        min_amb_n = min_amb_n + consts%stoich_adj_rate * (amb_n - n_target)
-       ovflow_amb_c = 0.
     elseif(cn_amb > consts%mb_cn_max)then
        c_target = amb_n * consts%mb_cn_max
        ovflow_amb_c = consts%stoich_adj_rate * (amb_c - c_target)
@@ -1057,7 +1054,6 @@ Contains
        min_dmb_p = consts%stoich_adj_rate * (dmb_p - p_target)
     elseif(cp_dmb > consts%mb_cp_max)then
        c_target = dmb_p * consts%mb_cp_max
-       min_dmb_p = 0.
        ovflow_dmb_c = ovflow_dmb_c + consts%stoich_adj_rate *  &
             (dmb_c - c_target)
     endif

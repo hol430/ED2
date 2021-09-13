@@ -160,6 +160,7 @@ subroutine fire_frequency(cgrid)
                   fire_wmass_threshold = fire_wmass_threshold                              &
                                        + soil(nsoil)%soilfr * dslz(k) * wdns
                end do
+
                if (csite%avg_monthly_gndwater(ipa) < fire_wmass_threshold) then
                   fire_intensity      = fire_parameter
                   mean_fire_intensity = mean_fire_intensity                                &
@@ -167,6 +168,7 @@ subroutine fire_frequency(cgrid)
                else
                   fire_intensity      = 0.0
                end if
+
                !---------------------------------------------------------------------------!
 
             case (3)

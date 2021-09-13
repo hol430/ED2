@@ -25,11 +25,11 @@ Contains
     real, dimension(ncohorts), intent(in) :: water_supply_nl
     real, dimension(ncohorts), intent(in) :: lai
     real, intent(in) :: slden
-    real, intent(out), dimension(n_pft) :: enz_plant_n
-    real, intent(out), dimension(n_pft) :: enz_plant_p
-    real, intent(out), dimension(n_pft) :: vnh4up_plant
-    real, intent(out), dimension(n_pft) :: vno3up_plant
-    real, intent(out), dimension(n_pft) :: vpup_plant
+    real, intent(inout), dimension(n_pft) :: enz_plant_n
+    real, intent(inout), dimension(n_pft) :: enz_plant_p
+    real, intent(inout), dimension(n_pft) :: vnh4up_plant
+    real, intent(inout), dimension(n_pft) :: vno3up_plant
+    real, intent(inout), dimension(n_pft) :: vpup_plant
     real, intent(in), dimension(ncohorts) :: nstorage
     real, intent(in), dimension(ncohorts) :: pstorage
     real, intent(in), dimension(ncohorts) :: nstorage_max
@@ -46,12 +46,6 @@ Contains
     real :: pstorage_max_total
     real :: nplant_total
     integer, parameter :: nutr_limit_scheme = 1
-
-    enz_plant_n = 0.
-    enz_plant_p = 0.
-    vnh4up_plant = 0.
-    vno3up_plant = 0.
-    vpup_plant = 0.
 
     ! Plant enzyme carrier abundance.
 
@@ -253,20 +247,20 @@ Contains
     enddo
 
     ! gC/kgSoil
-    co2_lost_units = co2_lost
+!    co2_lost_units = co2_lost
     ! gC/m3Soil
-    co2_lost_units = co2_lost_units * slden
+!    co2_lost_units = co2_lost_units * slden
     ! gC/m2Soil
-    co2_lost_units = co2_lost_units * consts%eff_soil_depth
+!    co2_lost_units = co2_lost_units * consts%eff_soil_depth
     ! molC/m2Soil
-    co2_lost_units = co2_lost_units / 12.
+!    co2_lost_units = co2_lost_units / 12.
     ! umolC/m2Soil
-    co2_lost_units = co2_lost_units * 1.0e6
+!    co2_lost_units = co2_lost_units * 1.0e6
     ! umolC/m2Soil/s
-    co2_lost_units = co2_lost_units / dtlsm
+!    co2_lost_units = co2_lost_units / dtlsm
 
     ! Averaging this over the day.
-    rh = rh + co2_lost_units * dtlsm / 86400.
+!    rh = rh + co2_lost_units * dtlsm / 86400.
 
     return
   end subroutine mend_som_plant_feedback

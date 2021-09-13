@@ -249,8 +249,6 @@ module disturbance_utils
                call allocate_sitetype  (csite,onsp + n_dist_types)
                call copy_sitetype      (tsite,csite,1,onsp,1,onsp)
                call deallocate_sitetype(tsite)
-               !---------------------------------------------------------------------------!
-
 
                !----- Allocate and initialise a disturbance mask vector. ------------------!
                allocate(disturb_mask(onsp + n_dist_types))

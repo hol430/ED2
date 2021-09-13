@@ -90,7 +90,7 @@ module rk4_driver
       !----- Functions --------------------------------------------------------------------!
       real                      , external    :: walltime
       !------------------------------------------------------------------------------------!
-
+      real :: co2_lost_units
 
 
 
@@ -237,13 +237,15 @@ module rk4_driver
 
                call mend_update_parameters_coupler(csite%soil_tempk(:,ipa), &
                     csite%soil_water(:,ipa),cpoly%ntext_soil(:,isi), csite%mend%pH(ipa))
-
                call mend_extern_forcing(csite%mend, ipa, &
-                    cpatch%ncohorts, cpatch%broot, cpatch%nplant, &
-                    cpatch%pft, cpatch%krdepth, csite%mend%bulk_den(ipa), &
-                    cpatch%nstorage, cpatch%pstorage, cpatch%nstorage_max, &
-                    cpatch%pstorage_max, cpatch%water_supply_nl, cpatch%lai, &
-                    cpatch%enz_alloc_frac_p, cgrid%met(ipy)%ndep, cgrid%met(ipy)%pdep)
+                    cpatch, csite%mend%bulk_den(ipa), &
+                    cgrid%met(ipy)%ndep, cgrid%met(ipy)%pdep)
+!               call mend_extern_forcing(csite%mend, ipa, &
+!                    cpatch%ncohorts, cpatch%broot, cpatch%nplant, &
+!                    cpatch%pft, cpatch%krdepth, csite%mend%bulk_den(ipa), &
+!                    cpatch%nstorage, cpatch%pstorage, cpatch%nstorage_max, &
+!                    cpatch%pstorage_max, cpatch%water_supply_nl, cpatch%lai, &
+!                    cpatch%enz_alloc_frac_p, cgrid%met(ipy)%ndep, cgrid%met(ipy)%pdep)
 
                !----- Get photosynthesis, stomatal conductance, and transpiration. --------!
                call canopy_photosynthesis(csite,cmet,nzg,ipa,cpoly%ntext_soil(:,isi)       &
@@ -284,25 +286,40 @@ module rk4_driver
 !if(cpatch%ncohorts >= 78)print*,4,cpatch%leaf_psi(78),  &
 !     cpatch%leaf_water_int(78),cpatch%leaf_rwc(78)
 
-
-               call mend_som_plant_feedback( &
-                    initp%mend%som%fluxes%nh4_plant(:,ipa), &
-                    initp%mend%som%fluxes%no3_plant(:,ipa), &
-                    initp%mend%som%fluxes%p_plant(:,ipa), &
-                    csite%mend%bulk_den(ipa), &
-                    som_consts, &
-                    csite%patch(ipa)%ncohorts, &
-                    csite%patch(ipa)%nstorage, &
-                    csite%patch(ipa)%pstorage, &
-                    csite%patch(ipa)%nstorage_max, &
-                    csite%patch(ipa)%pstorage_max, &
-                    csite%patch(ipa)%nplant, &
-                    csite%patch(ipa)%broot, csite%rh(ipa), &
-                    initp%mend%som%fluxes%co2_lost(ipa), &
-                    csite%patch(ipa)%pft, &
-                    csite%patch(ipa)%krdepth, &
-                    csite%patch(ipa)%water_supply_nl, &
-                    csite%patch(ipa)%lai,csite%patch(ipa)%enz_alloc_frac_p)
+               ! gC/kgSoil
+               co2_lost_units = initp%mend%som%fluxes%co2_lost(1)
+               ! gC/m3Soil
+               co2_lost_units = co2_lost_units * csite%mend%bulk_den(ipa)
+               ! gC/m2Soil
+               co2_lost_units = co2_lost_units * som_consts%eff_soil_depth
+               ! molC/m2Soil
+               co2_lost_units = co2_lost_units / 12.
+               ! umolC/m2Soil
+               co2_lost_units = co2_lost_units * 1.0e6
+               ! umolC/m2Soil/s
+               co2_lost_units = co2_lost_units / dtlsm
+               csite%rh(ipa) = csite%rh(ipa) + co2_lost_units * dtlsm / 86400.
+               
+               if(cpatch%ncohorts > 0)then
+                  call mend_som_plant_feedback( &
+                       initp%mend%som%fluxes%nh4_plant(:,1), &
+                       initp%mend%som%fluxes%no3_plant(:,1), &
+                       initp%mend%som%fluxes%p_plant(:,1), &
+                       csite%mend%bulk_den(ipa), &
+                       som_consts, &
+                       csite%patch(ipa)%ncohorts, &
+                       csite%patch(ipa)%nstorage, &
+                       csite%patch(ipa)%pstorage, &
+                       csite%patch(ipa)%nstorage_max, &
+                       csite%patch(ipa)%pstorage_max, &
+                       csite%patch(ipa)%nplant, &
+                       csite%patch(ipa)%broot, csite%rh(ipa), &
+                       initp%mend%som%fluxes%co2_lost(1), &
+                       csite%patch(ipa)%pft, &
+                       csite%patch(ipa)%krdepth, &
+                       csite%patch(ipa)%water_supply_nl, &
+                       csite%patch(ipa)%lai,csite%patch(ipa)%enz_alloc_frac_p)
+               endif
 
                !----- Add the number of steps into the step counter. ----------------------!
                !----- workload accumulation is order-independent, so this can stay shared

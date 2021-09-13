@@ -116,7 +116,21 @@ module phenology_startup
       character(len=3)      , dimension(2)    , parameter   :: ftype=(/'chd','dgd'/)
       !------------------------------------------------------------------------------------!
 
+      do igr=1,ngrids
+         cgrid => edgrid_g(igr)
 
+         do ipy=1,cgrid%npolygons
+            cpoly => cgrid%polygon(ipy)
+
+            do isi = 1,cpoly%nsites
+               csite => cpoly%site(isi)
+
+               csite%sum_chd = 0.
+               csite%sum_dgd = 0.
+            enddo
+         enddo
+      enddo
+      return
 
       !------------------------------------------------------------------------------------!
       !    Initialise the number of days for each month.                                   !

@@ -718,13 +718,13 @@ module plant_hydro
         !-----------------------------------------------------------------------
         if (sum(layer_water_supply) == 0.d0) then
             wflux_gw_layer_d = 0.d0
+            water_supply_nl = 0.
         else
             wflux_gw_layer_d = layer_water_supply / sum(layer_water_supply) * &
                                wflux_gw_d
+            water_supply_nl = sum(layer_water_supply(nlsl:nzg)) / sum(layer_water_supply) * &
+                 wflux_gw_d * nplant * dt
         endif
-
-        water_supply_nl = sum(layer_water_supply(nlsl:nzg)) / sum(layer_water_supply) * &
-             wflux_gw_d * nplant * dt
 
 
       !--------------------------------------------------------------------------

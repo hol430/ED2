@@ -464,21 +464,21 @@ Contains
 
 !!!!!!!!!!!!!!!!!
     
-    do iwood = 1, nwood
-       wood_consts(iwood) = litt_consts
-       write(wood_consts(iwood)%type,'(a4,i1.1)')'wood',iwood
-    enddo
+!    do iwood = 1, nwood
+!       wood_consts(iwood) = litt_consts
+!       write(wood_consts(iwood)%type,'(a4,i1.1)')'wood',iwood
+!    enddo
 
-    wood_consts(1)%frag_rate = 1. / (10. * 365.25 * 24. * 3600.)
-    wood_consts(2)%frag_rate = 1. / (2. * 365.25 * 24. * 3600.)
-    wood_consts(3)%frag_rate = 1. / (5. * 365.25 * 24. * 3600.)
-    wood_consts(4)%frag_rate = 1. / (1. * 365.25 * 24. * 3600.)
+!    wood_consts(1)%frag_rate = 1. / (10. * 365.25 * 24. * 3600.)
+!    wood_consts(2)%frag_rate = 1. / (2. * 365.25 * 24. * 3600.)
+!    wood_consts(3)%frag_rate = 1. / (5. * 365.25 * 24. * 3600.)
+!    wood_consts(4)%frag_rate = 1. / (1. * 365.25 * 24. * 3600.)
 
     som_consts_base = som_consts
-    litt_consts_base = litt_consts
-    do iwood = 1, nwood
-       wood_consts_base(iwood) = wood_consts(iwood)
-    enddo
+!    litt_consts_base = litt_consts
+!    do iwood = 1, nwood
+!       wood_consts_base(iwood) = wood_consts(iwood)
+!    enddo
 
 
     return

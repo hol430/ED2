@@ -116,7 +116,6 @@ module growth_balive
 
                !----- Loop over cohorts. --------------------------------------------------!
                cohortloop: do ico = 1,cpatch%ncohorts
-
                   !----- Alias for current PFT. -------------------------------------------!
                   ipft = cpatch%pft(ico)
                   !----- Initialize cohort nitrogen uptake. -------------------------------!
@@ -353,7 +352,7 @@ module growth_balive
                !---------------------------------------------------------------------------!
 
                call growth_strategy(csite,ipa,cpoly%green_leaf_factor,cpoly%ntext_soil(:,isi), &
-                    csite%soil_water(:,ipa),csite%soil_fracliq(:,ipa))
+                    csite%soil_water(:,ipa),csite%soil_fracliq(:,ipa),isi)
 
                !----- Update litter. ------------------------------------------------------!
                call litter(csite,ipa)
@@ -2219,7 +2218,7 @@ module growth_balive
       return
    end subroutine litter
 
-   subroutine growth_strategy(csite,ipa,green_leaf_factor,ntext_soil,soil_water,soil_fracliq)
+   subroutine growth_strategy(csite,ipa,green_leaf_factor,ntext_soil,soil_water,soil_fracliq,isi)
      use ed_state_vars, only: sitetype, patchtype
      use allometry, only: size2bl,dbh2sf
      use pft_coms, only: c2n_leaf, c2p_leaf, repro_min_h,   &
@@ -2255,6 +2254,7 @@ module growth_balive
      integer :: k
      real :: soilwp
      real :: c_cost
+     integer, intent(in) :: isi
 
      cpatch => csite%patch(ipa)
 
@@ -2264,7 +2264,7 @@ module growth_balive
         limitation_flag = 0
         ! Actual max, plus a re-flush
         bl_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) *   &
-             (1. + green_leaf_factor(ipft,ipa) * cpatch%elongf(ico))
+             (1. + green_leaf_factor(ipft,isi) * cpatch%elongf(ico))
         br_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * cpatch%root2leaf(ico) *  &
              (1. + (1.+cpatch%elongf(ico))/2.)
         target_balive = bl_max + br_max
@@ -2355,7 +2355,7 @@ module growth_balive
 
         if(adjusted == 1)then
            actual_leaf_and_root = cpatch%bleaf(ico) + cpatch%broot(ico)
-           bl_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * green_leaf_factor(ipft,ipa) * &
+           bl_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * green_leaf_factor(ipft,isi) * &
                 cpatch%elongf(ico)
            br_max = size2bl(cpatch%dbh(ico),cpatch%hite(ico),ipft) * cpatch%root2leaf(ico) * &
                 (cpatch%elongf(ico) + 1.) / 2.

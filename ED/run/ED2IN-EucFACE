@@ -30,9 +30,9 @@ $ED_NL
    !---------------------------------------------------------------------------------------!
    !     Start of simulation. Information must be given in UTC time.                       !
    !---------------------------------------------------------------------------------------!
-   NL%IMONTHA  = 07
+   NL%IMONTHA  = 12
    NL%IDATEA   = 01
-   NL%IYEARA   = 2000
+   NL%IYEARA   = 1700
    NL%ITIMEA   = 0000
    !---------------------------------------------------------------------------------------!
 
@@ -41,9 +41,9 @@ $ED_NL
    !---------------------------------------------------------------------------------------!
    !     End of simulation. Information must be given in UTC time.                         !
    !---------------------------------------------------------------------------------------!
-   NL%IMONTHZ  = 07    ! Month
+   NL%IMONTHZ  = 01    ! Month
    NL%IDATEZ   = 01    ! Day
-   NL%IYEARZ   = 2010  ! Year
+   NL%IYEARZ   = 2021  ! Year
    NL%ITIMEZ   = 0000  ! UTC
    !---------------------------------------------------------------------------------------!
 
@@ -200,10 +200,10 @@ $ED_NL
    !             determined by FRQHIS                                                      !
    !---------------------------------------------------------------------------------------!
    NL%IFOUTPUT  =  0
-   NL%IDOUTPUT  =  3
+   NL%IDOUTPUT  =  0
    NL%IMOUTPUT  =  3
    NL%IQOUTPUT  =  0
-   NL%IYOUTPUT  =  3
+   NL%IYOUTPUT  =  0
    NL%ITOUTPUT  =  0
    NL%IOOUTPUT  =  0
    NL%ISOUTPUT  =  0
@@ -1199,7 +1199,8 @@ $ED_NL
    !---------------------------------------------------------------------------------------!
    NL%INCLUDE_FIRE    = 2
    NL%FIRE_PARAMETER  = 0.5
-   NL%SM_FIRE         = 0.07
+   NL%SM_FIRE         = -1.4
+!   NL%SM_FIRE         = 0.07
    !---------------------------------------------------------------------------------------!
 
 
@@ -1336,7 +1337,7 @@ $ED_NL
    ! 7 - southern pines                   | 17 - "Araucaria" (non-optimised                !
    ! 8 - late conifers                    |      Southern Pines).                          !
    !---------------------------------------------------------------------------------------!
-   NL%INCLUDE_THESE_PFT = 2,3,4,5,6,7,8,9
+   NL%INCLUDE_THESE_PFT = 1,2,3,4,5,6,7,8,9
    NL%AGRI_STOCK        = 5
    NL%PLANTATION_STOCK  = 11
    !---------------------------------------------------------------------------------------!
@@ -1420,7 +1421,7 @@ $ED_NL
    !                              TREEFALL_DISTURBANCE_RATE is internally adjusted so the  !
    !                              average patch age is still 1/TREEFALL_DISTURBANCE_RATE   !
    !---------------------------------------------------------------------------------------!
-   NL%TREEFALL_DISTURBANCE_RATE  = 0.0
+   NL%TREEFALL_DISTURBANCE_RATE  = 0.01
    NL%TIME2CANOPY                = 0
    !---------------------------------------------------------------------------------------!
 

@@ -26,6 +26,7 @@ LIBS=
 MOD_EXT=mod
 
 F_OPTS=-O2 -static -traceback
+#F_OPTS=-O0 -static -traceback -fpe-all=0 -check all -ftrapuv -fp-model strict
 F_SIMPLE_OPTS=-static -traceback -no-ip
 C_OPTS= -O3 -DUNDERSCORE -DLITTLE
 LOADER_OPTS=

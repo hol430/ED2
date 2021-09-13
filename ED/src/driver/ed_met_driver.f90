@@ -2518,8 +2518,10 @@ subroutine update_met_drivers(cgrid)
       tallest_cohort = 0.
       siteloop: do isi = 1,cpoly%nsites
 
+         tallest_cohort = 0.
          do ipa = 1, cpoly%site(isi)%npatches
-            tallest_cohort = max(tallest_cohort,cpoly%site(isi)%patch(ipa)%hite(1))
+            if(cpoly%site(isi)%patch(ipa)%ncohorts > 0) &
+                 tallest_cohort = max(tallest_cohort,cpoly%site(isi)%patch(ipa)%hite(1))
          enddo
 
          !----- Vels. The site level is also still in kinetic energy form. ----------------!
@@ -2930,6 +2932,13 @@ subroutine read_ol_file(infile,iformat, iv, mname, year, offset, cgrid)
       elseif (np == np_dset) then
          !----- Datasets are the same, no double allocation needed. -----------------------!
          allocate(metvar(np,met_nlon(iformat),met_nlat(iformat)))
+!print*,trim(infile)
+!print*,ndims
+!print*,idims
+!print*,iformat
+!print*,met_nlon(iformat)
+!print*,met_nlat(iformat)
+!print*,trim(met_vars(iformat,iv))
          call shdf5_irec_f(ndims, idims, trim(met_vars(iformat,iv)), rvara = metvar)
 
       else

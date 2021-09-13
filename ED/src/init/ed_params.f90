@@ -4197,7 +4197,7 @@ subroutine init_disturb_params
    !---------------------------------------------------------------------------------------!
 
    !----- Maximum depth that will be considered in the average soil -----------------------!
-   fire_smoist_depth     = -0.2
+   fire_smoist_depth     = -0.5
    !---------------------------------------------------------------------------------------!
 
    !----- Determine the top layer to consider for fires in case include_fire is 2 or 3. ---!

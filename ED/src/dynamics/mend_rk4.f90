@@ -205,7 +205,9 @@ if(abs(vars%fluxes%p_leach(ip1)) < 1.e-13)vars%fluxes%p_leach(ip1) = 0.
     integer, intent(in) :: ip2
 
     do ipom = 1, npom
-       vars%pom(ipom,ip1) = vars%pom(ipom,ip1) + dvars%pom(ipom,ip2) * step
+       if(abs(dvars%pom(ipom,ip2)) > 1.e-25)then
+          vars%pom(ipom,ip1) = vars%pom(ipom,ip1) + dvars%pom(ipom,ip2)*step
+       endif
        vars%enz_pom(ipom,ip1) = vars%enz_pom(ipom,ip1) +   &
             dvars%enz_pom(ipom,ip2) * step
     enddo
