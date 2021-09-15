@@ -532,9 +532,9 @@ subroutine copy_nl(copy_type)
       do ifm=1,n_ed_region
          if (grid_type == 0) then
             nnxp(ifm)=floor( real(nstratx(ifm)) * (ed_reg_lonmax(ifm)-ed_reg_lonmin(ifm))  &
-                           / grid_res)
+                           / grid_res+0.01*grid_res)
             nnyp(ifm)=floor( real(nstratx(ifm)) * (ed_reg_latmax(ifm)-ed_reg_latmin(ifm))  &
-                           / grid_res)
+                           / grid_res+0.01*grid_res)
          end if
       end do
 
