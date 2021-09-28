@@ -2318,16 +2318,16 @@ module growth_balive
 
 !if(.false.)then
         adjusted = 0
-        if(limitation_flag ==2)then
+!        if(limitation_flag ==2)then
 !           cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
 !                cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
 !           adjusted = 1
-        endif
+!        endif
         
 !        if(limitation_flag == 3)then
-           cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
-                60.0*csite%mend%som%invars%psol(ipa)))
-           adjusted = 1
+!           cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
+!                60.0*csite%mend%som%invars%psol(ipa)))
+!           adjusted = 1
 !        endif
         cpatch%enz_alloc_frac_p(ico) = 1.
 
@@ -2342,14 +2342,14 @@ module growth_balive
               if(soilwp > leaf_psi_tlp(ipft) * root_realloc_dry_thresh(ipft) .and. &
                    (soil_water(k) *soil_fracliq(k) ) > soil(nsoil)%soilcp + 0.02 * &
                    (soil(nsoil)%slmsts - soil(nsoil)%soilcp))then
-!                 cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
-!                      cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
-!                 adjusted = 1
+                 cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
+                      cpatch%root2leaf(ico) * exp(root_realloc_inc(ipft))))
+                 adjusted = 1
               endif
            elseif(cpatch%dmin_leaf_psi(ico) > leaf_psi_tlp(ipft) * root_realloc_wet_thresh(ipft))then
-!              cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
-!                   cpatch%root2leaf(ico) * exp(-root_realloc_inc(ipft))))
-!              adjusted = 1
+              cpatch%root2leaf(ico) = max(root2leaf_min(ipft),min(root2leaf_max(ipft), &
+                   cpatch%root2leaf(ico) * exp(-root_realloc_inc(ipft))))
+              adjusted = 1
            endif
         endif
 
