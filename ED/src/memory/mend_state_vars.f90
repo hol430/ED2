@@ -922,9 +922,6 @@ Contains
     vars%invars%psol(ip1:ip2) = 0.
     vars%invars%plab(ip1:ip2) = 0.
     vars%fluxes%nh4_plant(:,ip1:ip2) = 0.
-    vars%fluxes%nh4_plant_sum(ip1:ip2) = 0.
-    vars%fluxes%no3_plant_sum(ip1:ip2) = 0.
-    vars%fluxes%p_plant_sum(ip1:ip2) = 0.
     vars%fluxes%nh4_bnf(ip1:ip2) = 0.
     vars%fluxes%no3_plant(:,ip1:ip2) = 0.
     vars%fluxes%nmin(ip1:ip2) = 0.
