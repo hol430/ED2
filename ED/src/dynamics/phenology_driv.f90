@@ -803,15 +803,15 @@ subroutine update_phenology(doy, cpoly, isi, lat)
               delta_broot) * P_resorption_fraction(ipft) / c2p_leaf(ipft)
 
          ! Check to see if storage pools are exceeded. Set the excess
-         ! to "leaf litter".
+         ! to "root litter".
          if(cpatch%nstorage(ico) > cpatch%nstorage_max(ico))then
-            csite%plant_input_N(2,ipa) = csite%plant_input_N(2,ipa) + &
+            csite%plant_input_N(3,ipa) = csite%plant_input_N(3,ipa) + &
                  cpatch%nplant(ico) * (cpatch%nstorage(ico) -  &
                  cpatch%nstorage_max(ico))
             cpatch%nstorage(ico) = cpatch%nstorage_max(ico)
          endif
          if(cpatch%pstorage(ico) > cpatch%pstorage_max(ico))then
-            csite%plant_input_P(2,ipa) = csite%plant_input_P(2,ipa) + &
+            csite%plant_input_P(3,ipa) = csite%plant_input_P(3,ipa) + &
                  cpatch%nplant(ico) * (cpatch%pstorage(ico) -  &
                  cpatch%pstorage_max(ico))
             cpatch%pstorage(ico) = cpatch%pstorage_max(ico)

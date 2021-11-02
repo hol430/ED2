@@ -106,9 +106,9 @@ module plant_hydro
           
           !get relative soil moisture
 
-          wgpfrac = min(1.0,                                &
+          wgpfrac = max(soil(nsoil)%soilcp,min(1.0,                                &
                     csite%soil_water(k,ipa) * csite%soil_fracliq(k,ipa) /           &
-                    soil(nsoil)%slmsts)
+                    soil(nsoil)%slmsts))
 
 !          wgpfrac = max(soil(nsoil)%soilcp,min(1.0,                                &
 !                    csite%soil_water(k,ipa) * csite%soil_fracliq(k,ipa))) /           &
@@ -375,7 +375,7 @@ module plant_hydro
                                  , root_beta            & ! intent(in)
                                  , SRA                  & ! intent(in)
                                  , C2B                  & ! intent(in)
-                                 , hgt_min              ! ! intent(in)
+                                 , hgt_min, is_grass              ! ! intent(in)
       use nutrient_constants, only: nlsl
       implicit none
       !----- Arguments --------------------------------------------------------------------!
@@ -512,7 +512,7 @@ module plant_hydro
       ! we also assume it is a small tree if the tree is too short
       small_tree_flag = ((c_leaf > (c_stem / 2.d0)) .or. (hite_d == hgt_min(ipft)))
 
-
+      small_tree_flag = small_tree_flag .or. is_grass(ipft)
 
 
 

@@ -42,6 +42,9 @@ Module mend_state_vars
      real, allocatable, dimension(:,:) :: nh4_plant
      real, allocatable, dimension(:,:) :: no3_plant
      real, allocatable, dimension(:,:) :: p_plant
+     real, allocatable, dimension(:) :: nh4_plant_sum
+     real, allocatable, dimension(:) :: no3_plant_sum
+     real, allocatable, dimension(:) :: p_plant_sum
      real, allocatable, dimension(:) :: nmin
      real, allocatable, dimension(:) :: nitr
   end type ext_fluxes
@@ -142,6 +145,9 @@ Contains
     allocate(mvars%fluxes%nh4_plant(n_pft,npatches))
     allocate(mvars%fluxes%no3_plant(n_pft,npatches))
     allocate(mvars%fluxes%p_plant(n_pft,npatches))
+    allocate(mvars%fluxes%nh4_plant_sum(npatches))
+    allocate(mvars%fluxes%no3_plant_sum(npatches))
+    allocate(mvars%fluxes%p_plant_sum(npatches))
     allocate(mvars%fluxes%nmin(npatches))
     allocate(mvars%fluxes%nitr(npatches))
 
@@ -240,6 +246,9 @@ Contains
     deallocate(mvars%fluxes%nh4_plant)
     deallocate(mvars%fluxes%no3_plant)
     deallocate(mvars%fluxes%p_plant)
+    deallocate(mvars%fluxes%nh4_plant_sum)
+    deallocate(mvars%fluxes%no3_plant_sum)
+    deallocate(mvars%fluxes%p_plant_sum)
     deallocate(mvars%fluxes%nmin)
     deallocate(mvars%fluxes%nitr)
 
@@ -361,6 +370,9 @@ Contains
        omvars%plvars%vno3up_plant(ipft,oipa) = imvars%plvars%vno3up_plant(ipft,iipa)
        omvars%plvars%vpup_plant(ipft,oipa) = imvars%plvars%vpup_plant(ipft,iipa)
     enddo
+    omvars%fluxes%nh4_plant_sum(oipa) = imvars%fluxes%nh4_plant_sum(iipa)
+    omvars%fluxes%no3_plant_sum(oipa) = imvars%fluxes%no3_plant_sum(iipa)
+    omvars%fluxes%p_plant_sum(oipa) = imvars%fluxes%p_plant_sum(iipa)
 
     do ipom = 1, npom
        omvars%plvars%plant_input_C_pom(ipom,oipa) =   &
@@ -496,6 +508,9 @@ Contains
        omvars%plvars%vno3up_plant(ipft,1:masksz) = pack(imvars%plvars%vno3up_plant(ipft,:),logmask)
        omvars%plvars%vpup_plant(ipft,1:masksz) = pack(imvars%plvars%vpup_plant(ipft,:),logmask)
     enddo
+    omvars%fluxes%nh4_plant_sum(1:masksz) = pack(imvars%fluxes%nh4_plant_sum,logmask)
+    omvars%fluxes%no3_plant_sum(1:masksz) = pack(imvars%fluxes%no3_plant_sum,logmask)
+    omvars%fluxes%p_plant_sum(1:masksz) = pack(imvars%fluxes%p_plant_sum,logmask)
 
     do ipom = 1, npom
        omvars%plvars%plant_input_C_pom(ipom,1:masksz) =   &
@@ -719,15 +734,15 @@ Contains
          var_len,var_len_global,max_ptrs,trim(type_string)//'FL_NH4BNF :31:hist:mont:year') 
     call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
 
-!    nvar=nvar+1
-!    call vtable_edio_r(npatches,mvars%fluxes%nh4_plant,nvar,igr,init,paglob_id, &
-!         var_len,var_len_global,max_ptrs,trim(type_string)//'FL_NH4PL :31:hist:mont:year') 
-!    call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
+    nvar=nvar+1
+    call vtable_edio_r(npatches,mvars%fluxes%nh4_plant_sum,nvar,igr,init,paglob_id, &
+         var_len,var_len_global,max_ptrs,trim(type_string)//'FL_NH4PL :31:hist:mont:year') 
+    call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
 
-!    nvar=nvar+1
-!    call vtable_edio_r(npatches,mvars%fluxes%no3_plant,nvar,igr,init,paglob_id, &
-!         var_len,var_len_global,max_ptrs,trim(type_string)//'FL_NO3PL :31:hist:mont:year') 
-!    call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
+    nvar=nvar+1
+    call vtable_edio_r(npatches,mvars%fluxes%no3_plant_sum,nvar,igr,init,paglob_id, &
+         var_len,var_len_global,max_ptrs,trim(type_string)//'FL_NO3PL :31:hist:mont:year') 
+    call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
 
     nvar=nvar+1
     call vtable_edio_r(npatches,mvars%fluxes%nmin,nvar,igr,init,paglob_id, &
@@ -739,10 +754,10 @@ Contains
          var_len,var_len_global,max_ptrs,trim(type_string)//'FL_NITR :31:hist:mont:year') 
     call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
 
-!    nvar=nvar+1
-!    call vtable_edio_r(npatches,mvars%fluxes%p_plant,nvar,igr,init,paglob_id, &
-!         var_len,var_len_global,max_ptrs,trim(type_string)//'FL_PPL :31:hist:mont:year') 
-!    call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
+    nvar=nvar+1
+    call vtable_edio_r(npatches,mvars%fluxes%p_plant_sum,nvar,igr,init,paglob_id, &
+         var_len,var_len_global,max_ptrs,trim(type_string)//'FL_PPL :31:hist:mont:year') 
+    call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
 
 !    nvar=nvar+1
 !    call vtable_edio_r(npatches,mvars%plvars%enz_plant_n,nvar,igr,init,paglob_id, &
@@ -907,6 +922,9 @@ Contains
     vars%invars%psol(ip1:ip2) = 0.
     vars%invars%plab(ip1:ip2) = 0.
     vars%fluxes%nh4_plant(:,ip1:ip2) = 0.
+    vars%fluxes%nh4_plant_sum(ip1:ip2) = 0.
+    vars%fluxes%no3_plant_sum(ip1:ip2) = 0.
+    vars%fluxes%p_plant_sum(ip1:ip2) = 0.
     vars%fluxes%nh4_bnf(ip1:ip2) = 0.
     vars%fluxes%no3_plant(:,ip1:ip2) = 0.
     vars%fluxes%nmin(ip1:ip2) = 0.

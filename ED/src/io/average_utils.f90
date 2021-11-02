@@ -5055,6 +5055,12 @@ module average_utils
             patchloop: do ipa=1,csite%npatches
                cpatch => csite%patch(ipa)
 
+               csite%mend_mm%som%fluxes%nh4_plant_sum(ipa) =  &
+                    sum(csite%mend_mm%som%fluxes%nh4_plant(:,ipa))
+               csite%mend_mm%som%fluxes%no3_plant_sum(ipa) =  &
+                    sum(csite%mend_mm%som%fluxes%no3_plant(:,ipa))
+               csite%mend_mm%som%fluxes%p_plant_sum(ipa) =  &
+                    sum(csite%mend_mm%som%fluxes%p_plant(:,ipa))
 
                !----- Site weight. --------------------------------------------------------!
                patch_wgt = csite%area(ipa) * site_area_i * site_wgt

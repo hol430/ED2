@@ -1324,12 +1324,12 @@ module growth_balive
       cpatch%nstorage(ico) = cpatch%nstorage(ico) + tr_nstorage
       extra_storage = max(0., cpatch%nstorage(ico) - cpatch%nstorage_max(ico))
       cpatch%nstorage(ico) = cpatch%nstorage(ico) - extra_storage
-      csite%plant_input_N(3,ipa) = csite%plant_input_N(3,ipa) + extra_storage
+      csite%plant_input_N(3,ipa) = csite%plant_input_N(3,ipa) + extra_storage * cpatch%nplant(ico)
 
       cpatch%pstorage(ico) = cpatch%pstorage(ico) + tr_pstorage
       extra_storage = max(0., cpatch%pstorage(ico) - cpatch%pstorage_max(ico))
       cpatch%pstorage(ico) = cpatch%pstorage(ico) - extra_storage
-      csite%plant_input_P(3,ipa) = csite%plant_input_P(3,ipa) + extra_storage         
+      csite%plant_input_P(3,ipa) = csite%plant_input_P(3,ipa) + extra_storage * cpatch%nplant(ico)
 
       return
    end subroutine apply_c_xfers

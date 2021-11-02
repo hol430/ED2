@@ -31,7 +31,7 @@ module rk4_driver
       use grid_coms              , only : nzg                  & ! intent(in)
                                         , nzs                  ! ! intent(in)
       use ed_misc_coms           , only : current_time         & ! intent(in)
-                                        , dtlsm                ! ! intent(in)
+                                        , dtlsm, frqsum                ! ! intent(in)
       use therm_lib              , only : tq2enthalpy          ! ! function
       use budget_utils           , only : update_budget        & ! function
                                         , compute_budget       ! ! function
@@ -40,6 +40,7 @@ module rk4_driver
       use mend_plant, only: mend_som_plant_feedback
       use mend_consts_coms, only: som_consts
       use mend_state_vars, only: mend_mm_time
+      use consts_coms, only: umols_2_kgCyr
 
       !$ use omp_lib
       implicit none
@@ -299,6 +300,9 @@ module rk4_driver
                ! umolC/m2Soil/s
                co2_lost_units = co2_lost_units / dtlsm
                csite%rh(ipa) = csite%rh(ipa) + co2_lost_units * dtlsm / 86400.
+
+               csite%fmean_rh(ipa) = csite%fmean_rh(ipa) + csite%rh(ipa) * umols_2_kgCyr * &
+                    dtlsm / frqsum
                
                if(cpatch%ncohorts > 0)then
                   call mend_som_plant_feedback( &
