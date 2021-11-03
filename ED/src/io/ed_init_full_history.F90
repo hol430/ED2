@@ -3137,6 +3137,7 @@ subroutine fill_history_site(csite,sipa_index,npatches_global,is_burnt)
                                  , writing_eorq  & ! intent(in)
                                  , writing_dcyc  ! ! intent(in)
    use fusion_fission_coms, only : ff_nhgt       ! ! intent(in)
+   use mend_state_vars, only: npom
    implicit none
    !----- Interfaces. ---------------------------------------------------------------------!
 
@@ -3493,6 +3494,101 @@ subroutine fill_history_site(csite,sipa_index,npatches_global,is_burnt)
                      ,'HTRY                        ',dsetrank,iparallel,.true. ,foundvar)
    call hdf_getslab_r(csite%hprev                                                          &
                      ,'HPREV                       ',dsetrank,iparallel,.true. ,foundvar)
+
+
+   call hdf_getslab_r(csite%mend%som%cvars%dom,'MEND_SOM_C_DOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%cvars%mom,'MEND_SOM_C_MOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%cvars%qom,'MEND_SOM_C_QOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%cvars%enz_mom,'MEND_SOM_C_ENZMOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%cvars%amb,'MEND_SOM_C_AMB',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%cvars%dmb,'MEND_SOM_C_DMB',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%cvars%enz_ptase,'MEND_SOM_C_ENZPTASE',dsetrank,iparallel,.true.,foundvar)
+
+   call hdf_getslab_r(csite%mend%som%nvars%dom,'MEND_SOM_N_DOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%nvars%mom,'MEND_SOM_N_MOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%nvars%qom,'MEND_SOM_N_QOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%nvars%enz_mom,'MEND_SOM_N_ENZMOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%nvars%amb,'MEND_SOM_N_AMB',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%nvars%dmb,'MEND_SOM_N_DMB',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%nvars%enz_ptase,'MEND_SOM_N_ENZPTASE',dsetrank,iparallel,.true.,foundvar)
+
+   call hdf_getslab_r(csite%mend%som%pvars%dom,'MEND_SOM_P_DOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%pvars%mom,'MEND_SOM_P_MOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%pvars%qom,'MEND_SOM_P_QOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%pvars%enz_mom,'MEND_SOM_P_ENZMOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%pvars%amb,'MEND_SOM_P_AMB',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%pvars%dmb,'MEND_SOM_P_DMB',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%pvars%enz_ptase,'MEND_SOM_P_ENZPTASE',dsetrank,iparallel,.true.,foundvar)
+
+   call hdf_getslab_r(csite%mend_mm%som%cvars%dom,'MMEAN_MEND_SOM_C_DOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%cvars%mom,'MMEAN_MEND_SOM_C_MOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%cvars%qom,'MMEAN_MEND_SOM_C_QOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%cvars%enz_mom,'MMEAN_MEND_SOM_C_ENZMOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%cvars%amb,'MMEAN_MEND_SOM_C_AMB',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%cvars%dmb,'MMEAN_MEND_SOM_C_DMB',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%cvars%enz_ptase,'MMEAN_MEND_SOM_C_ENZPTASE',dsetrank,iparallel,.false.,foundvar)
+
+   call hdf_getslab_r(csite%mend_mm%som%nvars%dom,'MMEAN_MEND_SOM_N_DOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%nvars%mom,'MMEAN_MEND_SOM_N_MOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%nvars%qom,'MMEAN_MEND_SOM_N_QOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%nvars%enz_mom,'MMEAN_MEND_SOM_N_ENZMOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%nvars%amb,'MMEAN_MEND_SOM_N_AMB',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%nvars%dmb,'MMEAN_MEND_SOM_N_DMB',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%nvars%enz_ptase,'MMEAN_MEND_SOM_N_ENZPTASE',dsetrank,iparallel,.false.,foundvar)
+
+   call hdf_getslab_r(csite%mend_mm%som%pvars%dom,'MMEAN_MEND_SOM_P_DOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%pvars%mom,'MMEAN_MEND_SOM_P_MOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%pvars%qom,'MMEAN_MEND_SOM_P_QOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%pvars%enz_mom,'MMEAN_MEND_SOM_P_ENZMOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%pvars%amb,'MMEAN_MEND_SOM_P_AMB',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%pvars%dmb,'MMEAN_MEND_SOM_P_DMB',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%pvars%enz_ptase,'MMEAN_MEND_SOM_P_ENZPTASE',dsetrank,iparallel,.false.,foundvar)
+
+   call hdf_getslab_r(csite%mend%som%invars%nh4,'MEND_SOM_IN_NH4',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%invars%no3,'MEND_SOM_IN_NO3',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%invars%plab,'MEND_SOM_IN_PLAB',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%invars%psol,'MEND_SOM_IN_PSOL',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%invars%pocc,'MEND_SOM_IN_POCC',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%invars%psec,'MEND_SOM_IN_PSEC',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%invars%ppar,'MEND_SOM_IN_PPAR',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%co2_lost,'MEND_SOM_FL_CO2LOSS',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%ngas_lost,'MEND_SOM_FL_NGASLOSS',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%nh4_dep,'MEND_SOM_FL_NH4DEP',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%no3_dep,'MEND_SOM_FL_NO3DEP',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%ppar_dep,'MEND_SOM_FL_PPARDEP',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%c_leach,'MEND_SOM_FL_CLEACH',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%n_leach,'MEND_SOM_FL_NLEACH',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%p_leach,'MEND_SOM_FL_PLEACH',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%nh4_bnf,'MEND_SOM_FL_NH4BNF',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%nmin,'MEND_SOM_FL_NMIN',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%fluxes%nitr,'MEND_SOM_FL_NITR',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%plvars%plant_input_C_dom,'MEND_SOM_PL_DOMINPC',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%plvars%plant_input_N_dom,'MEND_SOM_PL_DOMINPN',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%plvars%plant_input_P_dom,'MEND_SOM_PL_DOMINPP',dsetrank,iparallel,.true.,foundvar)
+
+   call hdf_getslab_r(csite%mend_mm%som%invars%nh4,'MMEAN_MEND_SOM_IN_NH4',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%invars%no3,'MMEAN_MEND_SOM_IN_NO3',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%invars%plab,'MMEAN_MEND_SOM_IN_PLAB',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%invars%psol,'MMEAN_MEND_SOM_IN_PSOL',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%invars%pocc,'MMEAN_MEND_SOM_IN_POCC',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%invars%psec,'MMEAN_MEND_SOM_IN_PSEC',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%invars%ppar,'MMEAN_MEND_SOM_IN_PPAR',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%co2_lost,'MMEAN_MEND_SOM_FL_CO2LOSS',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%ngas_lost,'MMEAN_MEND_SOM_FL_NGASLOSS',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%nh4_dep,'MMEAN_MEND_SOM_FL_NH4DEP',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%no3_dep,'MMEAN_MEND_SOM_FL_NO3DEP',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%ppar_dep,'MMEAN_MEND_SOM_FL_PPARDEP',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%c_leach,'MMEAN_MEND_SOM_FL_CLEACH',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%n_leach,'MMEAN_MEND_SOM_FL_NLEACH',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%p_leach,'MMEAN_MEND_SOM_FL_PLEACH',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%nh4_bnf,'MMEAN_MEND_SOM_FL_NH4BNF',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%nmin,'MMEAN_MEND_SOM_FL_NMIN',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%fluxes%nitr,'MMEAN_MEND_SOM_FL_NITR',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%plvars%plant_input_C_dom,'MMEAN_MEND_SOM_PL_DOMINPC',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%plvars%plant_input_N_dom,'MMEAN_MEND_SOM_PL_DOMINPN',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%plvars%plant_input_P_dom,'MMEAN_MEND_SOM_PL_DOMINPP',dsetrank,iparallel,.false.,foundvar)
+
+
    !----- Daily means. --------------------------------------------------------------------!
    if(associated(csite%dmean_nutrient_layer_drainage))   &
         call hdf_getslab_r(csite%dmean_nutrient_layer_drainage,'DMEAN_NUTRIENT_LAYER_DRAINAGE   ',&
@@ -3777,7 +3873,39 @@ subroutine fill_history_site(csite,sipa_index,npatches_global,is_burnt)
    !---------------------------------------------------------------------------------------!
 
 
+   dsetrank    = 2
+   globdims(1) = int(npom,8)
+   chnkdims(1) = int(npom,8)
+   memdims (1) = int(npom,8)
+   memsize (1) = int(npom,8)
+   chnkoffs(1) = 0_8
+   memoffs (1) = 0_8
+   globdims(2) = int(npatches_global,8)
+   chnkdims(2) = int(csite%npatches ,8)
+   chnkoffs(2) = int(sipa_index - 1 ,8)
+   memdims (2) = int(csite%npatches ,8)
+   memsize (2) = int(csite%npatches ,8)
+   memoffs (2) = 0_8
 
+   call hdf_getslab_r(csite%mend%som%cvars%pom,'MEND_SOM_C_POM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%cvars%enz_pom,'MEND_SOM_C_ENZPOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%nvars%pom,'MEND_SOM_N_POM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%nvars%enz_pom,'MEND_SOM_N_ENZPOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%pvars%pom,'MEND_SOM_P_POM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%pvars%enz_pom,'MEND_SOM_P_ENZPOM',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%plvars%plant_input_C_pom,'MEND_SOM_PL_POMINPC',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%plvars%plant_input_N_pom,'MEND_SOM_PL_POMINPN',dsetrank,iparallel,.true.,foundvar)
+   call hdf_getslab_r(csite%mend%som%plvars%plant_input_P_pom,'MEND_SOM_PL_POMINPP',dsetrank,iparallel,.true.,foundvar)
+
+   call hdf_getslab_r(csite%mend_mm%som%cvars%pom,'MMEAN_MEND_SOM_C_POM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%cvars%enz_pom,'MMEAN_MEND_SOM_C_ENZPOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%nvars%pom,'MMEAN_MEND_SOM_N_POM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%nvars%enz_pom,'MMEAN_MEND_SOM_N_ENZPOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%pvars%pom,'MMEAN_MEND_SOM_P_POM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%pvars%enz_pom,'MMEAN_MEND_SOM_P_ENZPOM',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%plvars%plant_input_C_pom,'MMEAN_MEND_SOM_PL_POMINPC',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%plvars%plant_input_N_pom,'MMEAN_MEND_SOM_PL_POMINPN',dsetrank,iparallel,.false.,foundvar)
+   call hdf_getslab_r(csite%mend_mm%som%plvars%plant_input_P_pom,'MMEAN_MEND_SOM_PL_POMINPP',dsetrank,iparallel,.false.,foundvar)
 
 
 
