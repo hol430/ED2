@@ -33,7 +33,7 @@ Contains
     return
   end subroutine mend_update_parameters_coupler
 
-  subroutine mend_init(sens_params)
+  subroutine mend_init(sens_params, imode)
     use ed_state_vars, only: edgrid_g, edtype, polygontype, sitetype
     use nutrient_constants, only: soil_bulk_den, soil_ph
     use mend_consts_coms, only: mend_init_consts, som_consts
@@ -51,7 +51,7 @@ Contains
     integer :: isi
     integer :: ipa
     integer :: iwood
-    integer, intent(in) :: sens_params
+    integer, intent(in) :: sens_params, imode
 
     write(*,*)'sens_params = ',sens_params
     call mend_init_consts(sens_params)
@@ -65,7 +65,7 @@ Contains
           csite => cpoly%site(isi)
           do ipa = 1, csite%npatches
 
-             call mend_zero_vars(csite%mend_mm, ipa, ipa)
+             if(imode /= 4)call mend_zero_vars(csite%mend_mm, ipa, ipa)
 
              if(isoilflg(1) == 3)then
                 csite%mend%bulk_den(ipa) = soil(cpoly%ntext_soil(1,isi))%slden
@@ -77,7 +77,7 @@ Contains
              csite%mend%pH(ipa) = soil_ph
              csite%mend_mm%pH(ipa) = csite%mend%pH(ipa)
 
-             call mend_som_init(npom,  &
+             if(imode /= 4)call mend_som_init(npom,  &
                   csite%mend%som%cvars%pom(:,ipa), csite%mend%som%cvars%dom(ipa), &
                   csite%mend%som%cvars%enz_pom(:,ipa), csite%mend%som%cvars%mom(ipa),  &
                   csite%mend%som%cvars%qom(ipa), csite%mend%som%cvars%enz_mom(ipa),  &

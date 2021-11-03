@@ -255,7 +255,7 @@ Contains
        input_nh4 = ndep_rate / (consts%eff_soil_depth * slden * 1000.)
        input_no3 = 0.
        input_ppar = pdep_rate / (consts%eff_soil_depth * slden * 1000.)
-   elseif(dep_scheme == 1)then
+    elseif(dep_scheme == 1)then
        input_nh4 = ndep_met  / (consts%eff_soil_depth * slden * 1000.)
        input_ppar = pdep_met  / (consts%eff_soil_depth * slden * 1000.)
        input_no3 = 0.

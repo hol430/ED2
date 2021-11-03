@@ -20089,8 +20089,10 @@ module ed_state_vars
       !------------------------------------------------------------------------------------!
 
       if(allocated(csite%mend%som%cvars%dom))then
+         call filltab_mendtype(nvar,csite%npatches,csite%mend,igr,init,csite%paglob_id, &
+              var_len, var_len_global, max_ptrs, 'STATE')
          call filltab_mendtype(nvar,csite%npatches,csite%mend_mm,igr,init,csite%paglob_id, &
-              var_len, var_len_global, max_ptrs)
+              var_len, var_len_global, max_ptrs, 'MM')
       endif
 
 

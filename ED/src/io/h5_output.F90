@@ -646,7 +646,6 @@ subroutine h5_output(vtype)
                                         ,'h5_output','h5_output.F90')
                      end if
 
-
                      !---------------------------------------------------------------------!
                      !     Choose the right pointer when writing the variable.             !
                      !---------------------------------------------------------------------!

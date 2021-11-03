@@ -361,7 +361,7 @@ subroutine ed_model()
                           mod(real(12+current_time%month-imontha),frqstate) == 0.
       case (3) !----- Year, history time is at the same month as initial time -------------!
          history_time   = new_month .and. isoutput /= 0 .and.                              &
-                          current_time%month == imontha .and.                              &
+                          current_time%month == 1 .and.                              &
                           mod(real(current_time%year-iyeara),frqstate) == 0.
       end select
 

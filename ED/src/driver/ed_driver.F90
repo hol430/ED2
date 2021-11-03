@@ -18,7 +18,7 @@ subroutine ed_driver()
                                 , filltab_alltypes    & ! sub-routine
                                 , edgrid_g            ! ! intent(inout)
    use ed_misc_coms      , only : runtype             & ! intent(in)
-                                , iooutput            ! ! intent(in)
+                                , iooutput, ied_init_mode            ! ! intent(in)
    use soil_coms         , only : alloc_soilgrid      ! ! sub-routine
    use ed_node_coms      , only : mynum               & ! intent(in)
                                 , nnodetot            & ! intent(in)
@@ -27,6 +27,7 @@ subroutine ed_driver()
    use detailed_coms     , only : idetailed           & ! intent(in)
                                 , patch_keep          ! ! intent(in)
    use phenology_aux     , only : first_phenology     ! ! subroutine
+   use mend_coupler, only: mend_init
    implicit none
    !----- Included variables. -------------------------------------------------------------!
 #if defined(RAMS_MPI)
@@ -144,6 +145,7 @@ subroutine ed_driver()
       write (unit=*,fmt='(a)') ' [+] Init_Full_History_Restart...'
 #endif
       call init_full_history_restart()
+      call mend_init(0,ied_init_mode)
 
 #if defined(RAMS_MPI)
       if (mynum < nnodetot ) then
