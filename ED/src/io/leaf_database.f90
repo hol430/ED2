@@ -88,6 +88,7 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
    !---------------------------------------------------------------------------------------!
    real, allocatable, dimension(:,:,:) :: dlwrf
    real, allocatable, dimension(:,:) :: lat_in,lon_in
+   integer, allocatable, dimension(:,:) :: mask_in
    integer :: ilat, ilon
 
    if(imask_type == 2)then
@@ -128,6 +129,40 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
             pctout(:,ilandsea) = 1.
             classout(:,ilandsea) = 1
          enddo
+         return
+      endif
+   elseif(imask_type == 4)then
+      if(iaction == 'leaf_class')then
+         call shdf5_open_f(trim(ofn),'R')
+         call shdf5_info_f('mask',ndims,idims)
+         allocate(mask_in(idims(1),idims(2)))
+         call shdf5_irec_f(ndims,idims,'mask',ivara=mask_in)
+         call shdf5_info_f('lat',ndims,idims)
+         allocate(lat_in(idims(1),idims(2)))
+         allocate(lon_in(idims(1),idims(2)))
+         call shdf5_irec_f(ndims,idims,'lat',rvara=lat_in)
+         call shdf5_irec_f(ndims,idims,'long',rvara=lon_in)
+         call shdf5_close_f()
+         ! Assume a half-degree grid
+         ! ED2 cells
+         do ilandsea = 1, nlandsea
+            do ilat = 1, idims(1)
+               if(abs(lat(1,ilandsea)-lat_in(ilat,1)) < 0.25)exit
+            enddo
+            do ilon = 1, idims(2)
+               if(abs(lon(1,ilandsea)-lon_in(1,ilon)) < 0.25)exit
+            enddo
+            if(mask_in(ilat,ilon) == 1)then
+               pctout(:,ilandsea) = 1.
+               classout(:,ilandsea) = 1
+            else
+               pctout(:,ilandsea) = 0.
+               classout(:,ilandsea) = 0
+            endif
+         enddo
+         deallocate(mask_in)
+         deallocate(lat_in)
+         deallocate(lon_in)
          return
       endif
    endif
