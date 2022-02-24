@@ -237,8 +237,8 @@ subroutine init_nbg_cohorts(csite,lsl,ipa_a,ipa_z)
                                       * salloci * (1.-agf_bs(ipft))
 
          cpatch%bstorage_max(ico) = (cpatch%bleaf(ico) + cpatch%broot(ico)) * nstorage_max_factor
-         cpatch%nstorage_max(ico) = cpatch%bstorage(ico) / c2n_leaf(cpatch%pft(ico))
-         cpatch%pstorage_max(ico) = cpatch%bstorage(ico) / c2p_leaf(cpatch%pft(ico))
+         cpatch%nstorage_max(ico) = cpatch%bstorage_max(ico) / c2n_leaf(cpatch%pft(ico))
+         cpatch%pstorage_max(ico) = cpatch%bstorage_max(ico) / c2p_leaf(cpatch%pft(ico))
          cpatch%bstorage(ico) = 0.5 * cpatch%bstorage_max(ico)
          cpatch%nstorage(ico) = 0.5 * cpatch%nstorage_max(ico)
          cpatch%pstorage(ico) = 0.5 * cpatch%pstorage_max(ico)
