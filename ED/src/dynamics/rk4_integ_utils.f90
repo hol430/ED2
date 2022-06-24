@@ -1,5 +1,21 @@
 module rk4_integ_utils
+   ! Number of rk4 steps rejected (due to invalid solution?)
+   integer :: num_steps_rejected
+   ! Number of rk4 steps rejected due to high error
+   integer :: num_steps_higherror
   contains
+
+subroutine print_num_steps_rejected()
+
+   write(*, '(a30, i)') 'Num steps rejected', num_steps_rejected
+   write(*, '(a30, i)') 'Num steps high error', num_steps_higherror
+end subroutine print_num_steps_rejected
+
+subroutine reset_num_steps_rejected()
+
+   num_steps_higherror = 0
+   num_steps_rejected = 0
+end subroutine reset_num_steps_rejected
 
 !==========================================================================================!
 !==========================================================================================!
@@ -1827,11 +1843,15 @@ end subroutine initialize_misc_stepvars
             ! ly, so we assign a standard large error (10.0).                              !
             !------------------------------------------------------------------------------!
             errmax = 1.d1
+            num_steps_rejected = num_steps_rejected + 1
          else
             call get_errmax(errmax,integration_buff(ibuff)%yerr                            &
                            ,integration_buff(ibuff)%yscal,csite%patch(ipa)                 &
                            ,integration_buff(ibuff)%y,integration_buff(ibuff)%ytemp)
             errmax = errmax * rk4epsi
+            if (errmax > 1.d0) then
+               num_steps_higherror = num_steps_higherror + 1
+            endif
          end if
 
          !---------------------------------------------------------------------------------!

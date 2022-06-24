@@ -1,3 +1,4 @@
+! Return elapsed walltime in seconds elapsed since wstart.
 real function walltime(wstart)
   implicit none
   real :: wstart

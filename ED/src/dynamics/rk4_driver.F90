@@ -4,7 +4,7 @@
 !==========================================================================================!
 !==========================================================================================!
 module rk4_driver
-
+   real                             :: odeint_total
    contains
    !=======================================================================================!
    !=======================================================================================!
@@ -86,6 +86,9 @@ module rk4_driver
       real                                    :: old_can_prss
       real                                    :: patch_vels
       integer                                 :: ibuff
+      real                                    :: wtime_0
+      real                                    :: wtime_delta
+      real                                    :: integration_total
       !----- Local constants. -------------------------------------------------------------!
       logical                   , parameter   :: test_energy_sanity = .false.
       !----- Functions --------------------------------------------------------------------!
@@ -94,7 +97,9 @@ module rk4_driver
       real :: co2_lost_units
 
 
-
+      integration_total = 0.
+      odeint_total = 0.
+      call reset_num_steps_rejected()
       polygonloop: do ipy = 1,cgrid%npolygons
          cpoly => cgrid%polygon(ipy)
 
@@ -278,11 +283,14 @@ module rk4_driver
                !---------------------------------------------------------------------------!
                !    This is the driver for the integration process...                      !
                !---------------------------------------------------------------------------!
+               wtime_0 = walltime(0.)
                call integrate_patch_rk4(csite,initp,ipa,isi                                &
                                        ,cpoly%nighttime(isi),wcurr_loss2atm                &
                                        ,ecurr_netrad,ecurr_loss2atm,co2curr_loss2atm       &
                                        ,wcurr_loss2drainage,ecurr_loss2drainage            &
                                        ,wcurr_loss2runoff,ecurr_loss2runoff,nsteps)
+               wtime_delta = walltime(wtime_0)
+               integration_total = integration_total + wtime_delta
                !---------------------------------------------------------------------------!
 !if(cpatch%ncohorts >= 78)print*,4,cpatch%leaf_psi(78),  &
 !     cpatch%leaf_water_int(78),cpatch%leaf_rwc(78)
@@ -363,7 +371,14 @@ module rk4_driver
          !---------------------------------------------------------------------------------!
       end do polygonloop
       !------------------------------------------------------------------------------------!
+      call print_num_steps_rejected()
+      write(unit=*,fmt='(a30, f10.2, a1)') 'total odeint' &
+      , odeint_total  &
+      , 's'
 
+      write(unit=*,fmt='(a30, f10.2, a1)') 'total integrate_patch_rk4' &
+                                         , integration_total  &
+                                         , 's'
       mend_mm_time = mend_mm_time + dtlsm
 
       return
@@ -412,6 +427,9 @@ module rk4_driver
       integer               , intent(out) :: nsteps
       !----- Local variables --------------------------------------------------------------!
       real(kind=8)                        :: hbeg
+      real                                :: wtime_0
+      real                                :: wtime_dlt
+      real                      , external    :: walltime
       !------------------------------------------------------------------------------------!
 
       !------------------------------------------------------------------------------------!
@@ -434,7 +452,10 @@ module rk4_driver
 
       !----- Go into the ODE integrator. --------------------------------------------------!
 
+      wtime_0 = walltime(0.)
       call odeint(hbeg,csite,ipa,isi,nsteps)
+      wtime_dlt = walltime(wtime_0)
+      odeint_total = odeint_total + wtime_dlt
 
       !------------------------------------------------------------------------------------!
       !      Normalize canopy-atmosphere flux values.  These values are updated every      !

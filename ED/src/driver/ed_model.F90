@@ -115,6 +115,8 @@ subroutine ed_model()
    real               :: t1
    real               :: wtime1
    real               :: wtime2
+   real               :: wtime_begin
+   real               :: wtime_end
    real               :: t2
    real               :: wtime_tot
    !----- Local variables (MPI only). -----------------------------------------------------!
@@ -239,12 +241,16 @@ subroutine ed_model()
       wtime1=walltime(wtime_start)
       !------------------------------------------------------------------------------------!
 
-      if (current_time%time < dtlsm .and. mynum == 1) then
+      ! 
+      write(unit=*,fmt=('(a)')) &
+         '-----------------------------------------'
+
+      ! if (current_time%time < dtlsm .and. mynum == 1) then
            write (unit=*,fmt='(a,3x,2(i2.2,a),i4.4,a,3(i2.2,a))')                          &
               ' - Simulating:',current_time%month,'/',current_time%date,'/'                &
                               ,current_time%year,' ',current_time%hour,':'                 &
                               ,current_time%min,':',current_time%sec,' UTC'
-      end if
+      ! end if
 
 
       !----- Define which cohorts are to be solved prognostically. ------------------------!
@@ -274,6 +280,7 @@ subroutine ed_model()
 
 
       !----- Solve the photosynthesis and biophysics. -------------------------------------!
+      wtime_begin=walltime(0.)
       select case (integration_scheme)
       case (0)
          do ifm=1,ngrids
@@ -292,6 +299,8 @@ subroutine ed_model()
             call hybrid_timestep(edgrid_g(ifm))
          end do
       end select
+      wtime_end = walltime(wtime_begin)
+      write(unit=*,fmt='(a30, f10.2, a1)') 'timestep', wtime_end, 's'
       !------------------------------------------------------------------------------------!
 
 

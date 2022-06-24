@@ -320,47 +320,149 @@ if(abs(vars%fluxes%p_leach(ip1)) < 1.e-13)vars%fluxes%p_leach(ip1) = 0.
     return
   end subroutine mend_rk4_sanity
 
+  subroutine print_reject_step_diagnostic(msg)
+     implicit none
+     character (len = *), intent(in) :: msg
+
+     write(*, '(a20,a40)') 'Rejecting rk4 step', msg
+
+  end subroutine print_reject_step_diagnostic
+
   subroutine mend_rk4_sanity_type(vars, reject_step)
     use mend_state_vars, only: mend_vars
     implicit none
     type(mend_vars) :: vars
     logical, intent(inout) :: reject_step
 
-!if(reject_step)print*,1,reject_step
+
+     if(reject_step) then
+          print*,1,reject_step
+     endif
+
     call mend_rk4_sanity_type_org(vars%cvars, reject_step)
-!if(reject_step)print*,11,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('mend_rk4_sanity_type_org(cvars)')
+          return
+     endif
+
     call mend_rk4_sanity_type_org(vars%nvars, reject_step)
-!if(reject_step)print*,12,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('mend_rk4_sanity_type_org(nvars)')
+          return
+     endif
+
     call mend_rk4_sanity_type_org(vars%pvars, reject_step)
-!if(reject_step)print*,2,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('mend_rk4_sanity_type_org(pvars)')
+          return
+     endif
+
     if(vars%fluxes%nitr(1) < 0.)reject_step = .true.
-!if(reject_step)print*,21,reject_step
+    return
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%fluxes%nitr(1) < 0')
+          return
+     endif
+
     if(vars%fluxes%co2_lost(1) < 0.)reject_step = .true.
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%fluxes%co2_lost(1) < 0')
+          return
+     endif
+
     if(vars%fluxes%ngas_lost(1) < 0.)reject_step = .true.
-!if(reject_step)print*,22,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%fluxes%ngas_lost(1) < 0')
+          return
+     endif
+
     if(vars%invars%nh4(1) < min_pool_size)reject_step = .true.
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%fluxes%ngas_lost(1) < 0')
+          return
+     endif
+
     if(vars%invars%no3(1) < min_pool_size)reject_step = .true.
-!if(reject_step)print*,23,reject_step,vars%invars%nh4(1),vars%invars%no3(1)
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%invars%no3(1) < min_pool_size')
+          return
+     endif
+
     if(vars%invars%psol(1) < min_pool_size)reject_step = .true.
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%invars%psol(1) < min_pool_size')
+          return
+     endif
+
     if(vars%invars%plab(1) < min_pool_size)reject_step = .true.
 !if(reject_step)print*,24,reject_step
  !   if(vars%invars%pocc(1) < min_pool_size)reject_step = .true.
 !    if(vars%invars%ppar(1) < min_pool_size)reject_step = .true.
-!if(reject_step)print*,3,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%invars%plab(1) < min_pool_size')
+          return
+     endif
+
     if(any(vars%fluxes%nh4_plant(:,1) < 0.))reject_step = .true.
-!if(reject_step)print*,4,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('any(vars%fluxes%nh4_plant(:,1) < 0)')
+          return
+     endif
+
     if(vars%fluxes%nh4_bnf(1) < 0.)reject_step = .true.
-!if(reject_step)print*,5,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%fluxes%nh4_bnf(1) < 0')
+          return
+     endif
+
     if(any(vars%fluxes%no3_plant(:,1) < 0.))reject_step = .true.
-!if(reject_step)print*,6,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('any(vars%fluxes%no3_plant(:,1) < 0)')
+          return
+     endif
+
     if(vars%fluxes%c_leach(1) < 0.)reject_step = .true.
-!if(reject_step)print*,7,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%fluxes%c_leach(1) < 0')
+          return
+     endif
+
     if(vars%fluxes%n_leach(1) < 0.)reject_step = .true.
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%fluxes%n_leach(1) < 0')
+          return
+     endif
+
 !if(reject_step)print*,8,reject_step,vars%fluxes%n_leach(1),vars%fluxes%c_leach(1)
     if(vars%fluxes%p_leach(1) < 0.)reject_step = .true.
-!if(reject_step)print*,9,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('vars%fluxes%p_leach(1) < 0')
+          return
+     endif
+
     if(any(vars%fluxes%p_plant(:,1) < 0.))reject_step = .true.
-!if(reject_step)print*,10,reject_step
+
+     if(reject_step) then
+          call print_reject_step_diagnostic('any(vars%fluxes%p_plant(:,1) < 0)')
+          return
+     endif
+
 
 !    if(reject_step)then
 !       print*,vars%cvars%pom
