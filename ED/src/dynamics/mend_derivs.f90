@@ -1,14 +1,14 @@
 !======================================
 ! TO DO:
 !======================================
-! 1. Gangsheng questions: 
-!    (a) Why are N vnup_amb so different compared to Zhu?  
+! 1. Gangsheng questions:
+!    (a) Why are N vnup_amb so different compared to Zhu?
 !    (b) Why are Michaelis-Menten constants so different?
 !    (c) Some important numbers (microbial uptake of DOC) differ dramatically
 !        between 2013 and 2015 papers.
-!    (d) Note: For microbial P uptake Vmax and kmm, applying same temperature 
+!    (d) Note: For microbial P uptake Vmax and kmm, applying same temperature
 !        sensitivities as for nitrogen.
-!    (e) Note: For plant N and P uptake Vmax and kmm, applying same 
+!    (e) Note: For plant N and P uptake Vmax and kmm, applying same
 !        temperature sensitivities as for microbes.
 !    (f) What are the POM pools? Are they appropriate?
 !    (g) Added rk4 integrator
@@ -24,34 +24,34 @@
 ! NOTES:
 ! 1. All detritus is being dumped into a generic SOM pool.  Fine for now,
 !    but I will eventually want to have transfers.
-! 2. plant2som_exchange:  
-!    (a) plant inputs were getting zeroed in the CLM-CNP scheme.  
-!        This was called after the monthly updates.  This is a problem 
-!        because (i) in CLM scheme, disturbance loadings did not occur 
-!        till the following time step; (ii) I'd be getting zeros when using 
-!        MEND.  To address (i), I am now calling CLM-CNP scheme after 
+! 2. plant2som_exchange:
+!    (a) plant inputs were getting zeroed in the CLM-CNP scheme.
+!        This was called after the monthly updates.  This is a problem
+!        because (i) in CLM scheme, disturbance loadings did not occur
+!        till the following time step; (ii) I'd be getting zeros when using
+!        MEND.  To address (i), I am now calling CLM-CNP scheme after
 !        disturbance.  To address (ii), I am zeroing plant inputs at the
-!        beginning of vegetation_dynamics, which is called daily.  
+!        beginning of vegetation_dynamics, which is called daily.
 !        This means that inputs would be applied to MEND on the following day.
 !    (b) Inputs applied in mend_exchange.f90, plant2som.
 ! 3. BNF set to constant rate.
 ! 4. co2_lost as heterotrophic respiration.  Had to make substantial edits.
-!    (a) Edited bgc_dyn.f90 so that rh would not be updated.  
-!    (b) Had to make edits to rk4_derivs.f90 so that it did not use rh or 
-!        cwd_rh to update the co2 of the canopy air space.  
-!    (c) Instead, I incremented canopy air space CO2 derivatives in 
-!        som_feedback_fluxes.  
+!    (a) Edited bgc_dyn.f90 so that rh would not be updated.
+!    (b) Had to make edits to rk4_derivs.f90 so that it did not use rh or
+!        cwd_rh to update the co2 of the canopy air space.
+!    (c) Instead, I incremented canopy air space CO2 derivatives in
+!        som_feedback_fluxes.
 !    (d) The checks of the CO2 budget used the rh calculated at the beginning
-!        of the day.  However, I am now calculating rh dynamically.  
+!        of the day.  However, I am now calculating rh dynamically.
 !        Therefore, I had to disable the check on the CO2 budget.  There may
 !        be a safer way to implement this.
-! 5. Zhu: what are the units of [E^plant_P], [E^plant_N]?  Are they gBiomass, 
+! 5. Zhu: what are the units of [E^plant_P], [E^plant_N]?  Are they gBiomass,
 !    gC, gN, gP, or what?  Similarly:  K^{mic,NH4}_M, K^{mic,NO3}_M,
 !    K^{plant,NH4}_M, K^{plant,NO3}_M, K^{plant,P}_M, K^{mic,P}_M.
 !    Finally, enz2biomass_plant conversion factor units?  Emailed on 7/6.
 !    REPLY: QING CONFIRMED THAT THIS IS THE CASE.
-! 6. plant_input_{C,N,P} edits: in growth_balive, I set the 
-!    C leakage to 0.  I left the extra_nitrogen and extra_P.  
+! 6. plant_input_{C,N,P} edits: in growth_balive, I set the
+!    C leakage to 0.  I left the extra_nitrogen and extra_P.
 !======================================
 
 Module mend_derivs
@@ -243,9 +243,9 @@ Contains
     real :: nitr_rate
     real :: denitr_rate
     real :: d_p_sum
-    real :: turnover_enz_ptase_c    
-    real :: turnover_enz_ptase_n    
-    real :: turnover_enz_ptase_p    
+    real :: turnover_enz_ptase_c
+    real :: turnover_enz_ptase_n
+    real :: turnover_enz_ptase_p
     real :: enz_prod_ptase_c
     real :: enz_prod_ptase_n
     real :: enz_prod_ptase_p
@@ -313,7 +313,7 @@ Contains
     d_ppar = 0.
     d_psol = 0.
     d_enz_ptase_p = 0.
-    
+
     d_nh4_plant = 0.
     d_nh4_bnf = 0.
     d_no3_plant = 0.
@@ -489,7 +489,7 @@ Contains
        d_nh4_plant(ipft) = d_nh4_plant(ipft) + f_plant_nh4(ipft)
        d_no3_plant(ipft) = d_no3_plant(ipft) + f_plant_no3(ipft)
        d_p_plant(ipft) = d_p_plant(ipft) + f_plant_p(ipft)
-       
+
        d_nh4 = d_nh4 - f_plant_nh4(ipft)
        d_no3 = d_no3 - f_plant_no3(ipft)
        d_psol = d_psol - f_plant_p(ipft)
@@ -577,7 +577,7 @@ Contains
     p_dom_leach_rate = consts%dom_leach_effic * dom_p * water_drainage
     no3_leach_rate = consts%no3_leach_effic * no3 * water_drainage
     psol_leach_rate = consts%psol_leach_effic * psol * water_drainage
-    
+
     d_c_leach = d_c_leach + c_dom_leach_rate
     d_n_leach = d_n_leach + n_dom_leach_rate + no3_leach_rate
     d_p_leach = d_p_leach + p_dom_leach_rate + psol_leach_rate
@@ -633,7 +633,7 @@ Contains
   subroutine nitr_denitr(nh4, no3, nitr, denitr, consts, d_co2_lost, pi1, &
        wfp, f_nit_nh4, f_den_no3)
     implicit none
-    
+
     real, intent(in) :: f_nit_nh4
     real, intent(in) :: f_den_no3
     type(decomp_consts) :: consts
@@ -736,7 +736,7 @@ Contains
     turnover_enz_mom_c = consts%enz_turnover_rate * enz_mom_c
     turnover_enz_mom_n = turnover_enz_mom_c / consts%enz_mom_c2n
     turnover_enz_mom_p = turnover_enz_mom_c / consts%enz_mom_c2p
-    
+
     enz_prod_ptase_c = consts%prod_frac_enz_ptase * &
          consts%spec_maint_rate * amb_c
     if(amb_c / amb_p < consts%mb_cp_max .and.   &
@@ -771,7 +771,7 @@ Contains
          consts, bulk_den, f_nit_nh4, f_den_no3)
 
     implicit none
-    
+
     integer :: ipft
     real, intent(in) :: bulk_den
     type(decomp_consts) :: consts
@@ -879,8 +879,8 @@ Contains
 
     reactiv_c = dom_c / (consts%kmm_amb + dom_c) *   &
          consts%vmax_d2a * dmb_c
-    reactiv_n = reactiv_c * dmb_n / dmb_c 
-    reactiv_p = reactiv_c * dmb_p / dmb_c 
+    reactiv_n = reactiv_c * dmb_n / dmb_c
+    reactiv_p = reactiv_c * dmb_p / dmb_c
 
     resp_amb = (1. / consts%growth_yield - 1.) * (consts%Vmax_amb +   &
          consts%spec_maint_rate) * consts%amb_size_scale *  &
@@ -894,7 +894,7 @@ Contains
     turnover_amb_dom_c = consts%turnover_frac_dom * turnover_amb
     turnover_amb_dom_n = turnover_amb_dom_c * amb_n / amb_c
     turnover_amb_dom_p = turnover_amb_dom_c * amb_p / amb_c
-    
+
     do ipom = 1, npom
        turnover_amb_pom_c(ipom) = consts%turnover_frac_pom(ipom) * turnover_amb
        turnover_amb_pom_n(ipom) = turnover_amb_pom_c(ipom) * amb_n / amb_c
@@ -939,7 +939,7 @@ Contains
          tot_enz_plant_n_nh4 + &
          consts%enz_nit_n / consts%ksnh4_nit
     immob_amb_nh4 = vnup_amb * nh4 * consts%micr_bio2enz * amb_c * 14. /  &
-         ((consts%ksnh4_amb / bulk_den) * rtp1) 
+         ((consts%ksnh4_amb / bulk_den) * rtp1)
 
     rtp1 =  1. + nh4 / (consts%ksnh4_amb / bulk_den) +   &
          no3_eff / (consts%ksno3_amb / bulk_den) +   &
@@ -947,7 +947,7 @@ Contains
          tot_enz_plant_n_no3 + &
          consts%enz_den_n / consts%ksno3_den
     immob_amb_no3 = vnup_amb * no3_eff * consts%micr_bio2enz * amb_c * 14. /   &
-         ((consts%ksno3_amb / bulk_den) * rtp1) 
+         ((consts%ksno3_amb / bulk_den) * rtp1)
 
     do ipft = 1, n_pft
        rtp1 =  1. + nh4 / (consts%ksnh4_plant(ipft) / bulk_den) +  &
@@ -959,7 +959,7 @@ Contains
             ((consts%ksnh4_plant(ipft) / bulk_den) * rtp1)
 !       f_plant_nh4(ipft) = vnh4up_plant(ipft) * nh4 * enz_plant_n(ipft) /   &
 !            ((consts%ksnh4_plant(ipft) / bulk_den) * rtp1)
-       
+
        rtp1 =  1. + nh4 / (consts%ksnh4_plant(ipft) / bulk_den) +  &
             no3_eff / (consts%ksno3_plant(ipft) / bulk_den) +   &
             consts%micr_bio2enz * amb_c * 14. / (consts%ksno3_amb / bulk_den) +  &
@@ -1142,7 +1142,7 @@ Contains
 
     return
   end subroutine decomp_fluxes
-  
+
 !   subroutine ncom(amb_n, amb_p, plant_n, plant_p, nh4, no3, pox,   &
 !        f_immob_nh4, f_nit_nh4,  &
 !        f_immob_no3, f_den_no3, f_plant_nh4, f_plant_no3, f_plant_p, &
@@ -1245,7 +1245,7 @@ Contains
     psol = psol + weath_flux
 
 !! In ed2_sensitivity, not updating ppar here.
-    ppar = ppar - weath_flux
+!!    ppar = ppar - weath_flux
 
     occlu_flux = consts%occlu_rate * psec * 86400.
     psec = psec - occlu_flux

@@ -1,7 +1,7 @@
 !==========================================================================================!
 !==========================================================================================!
 !  SUBROUTINE: LOAD_ED_ECOSYSTEM_PARAMS
-!> \brief This is the main loader of ecosystem parameters.  
+!> \brief This is the main loader of ecosystem parameters.
 !> \details Since some compilers do not understand the assignment in the modules
 !> when the variable is not a constant (parameter), this is the safest way to guarantee
 !> it will read something (not to mention that makes compilation much faster when you
@@ -400,7 +400,7 @@ subroutine init_met_params()
    rshort_max  = 1600.
    !----- Minimum and maximum acceptable longwave radiation [W/m�]. -----------------------!
    rlong_min   = 40.
-   rlong_max   = 600.
+   rlong_max   = 800.
    !----- Minimum and maximum acceptable air temperature    [   K]. -----------------------!
    atm_tmp_min = 184.     ! Lowest temperature ever measured, in Vostok Basin, Antarctica
    atm_tmp_max = 331.     ! Highest temperature ever measured, in El Azizia, Libya
@@ -2467,7 +2467,7 @@ subroutine init_pft_alloc_params()
    rho(4)     = 0.90   ! 0.87
    rho(5)     = 0.20   ! Copied from C4 grass
    rho(6)     = 0.45   ! white pine - ponderosa pine
-   rho(7)     = 0.57   ! Loblolly pine               
+   rho(7)     = 0.57   ! Loblolly pine
    rho(8)     = 0.45   ! Black Spruce
    rho(9)     = 0.42   ! Aspen
    rho(10)    = 0.74   ! Red Oak
@@ -2573,17 +2573,17 @@ subroutine init_pft_alloc_params()
 
    !---------------------------------------------------------------------------------------!
    ! Specific Root Area
-   ! Based on Metcalfe, D. B., P. Meir, et al. (2008). 
+   ! Based on Metcalfe, D. B., P. Meir, et al. (2008).
    ! "The effectsof water availability on root growth and morphology   !
-   ! in an Amazon rainforest." Plant and Soil 311(1-2):189-199.                                 
+   ! in an Amazon rainforest." Plant and Soil 311(1-2):189-199.
    !---------------------------------------------------------------------------------------!
    SRA(1:17)   = 24. * 2. ! m2/kgC --> this is from Amazon
 
    !---------------------------------------------------------------------------------------!
    ! Root vertical distribution shape factor
-   ! Base on Jackson, R. B., J. Canadell, et al. (1996). 
+   ! Base on Jackson, R. B., J. Canadell, et al. (1996).
    !         "A global analysis of root distributions for terrestrial
-   !         biomes." Oecologia 108(3): 389-411.    
+   !         biomes." Oecologia 108(3): 389-411.
    ! The reference only reports for ecosystem level root profile but shows that
    ! root cumulative biomass generally follows an exponential distribution
    !
@@ -2600,7 +2600,7 @@ subroutine init_pft_alloc_params()
    !  Y = 1. - (root_beta) ** (D / D_max)
    !
    ! Suggested values range from 0.0001 to 0.01.
-   ! 
+   !
    !---------------------------------------------------------------------------------------!
    root_beta(1:17)   =   0.001
 
@@ -3137,7 +3137,7 @@ subroutine init_pft_alloc_params()
    !    used for them.                                                                     !
    !    Temperate angiosperms are assumed to have 30% of sapwood (oaks)
    !    Tropical angiosperms are assumed to have 75% of sapwood
-   !    Gymnosperms are assumed to have 30% of sapwood. (loblolly pine)           
+   !    Gymnosperms are assumed to have 30% of sapwood. (loblolly pine)
    !    Users are welcome to update those numbuers based on literatures or measurements
    !---------------------------------------------------------------------------------------!
    b1SA(1)      = pio4 * 1.0
@@ -3152,8 +3152,8 @@ subroutine init_pft_alloc_params()
 
 
    !---------------------------------------------------------------------------------------!
-   !  Overwrite tropical angiosperms with observations from Barro Colorado Island          !  
-   !      F. C. Meinzer, G. Goldstein, J. L. Andrade; Regulation of water flux through     ! 
+   !  Overwrite tropical angiosperms with observations from Barro Colorado Island          !
+   !      F. C. Meinzer, G. Goldstein, J. L. Andrade; Regulation of water flux through     !
    !         tropical forest canopy trees: Do universal rules apply?, Tree Physiology,     !
    !         Volume 21, Issue 1, 1 January 2001, Pages 19–26,                              !
    !---------------------------------------------------------------------------------------!
@@ -3358,7 +3358,7 @@ end subroutine init_pft_nitro_params
 
 !==========================================================================================!
 !==========================================================================================!
-!  SUBROUTINE: INIT_PFT_HYDRO_PARAMS   
+!  SUBROUTINE: INIT_PFT_HYDRO_PARAMS
 !> \brief This subroutine initializes plant hydraulic parameters.
 !> \warning Some plant hydraulic paramters are depedent on SLA and LMA. So this
 !> subroutine should always be after init_pft_alloc_params
@@ -3370,7 +3370,7 @@ subroutine init_pft_hydro_params()
                              , wdns                         ! ! intent(in)
    use ed_max_dims    , only : n_pft                        ! ! intent(in)
    use physiology_coms, only : plant_hydro_scheme           ! ! intent(in)
-   use plant_hydro    , only : rwc2psi                      ! ! subroutine 
+   use plant_hydro    , only : rwc2psi                      ! ! subroutine
    use pft_coms       , only : SLA                          & ! intent(in)
                              , rho                          & ! intent(in)
                              , Vm0                          & ! intent(in)
@@ -3407,7 +3407,7 @@ subroutine init_pft_hydro_params()
    real                     :: LMA          ! leaf mass per area [g/m2]
    real                     :: Amax_25      ! estimated maximum photosynthetic rates at 25 degC
 
-   vessel_curl_factor(1:17)  = 1.5 
+   vessel_curl_factor(1:17)  = 1.5
    ! This is kind of arbitrary, total hydraulic path is 50% more than tree height
 
    !----------------------------------------------------------!
@@ -3466,23 +3466,23 @@ subroutine init_pft_hydro_params()
         ! Sapwood minimum relative water content, or residual fraction
         rwc_tlp_wood = 1. - (1. - 0.75 * rho(ipft)) / (2.74 + 2.01 * rho(ipft))
         wood_rwc_min(ipft) = wood_elastic_mod(ipft) * (1. - rwc_tlp_wood) &
-                           / (wood_psi_osmotic(ipft) / MPa2M) + 1.  
+                           / (wood_psi_osmotic(ipft) / MPa2M) + 1.
         ! note that we set fcap to 0. in the original equation
 
         ! Wood water content at saturation (rwc = 1.) [kg H2O / kg biomass]
         wood_water_sat(ipft) = (1. - rho(ipft) / 1.53)                      &
                              * wdns / (rho(ipft) * 1.e3)
-    
+
         ! Wood turgor loss point
         wood_psi_tlp(ipft) = wood_elastic_mod(ipft) * (wood_psi_osmotic(ipft) / MPa2m)  &
                            / (wood_elastic_mod(ipft) + wood_psi_osmotic(ipft) / MPa2m)  &
                            * MPa2m
    enddo
    !----------------------------------------------------------!
-   
+
    !----------------------------------------------------------!
    !----------------------------------------------------------!
-   ! Key traits that drive plant hydrodynamics                 
+   ! Key traits that drive plant hydrodynamics
    ! Again Based on Christofferson et al. 2016 GMD
    !----------------------------------------------------------!
    do ipft = 1, n_pft
@@ -3497,14 +3497,14 @@ subroutine init_pft_hydro_params()
                             * wood_water_sat(ipft) / (4. * abs(wood_psi_tlp(ipft)))
 
        ! Wood P50 [m]
-       wood_psi50(ipft) = (-1.09-(3.57 * rho(ipft)) ** 1.73) * MPa2m 
-       
+       wood_psi50(ipft) = (-1.09-(3.57 * rho(ipft)) ** 1.73) * MPa2m
+
        Amax_25 = Vm0(ipft) * 2.4 / 4.1 ! umol/m2/s
        ! This is only an estimate. 2.4 is Q10, converting to Vcmax_25, 4.1
        ! is conversion factor from Vcmax to Amax at ~25degC
 
        ! Sapwood maximum conductivity [kg/m/s/m]
-       wood_Kmax(ipft)  = exp(2.11 - 20.05 * rho(ipft) / Amax_25) / MPa2m 
+       wood_Kmax(ipft)  = exp(2.11 - 20.05 * rho(ipft) / Amax_25) / MPa2m
        ! This is estimated from Figure S2.2 in Christofferson et al. 2016 GMD
 
        wood_Kexp(ipft)  = 0.544 * 4. * (-wood_psi50(ipft) / MPa2m) ** (-0.17)
@@ -3558,7 +3558,7 @@ subroutine init_pft_hydro_params()
         wood_Kexp(ipft)      = 4.
 
       enddo
-       
+
 
 
    end select
@@ -3573,7 +3573,7 @@ subroutine init_pft_hydro_params()
    enddo
 
    ! Parameters related with stomata conductance
-   
+
    stoma_lambda(1:n_pft)         = max(3.,(rho(1:n_pft) - 0.25) * 15. + 3.)
    stoma_beta(1:n_pft)           = min(-0.1,(rho(1:n_pft) - 0.25) * 1.5 - 1.0) / MPa2m
    ! Estimated from Manzoni et al. 2011
@@ -3583,7 +3583,7 @@ subroutine init_pft_hydro_params()
    ! for tropical intolerant, use -1.67 * MPa2m, 3.
    ! for tropical tolerant, use -2.83 * MPa2m, 3.5
    ! Powell et al. 2017
-    
+
 
    return
 end subroutine init_pft_hydro_params
@@ -5532,7 +5532,7 @@ subroutine init_rk4_params()
    rk4min_can_co2    =  3.0000d1  ! Minimum canopy    CO2 mixing ratio          [ �mol/mol]
    rk4max_can_co2    =  5.0000d4  ! Maximum canopy    CO2 mixing ratio          [ �mol/mol]
    rk4min_soil_temp  =  1.8400d2  ! Minimum soil      temperature               [        K]
-   rk4max_soil_temp  =  3.5100d2  ! Maximum soil      temperature               [        K]
+   rk4max_soil_temp  =  3.8100d2  ! Maximum soil      temperature               [        K]
    rk4min_veg_temp   =  1.8400d2  ! Minimum leaf      temperature               [        K]
    rk4max_veg_temp   =  3.5100d2  ! Maximum leaf      temperature               [        K]
    rk4min_sfcw_temp  =  1.9315d2  ! Minimum snow/pond temperature               [        K]
