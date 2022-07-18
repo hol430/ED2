@@ -1623,6 +1623,9 @@ subroutine write_ed_xml_config
         call putConfigREAL("b2WAI",     b2WAI(i))
         call putConfigREAL("brf_wd",    brf_wd(i))
 
+!print *, init_laimax(i)
+!print *, i
+
      !! COARSE ROOTS
         call putConfigREAL("agf_bs",     agf_bs(i))
         call putConfigREAL("b1Vol",      b1Vol(i))
@@ -1880,8 +1883,8 @@ subroutine putConfigREAL(tag,rvalue)
   character(*),intent(in) :: tag 
   real,intent(in) :: rvalue
   character(str_len) :: value
-  integer :: lenval 
-  write(value,"(f20.10)") rvalue
+  integer :: lenval
+  write(value,"(f40.20)") rvalue
   lenval = len(trim(value))
   call libxml2f90_ll_opentag(tag)
   call libxml2f90_ll_addid(trim(tag),lenval,trim(value))
